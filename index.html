@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -275,6 +275,11 @@ label.lb.unk-l{display:flex;align-items:center;gap:8px}
 .qt td{padding:8px}
 .warnbar{font-size:13.5px}
 
+/* 大きい項目の「該当なし」ボタン */
+.sec-hdw{display:flex;align-items:stretch}
+.sec-hdw .sec-hd{flex:1;min-width:0}
+.secna{flex:0 0 auto;border:0;border-left:1px solid var(--line);background:#fff;color:var(--na);font-size:12.5px;padding:0 12px;white-space:nowrap}
+.secna[aria-pressed="true"]{background:var(--na-bg);color:var(--ink);font-weight:700}
 /* 一覧の削除ボタン */
 .li-wrap{display:flex;align-items:stretch;gap:6px}
 .li-wrap .list-item{flex:1;min-width:0}
@@ -1234,7 +1239,7 @@ const LINES=['上り線','中央','下り線'];
 function routeText(p){ return p.route==='その他' ? (p.routeOther||'') : (p.route||''); }
 function staText(p){ return [routeText(p), p.line, p.kp? 'KP'+p.kp : ''].filter(Boolean).join(' '); }
 function blankJob(kind,work){ return {id:uid('j'),kind:kind||'',work:work||'',workOther:'',date:new Date().toISOString().slice(0,10),parent:null,
-  closed:0,survey:{},kyogi:{rows:[],docNo:'',tachiai:''},seko:{},meas:{ins:'',earth:'',torque:'',lux:'',volt:'',volt0:'',amp:'',plumb:''},pics:[],memo:'',
+  closed:0,secNa:{},survey:{},kyogi:{rows:[],docNo:'',tachiai:''},seko:{},meas:{ins:'',earth:'',torque:'',lux:'',volt:'',volt0:'',amp:'',plumb:''},pics:[],memo:'',
   insp:{start:0,end:0,names:'',items:{},breaker:{trip:'',ins:'',v1:'',v1val:'',cableBreak:'',upTrip:'',upIns:'',v2:'',damage:''},ps:{kind:'',v1:'',v1val:'',v2:'',v2val:'',model:'',stock:'',damage:''},ap:{hood:'',v1:'',v1val:'',v2:'',v2val:'',damage:''},bunden:{timer:'',timerMemo:'',fuse:'',fuseMemo:'',mag:'',magMemo:''},cause:'',causeOther:'',result:'',resultOther:'',report:'',reportHow:'',reportHowOther:'',reportWhen:'',reportDone:''}}; }
 function blankPole(){ return {id:uid('p'),no:'',route:'',routeOther:'',line:'',kp:'',addr:'',jobs:[],history:[],
   ledger:{setchi:'',gaibu:'',shomeiKubun:'',lanes:'',sumikiri:'',kisoType:'',hikikomi:'',hikikomiOther:'',kansei:'',poleType:'',height:'',heightOther:'',arm:'',armLen:'',armLenOther:'',togu:'KSH-2',toguOther:'',lamp:'',lampModel:'',lampModelOther:'',watt:'',newTogu:'',maker:'',makerOther:'',angle:'',mapUrl:'',sonota:''},
@@ -1272,7 +1277,7 @@ function sortedPoles(){ return SITE.poles.slice().sort((a,b)=>{
 function surveyItems(){ return SURVEY.flatMap(s=>s.items); }
 function surveyProgress(p){
   let total=0, done=0, warn=0;
-  surveySecs(p).forEach(sec=>sec.items.forEach(it=>{ if(it.id==='shuhen') return; total++; const c=p.survey[it.id]; if(c && c.v) done++; if(c && c.v==='warn') warn++; }));
+  surveySecs(p).forEach(sec=>{ if(secNa(p,sec.id)) return; sec.items.forEach(it=>{ if(it.id==='shuhen') return; total++; const c=p.survey[it.id]; if(c && c.v) done++; if(c && c.v==='warn') warn++; }); });
   if(secAllowed(p,'cable')){ const cp=cableProgress(p); total+=cp.total; done+=cp.done; }
   if(secAllowed(p,'elec')){ const el=elecProgress(p); total+=el.total; done+=el.done; warn+=el.warn; }
   if(secAllowed(p,'shosa')){ const sh=shosaProgress(p); total+=sh.total; done+=sh.done; }
@@ -1308,7 +1313,7 @@ function status(j){
   return 'wait';
 }
 function poleStatus(p){ const j=latestJob(p); return j ? status(j) : 'none'; }
-function inspProgress(j){ let total=0,done=0,warn=0; INSP.forEach(s=>s.items.forEach(it=>{ total++; const c=j.insp.items[it.id]; if(c&&c.v) done++; if(c&&(c.v==='warn'||c.v==='day')) warn++; })); const p=SITE.poles.find(x=>x.jobs.includes(j)); if(p){ const b=breakerProgress(j,p); total+=b.total; done+=b.done; warn+=b.warn; const s=psProgress(j,p); total+=s.total; done+=s.done; warn+=s.warn; } const a=apProgress(j); total+=a.total; done+=a.done; warn+=a.warn; const bd=bundenProgress(j); total+=bd.total; done+=bd.done; warn+=bd.warn; total+=2; if(j.insp.cause) done++; if(j.insp.result) done++; return {total,done,warn}; }
+function inspProgress(j){ let total=0,done=0,warn=0; INSP.forEach(s=>{ if(secNa(j,s.id)) return; s.items.forEach(it=>{ total++; const c=j.insp.items[it.id]; if(c&&c.v) done++; if(c&&(c.v==='warn'||c.v==='day')) warn++; }); }); const p=SITE.poles.find(x=>x.jobs.includes(j)); if(p){ const b=breakerProgress(j,p); total+=b.total; done+=b.done; warn+=b.warn; const s=psProgress(j,p); total+=s.total; done+=s.done; warn+=s.warn; } const a=apProgress(j); total+=a.total; done+=a.done; warn+=a.warn; const bd=bundenProgress(j); total+=bd.total; done+=bd.done; warn+=bd.warn; total+=2; if(j.insp.cause) done++; if(j.insp.result) done++; return {total,done,warn}; }
 function jobLabel(j){ if(j.kind==='応急点検工') return '応急点検工'; const w = j.work==='その他' ? (j.workOther||'その他') : j.work; return (j.kind?kindLabel(j.kind):'工種未設定')+(w?'／'+w:''); }
 function elapsed(j){ if(!j.insp.start) return ''; const e=(j.insp.end||Date.now())-j.insp.start; const m=Math.round(e/60000); return Math.floor(m/60)+'時間'+String(m%60).padStart(2,'0')+'分'; }
 function stInfo(k){ return STATUS.find(s=>s.k===k); }
@@ -1848,6 +1853,7 @@ function tabInsp(j){
   h+='<div class="picrow" style="margin-top:12px"><button class="picbtn" data-addpic="点検"><span class="cam"></span>点検写真を追加</button><div class="thumbs">'+thumbs(j,'点検')+'</div></div></div>';
   if(ledPickNeeded(j,pole())) h+=ledPickHtml(pole(),j);
   h+=closeJobHtml(j);
+  h=addSecNa(h,j,'insp');
   return h;
 }
 function fld(label,id,val,opts){
@@ -1869,9 +1875,9 @@ function selOther(label,key,val,other,opts,ph){
     + (val==='その他' ? '<input type="text" data-ledger="'+key+'Other" value="'+esc(other)+'" placeholder="'+esc(ph||'')+'" style="margin-top:6px">' : '');
 }
 function mapUrl(p){ if(p.ledger.mapUrl) return p.ledger.mapUrl; if(p.addr) return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(p.addr); return ''; }
-function tabLedger(p){
+function ledgerFieldsHtml(p){
   const L=p.ledger;
-  return '<div class="pad">'
+  return ''
     + fld('管理番号','no',p.no,{ph:'例）L-12'})
     + '<div class="row2"><div>'+fld('路線','route',p.route,{sel:ROUTES.concat(['その他'])})+'</div><div>'+fld('上下線','line',p.line,{sel:LINES})+'</div></div>'
     + (p.route==='その他' ? fld('路線名（その他）','routeOther',p.routeOther,{ph:'路線名を入力'}) : '')
@@ -1889,14 +1895,15 @@ function tabLedger(p){
     + '<div class="row2"><div>'+selOther('灯具型式','togu',L.togu,L.toguOther,TOGU,'型式を入力')+'</div><div>'+fld('ランプ種別','lamp',L.lamp,{sel:LAMP})+'</div></div>'
     + lampModelField(L)
     + fld('電力申請番号','watt',L.watt,{ph:'電力会社の申請・契約番号'})
+    + fld('その他（自由記入）','sonota',L.sonota,{ph:'現地で判明した変更点・気づき'});
+}
+function tabLedger(p){
+  const L=p.ledger; const lj=latestJob(p);
+  return '<div class="pad">'
+    + ledgerFieldsHtml(p)
     + '<h3 style="font-size:14px;margin:18px 0 0;color:var(--ink2)">新設LED灯具（設計）</h3>'
-    + '<div class="row2"><div>'+fld('照明区分','shomeiKubun',L.shomeiKubun,{sel:SHOMEI})+'</div><div>'+fld('車線数','lanes',L.lanes,{sel:LANES})+'</div></div>'
-    + (/交差点/.test(L.shomeiKubun||'') ? '<label class="lb">設置位置</label><select data-ledger="sumikiri"><option value=""'+(L.sumikiri!=='1'?' selected':'')+'>交差点内・本線（-2／-3）</option><option value="1"'+(L.sumikiri==='1'?' selected':'')+'>隅切り部（-2C）</option></select>' : '')
-    + newToguSuggest(p)
-    + fld('新設灯具（設計）','newTogu',L.newTogu,{ph:'例）KCE100-2（重耐塩は -J）'})
-    + selOther('メーカー','maker',L.maker,L.makerOther,MAKERS,'メーカー名を入力')
-    + fld('設計取付角度（°）','angle',L.angle,{num:true,ph:'照明設計資料の値。相違すると均斉度・グレアの再計算が必要'})
-    + fld('その他（自由記入）','sonota',L.sonota,{ph:'現地で判明した変更点・気づき'})
+    + '<div class="note" style="padding:4px 0 6px">設計内容（照明区分・車線数・設置位置・新設灯具・メーカー・設計取付角度）は現調の「新設LED灯具（設計）」で入力します。ここでは確認のみ</div>'
+    + '<table class="qt"><tbody>'+[['照明区分',L.shomeiKubun],['車線数',L.lanes],['設置位置',/交差点/.test(L.shomeiKubun||'')?(L.sumikiri==='1'?'隅切り部（-2C）':'交差点内・本線'):''],['新設灯具（設計）',L.newTogu],['メーカー',lv(L,'maker')],['設計取付角度（°）',L.angle]].map(([k,v])=>'<tr><td style="color:var(--ink2);white-space:nowrap">'+k+'</td><td><b>'+(v?esc(v):'<span style="color:var(--na);font-weight:400">未入力</span>')+'</b></td></tr>').join('')+'</tbody></table>'
     + '<h3 style="font-size:14px;margin:18px 0 0;color:var(--ink2)">写真・仕様書の添付</h3>'
     + '<div class="note" style="padding:4px 0 8px">全景・銘板の写真、承諾図・試験成績書などのPDFを添付できます。新設灯具を決めると、仕様書ライブラリにある該当形式の仕様書が自動で付きます</div>'
     + '<div class="picrow"><button class="picbtn" id="addAttach"><span class="cam"></span>写真・PDFを追加</button></div>'
@@ -1923,15 +1930,9 @@ function quickLedger(p){
   const L=p.ledger; const filled=[p.no,p.route,p.line,p.kp,L.poleType,L.togu,L.lamp].filter(Boolean).length;
   const open = V.qlOpen!=null ? V.qlOpen : filled<5;
   return '<section class="sec'+(open?' open':'')+'" data-ql="1"><button class="sec-hd" data-toggle style="border-left-color:var(--rule)"><span class="nm">台帳（変更があった項目）</span><span class="st">'+filled+'/7 記入</span><span class="caret"></span></button><div class="sec-body"><div class="pad" style="padding-top:6px">'
-    + '<div class="row2"><div>'+fld('管理番号','no',p.no,{ph:'例）L-12'})+'</div><div>'+fld('距離標（KP）','kp',p.kp,{num:true,ph:'例）12.35'})+'</div></div>'
-    + '<div class="row2"><div>'+fld('路線','route',p.route,{sel:ROUTES.concat(['その他'])})+'</div><div>'+fld('上下線','line',p.line,{sel:LINES})+'</div></div>'
-    + (p.route==='その他' ? fld('路線名（その他）','routeOther',p.routeOther,{ph:'路線名を入力'}) : '')
-    + fld('ポール型式（開口部蓋の銘板）','poleType',L.poleType,{ph:'例）IA10B-S'})
-    + '<div class="row2"><div>'+selOther('灯具型式','togu',L.togu,L.toguOther,TOGU,'型式を入力')+'</div><div>'+fld('ランプ種別','lamp',L.lamp,{sel:LAMP})+'</div></div>'
-    + lampModelField(L)
+    + '<div class="note" style="padding:0 0 6px">台帳の全項目です。現地で事前台帳と違っていたら、ここで直してください。変更前→変更後が台帳の変更履歴に残ります（例：高圧ナトリウムランプ → LED）</div>'
+    + ledgerFieldsHtml(p)
     + '<div class="picrow" style="margin-top:10px"><button class="picbtn" id="addAttach"><span class="cam"></span>全景・銘板の写真</button><div class="thumbs" id="attachList">'+attachListHtml(p)+'</div></div>'
-    + fld('その他（自由記入）','sonota',L.sonota,{ph:'上の項目にない変更点・気づき'})
-    + '<div class="note" style="padding:6px 0 0">現地で事前台帳と違っていたら、ここで直してください。変更前→変更後が台帳の変更履歴に残ります（例：高圧ナトリウムランプ → LED）。残りの項目は台帳タブで</div>'
     + '</div></div></section>';
 }
 function attachListHtml(p){
@@ -1978,6 +1979,7 @@ function tabSurvey(p){
   if(p.kind!=='応急点検工') h+='<section class="sec open" data-sec="materials"><button class="sec-hd" data-toggle><span class="nm">必要資材・数量（発注用）</span><span class="st">'+jobMaterials(pole(),p).length+'品目</span><span class="caret"></span></button><div class="sec-body">'+materialsHtml(p)+'</div></section>';
   h+='<div class="pad"><button class="picbtn" data-addpic="現調"><span class="cam"></span>現調写真を追加</button><div class="thumbs" style="margin-top:8px">'+thumbs(p,'現調')+'</div></div>';
   if(ledPickNeeded(p,pole())) h+=ledPickHtml(pole(),p);
+  h=addSecNa(h,p,'survey');
   return h;
 }
 function tabKyogi(p){
@@ -2154,6 +2156,26 @@ function tabSeko(p){
   h+=closeJobHtml(p);
   return h;
 }
+/* ---- 大きい項目（作業条件・電気系統・ブレーカなど）ごとの「該当なし」：見出しの右のボタンで切替。該当なしにした項目は入力対象から外れる ---- */
+const SECNA_INSP={'点灯状況':'light','ブレーカ':'breaker','安定器・電源装置':'ps','自動点滅器':'ap','分電盤内点検':'bunden'};
+function secNa(j,key){ return !!(j&&j.secNa&&j.secNa[key]); }
+function addSecNa(h,j,kind){
+  return h.replace(/<section class="sec open"( data-sec="([^"]*)")?><button class="sec-hd([^"]*)" data-toggle><span class="nm">([^<]*)<\/span>([\s\S]*?)<\/button><div class="sec-body">([\s\S]*?)<\/div><\/section>/g, (m,attr,sec,cls,nm,rest,body)=>{
+    let key = kind==='insp' ? SECNA_INSP[nm] : sec;
+    if(!key || ['shosa','ledpick','materials'].includes(key)) return m;
+    const on=secNa(j,key);
+    const st = on ? '<span class="st" style="background:var(--na-bg);color:var(--ink);font-weight:700">該当なし</span><span class="caret"></span>' : rest;
+    const bd = on ? '<div class="pad" style="padding-top:8px"><div class="note" style="padding:0">この項目は該当なしです。入力対象から外れ、チェックリストには「該当なし」と印字されます。戻すときは見出し右の「該当なし」をもう一度押してください</div></div>' : body;
+    return '<section class="sec'+(on?'':' open')+'"'+(attr||'')+'><div class="sec-hdw"><button class="sec-hd'+(on?' done':cls)+'" data-toggle><span class="nm">'+nm+'</span>'+st+'</button><button class="secna" data-secna="'+key+'" aria-pressed="'+on+'" title="この項目全体を該当なしにする">該当なし</button></div><div class="sec-body">'+bd+'</div></section>';
+  });
+}
+/* 該当なしの項目は進捗・判定の対象外にする */
+(function(){
+  const wrap=(name,key,zero)=>{ const f=window[name]; if(typeof f!=='function') return; window[name]=function(j){ if(secNa(j,key)) return zero; return f.apply(this,arguments); }; };
+  wrap('cableProgress','cable',{total:0,done:0}); wrap('elecProgress','elec',{total:0,done:0,warn:0}); wrap('expoleProgress','expole',{total:0,done:0,warn:0}); wrap('newpoleProgress','newpole',{total:0,done:0,warn:0});
+  wrap('breakerProgress','breaker',{total:0,done:0,warn:0}); wrap('psProgress','ps',{total:0,done:0,warn:0}); wrap('apProgress','ap',{total:0,done:0,warn:0}); wrap('bundenProgress','bunden',{total:0,done:0,warn:0});
+  wrap('breakerEval','breaker',{lines:[],action:''}); wrap('psEval','ps',{lines:[],action:''}); wrap('apEval','ap',{lines:[],action:''}); wrap('bundenEval','bunden',{lines:[],action:''});
+})();
 /* ---- LED灯具の選定：応急点検・現調でLED灯具取替に派生するとき、その場で型式を決める（台帳の新設灯具・メーカーに保存） ---- */
 function ledPickNeeded(j,p){
   if(!j) return false;
@@ -2165,12 +2187,15 @@ function ledPickHtml(p,j){
   const models=[...new Set(specLib().map(x=>String(x.model||'').trim()).filter(Boolean))].sort();
   const cur=String(L.newTogu||''); const curBase=cur.replace(/-J$/,'');
   const lj=j.kind==='応急点検工'?null:j; const ju = lj && lj.survey && lj.survey.jutaien && lj.survey.jutaien.v==='該当する';
-  let h='<section class="sec open" data-sec="ledpick"><button class="sec-hd" data-toggle style="border-left-color:var(--todo)"><span class="nm">LED灯具の選定</span><span class="st">'+(cur?esc(cur):'未選定')+'</span><span class="caret"></span></button><div class="sec-body"><div class="pad" style="padding-top:6px">'
-    + '<div class="note" style="padding:0 0 6px">既設：'+esc(lv(L,'togu')||'')+(lampModelText(L)?'／'+esc(lampModelText(L)):'')+(L.lamp?'（'+esc(L.lamp)+'）':'')+'　照明区分：'+esc(L.shomeiKubun||'未設定')+'　車線数：'+esc(L.lanes||'未設定')+(ju?'　<b style="color:var(--warn)">重耐塩地域（-J）</b>':'')+'</div>'
+  let h='<section class="sec open" data-sec="ledpick"><button class="sec-hd" data-toggle style="border-left-color:var(--todo)"><span class="nm">新設LED灯具（設計）・選定</span><span class="st">'+(cur?esc(cur):'未選定')+'</span><span class="caret"></span></button><div class="sec-body"><div class="pad" style="padding-top:6px">'
+    + '<div class="note" style="padding:0 0 6px">既設：'+esc(lv(L,'togu')||'')+(lampModelText(L)?'／'+esc(lampModelText(L)):'')+(L.lamp?'（'+esc(L.lamp)+'）':'')+(ju?'　<b style="color:var(--warn)">重耐塩地域（-J）</b>':'')+'</div>'
+    + '<div class="row2"><div>'+fld('照明区分（設計）','shomeiKubun',L.shomeiKubun,{sel:SHOMEI})+'</div><div>'+fld('車線数','lanes',L.lanes,{sel:LANES})+'</div></div>'
+    + (/交差点/.test(L.shomeiKubun||'') ? '<label class="lb">設置位置</label><select data-ledger="sumikiri"><option value=""'+(L.sumikiri!=='1'?' selected':'')+'>交差点内・本線（-2／-3）</option><option value="1"'+(L.sumikiri==='1'?' selected':'')+'>隅切り部（-2C）</option></select>' : '')
     + newToguSuggest(p)
     + (models.length? '<label class="lb">仕様書ライブラリの型式から選ぶ</label><div class="seg" style="flex-wrap:wrap">'+models.map(m=>'<button data-picktogu="'+esc(m)+'" aria-pressed="'+(m.replace(/-J$/,'')===curBase)+'">'+esc(m)+'</button>').join('')+'</div>' : '<div class="note" style="padding:0 0 6px">仕様書ライブラリに器具形式を登録しておくと、ここから選べます（メニュー → 仕様書ライブラリ）</div>')
     + '<div class="row2"><div>'+fld('新設灯具（型式）','newTogu',L.newTogu,{ph:'例）KCE100-2（重耐塩は -J）'})+'</div><div>'+selOther('メーカー','maker',L.maker,L.makerOther,MAKERS,'メーカー名を入力')+'</div></div>'
-    + '<div class="note" style="padding:6px 0 0">選んだ型式は台帳の「新設灯具（設計）」に入り、仕様書ライブラリにPDFがあれば台帳に自動添付されます。実際の型式は設計図・数量総括表で確認してください</div>'
+    + fld('設計取付角度（°）','angle',L.angle,{num:true,ph:'照明設計資料の値。相違すると均斉度・グレアの再計算が必要'})
+    + '<div class="note" style="padding:6px 0 0">ここで入れた設計内容は台帳の「新設LED灯具（設計）」に保存され、仕様書ライブラリにPDFがあれば台帳に自動添付されます。実際の型式は設計図・数量総括表で確認してください</div>'
     + '</div></div></section>';
   return h;
 }
@@ -2281,6 +2306,7 @@ document.addEventListener('click', async e=>{
   if(d && d.startjob){ const j=blankJob(d.startjob, d.startjob==='応急点検工' ? '調査' : (($('#njWork')||{}).value||'')); pole().jobs.push(j); V.screen='job'; V.jobId=j.id; V.tab = j.kind==='応急点検工' ? 'insp' : 'survey'; $('#sheet').classList.remove('open'); touch(true); toast(jobLabel(j)+' を追加しました'); return; }
   if(b && b.id==='startSurvey'){ openSheet('<h2>現場調査へ</h2><div class="note" style="padding:0 0 8px">現場調査を行う作業の工種と作業内容を選んでください。</div><label class="lb">作業内容</label><select id="njWork"><option value="" selected>—</option>'+WORK.map(o=>'<option>'+o+'</option>').join('')+'</select><div class="menu" style="margin-top:8px"><button data-startjob="道路照明維持補修工">道路照明維持補修工<small>ランプ・器具・自動点滅器等の取替</small></button><button data-startjob="道路照明維持修繕工">道路照明維持修繕工<small>照明灯・配管配線の取替、建替</small></button></div>'); return; }
   if(d && d.mkjob){ const j=blankJob(d.mkjob, $('#njWork')? $('#njWork').value : ''); if(d.mkjob==='応急点検工') j.work='調査'; pole().jobs.push(j); V.screen='job'; V.jobId=j.id; V.tab = j.kind==='応急点検工' ? 'insp' : 'survey'; $('#sheet').classList.remove('open'); touch(true); return; }
+  if(d && d.secna){ const j=job(); if(!j) return; j.secNa=j.secNa||{}; j.secNa[d.secna]=!j.secNa[d.secna]; touch(true); return; }
   if(d && d.delsite){ let idx=[]; try{ idx=JSON.parse(Store.get('dl:index')||'[]'); }catch(e){} const x=idx.find(y=>y.id===d.delsite); if(!x) return; if(!confirm('現場「'+(x.name||'（工事名なし）')+'」を削除します。管理番号 '+x.n+'本の台帳・作業・写真がこの端末から消えます。よろしいですか？')) return; if(!confirm('本当に削除しますか？（この操作は取り消せません。必要なら先に「書き出し」で保存してください）')) return; await deleteSite(d.delsite); render(); toast('現場を削除しました'); return; }
   if(d && d.delpole){ const p=SITE.poles.find(x=>x.id===d.delpole); if(!p) return; if(!confirm('管理番号 '+(p.no||'（未設定）')+' を削除します。作業 '+p.jobs.length+'件と写真も消えます。よろしいですか？')) return; await deletePole(p); touch(true); toast('削除しました'); return; }
   if(d && d.deljob){ const p=pole(); const j=p&&p.jobs.find(x=>x.id===d.deljob); if(!j) return; const kids=p.jobs.filter(x=>x.parent===j.id); if(!confirm('作業「'+(j.date||'')+' '+jobLabel(j)+'」を削除します。写真も消えます。'+(kids.length?'派生した作業（'+kids.length+'件）は残り、派生元なしになります。':'')+'よろしいですか？')) return; await deleteJob(p,j); touch(true); toast('削除しました'); return; }
@@ -3297,22 +3323,28 @@ function prInspRows(j,p){
   const lc=I.items.futen||{}; const lmap={ok:'点灯',warn:'不点灯',day:'昼間点灯',na:'該当なし'};
   h+=prRow('点灯状況',lmap[lc.v]||'',U,'iv:futen',lc.memo);
   const B=I.breaker||{}; const single = p.ledger.hikikomi ? /単独/.test(p.ledger.hikikomi) : null;
+  if(secNa(j,'light')) h+=prRow('点灯状況','該当なし');
   h+='<tr class="g"><th colspan="3">ブレーカ</th></tr>';
+  if(secNa(j,'breaker')) h+=prRow('ブレーカ','該当なし'); else {
   h+=prRow('① ブレーカトリップの有無',B.trip,U,'bk:trip'); if(B.trip==='有') h+=prRow('　絶縁抵抗値（ブレーカ二次側）MΩ',B.ins,U,'bkn:ins');
   h+=prRow('② 一次側電圧の有無',B.v1,U,'bk:v1'); if(B.v1==='有') h+=prRow('　電圧（V）',B.v1val,U,'bkn:v1val');
   if(B.v1==='無'){ if(single!==false) h+=prRow('　単独型：電源ケーブル断線の有無',B.cableBreak,U,'bk:cableBreak'); if(single!==true){ h+=prRow('　連接型：分電盤・引込照明柱のブレーカトリップ',B.upTrip,U,'bk:upTrip'); if(B.upTrip==='有') h+=prRow('　絶縁抵抗値（上流ブレーカ二次側）MΩ',B.upIns,U,'bkn:upIns'); } }
   if(B.v1==='有') h+=prRow('③ 二次側へ電圧が送られているか',B.v2,U,'bk:v2');
   h+=prRow('④ 目視での破損・腐食の有無',B.damage,U,'bk:damage');
   const be=breakerEval(j,p); if(be.lines.length) h+=prRow('判定',be.lines.join('／'),null,null,be.action?'処置：'+be.action:'');
+  }
   const P=I.ps||{}; const kind=psKind(j,p);
   h+='<tr class="g"><th colspan="3">安定器・電源装置</th></tr>';
+  if(secNa(j,'ps')) h+=prRow('安定器・電源装置','該当なし'); else {
   h+=prRow('種別',kind,U,'ps:kind');
   h+=prRow('① 一次側電圧の有無',psV1(j),U,'ps:v1',B.v2==='有'?'ブレーカ③から自動':''); if(P.v1==='有'&&B.v2!=='有') h+=prRow('　一次側電圧（V AC）',P.v1val,U,'psn:v1val');
   h+=prRow('① 二次側電圧の有無',P.v2,U,'ps:v2'); if(P.v2==='有') h+=prRow('　二次側電圧（'+(kind==='電源装置'?'V DC':'V AC')+'）',P.v2val,U,'psn:v2val');
   if(kind==='電源装置'&&psV1(j)==='有'&&P.v2==='無'){ h+=prRow('　電源装置の品番',P.model,U,'psn:model'); h+=prRow('　メーカー在庫の有無',P.stock,U,'ps:stock'); }
   h+=prRow('② 目視での破損・腐食の有無',P.damage,U,'ps:damage');
   const pe=psEval(j,p); if(pe.lines.length) h+=prRow('判定',pe.lines.join('／'),null,null,pe.action?'処置：'+pe.action:'');
-  if(isDay(j)){ const A=I.ap||{};
+  }
+  if(secNa(j,'ap')) { h+='<tr class="g"><th colspan="3">自動点滅器</th></tr>'+prRow('自動点滅器','該当なし'); }
+  else if(isDay(j)){ const A=I.ap||{};
     h+='<tr class="g"><th colspan="3">自動点滅器（昼間点灯時）</th></tr>';
     h+=prRow('① 遮光フードによる動作の有無',A.hood,U,'ap:hood');
     h+=prRow('② 一次側電圧の有無',B.v2==='有'?'有':A.v1,U,'ap:v1',B.v2==='有'?'ブレーカ二次側から':''); if(A.v1==='有'&&B.v2!=='有') h+=prRow('　一次側電圧（V）',A.v1val,U,'apn:v1val');
@@ -3322,8 +3354,8 @@ function prInspRows(j,p){
   }
   const D=I.bunden||{};
   h+='<tr class="g"><th colspan="3">分電盤内点検</th></tr>';
-  BUNDEN.forEach(([k,label])=>{ h+=prRow(label,D[k],U,'bd:'+k,D[k+'Memo']); });
-  const de=bundenEval(j); if(de.action) h+=prRow('判定','異常あり',null,null,'処置：'+de.action);
+  if(secNa(j,'bunden')) h+=prRow('分電盤内点検','該当なし'); else { BUNDEN.forEach(([k,label])=>{ h+=prRow(label,D[k],U,'bd:'+k,D[k+'Memo']); });
+  const de=bundenEval(j); if(de.action) h+=prRow('判定','異常あり',null,null,'処置：'+de.action); }
   h+='<tr class="g"><th colspan="3">点検結果・復旧方法・報告</th></tr>';
   h+=prRow('点検結果',causeText(j),U,['insp:cause','insp:causeOther']);
   h+=prRow('復旧方法',resultText(j),U,['insp:result','insp:resultOther']);
@@ -3340,6 +3372,7 @@ function prSurveySections(j,p){
   const U=j.unk||{}; const S=j.survey||{}; const out=[];
   surveySecs(j).forEach(sec=>{
     let h='';
+    if(secNa(j,sec.id)){ out.push({name:sec.name, html:prRow('該当なし','該当なし')}); return; }
     if(sec.id==='cable'){ const C=S.cable||blankCable(); const lim=parseFloat(SITE.settings.drop||2);
       h+=prRow('種別',cModes(C).join('・'),U,['cmode:地中埋設配管配線','cmode:橋梁配管配線','cmode:架空配線']);
       if(cModes(C).length){ if(cHas(C,'地中')) h+=prRow('ハンドホール経由（箇所）',C.hhN,U,'cb:hhN'); h+=prRow('道路照明灯経由（本）',C.poleN,U,'cb:poleN'); }
@@ -3504,10 +3537,10 @@ function prQcSummary(j){
 function prInspSummary(j,p){
   const I=j.insp; const rows=[]; const lc=I.items.futen||{}; const lmap={ok:'点灯',warn:'不点灯',day:'昼間点灯',na:'該当なし'};
   rows.push(['点灯状況',lmap[lc.v]||'',lc.v==='ok'?0:lc.v==='warn'||lc.v==='day'?1:lc.v==='na'?2:null]);
-  const be=breakerEval(j,p), bp=breakerProgress(j,p); rows.push(['ブレーカ',be.action?'処置：'+be.action:(be.lines[0]||''),be.action?1:bp.done>=bp.total?0:null]);
-  const pe=psEval(j,p), pp=psProgress(j,p); rows.push(['安定器・電源装置（'+(psKind(j,p)||'')+'）',pe.action?'処置：'+pe.action:(pe.lines[0]||''),pe.action?1:pp.done>=pp.total?0:null]);
+  const be=breakerEval(j,p), bp=breakerProgress(j,p); rows.push(['ブレーカ',secNa(j,'breaker')?'該当なし':be.action?'処置：'+be.action:(be.lines[0]||''),secNa(j,'breaker')?2:be.action?1:bp.done>=bp.total?0:null]);
+  const pe=psEval(j,p), pp=psProgress(j,p); rows.push(['安定器・電源装置（'+(psKind(j,p)||'')+'）',secNa(j,'ps')?'該当なし':pe.action?'処置：'+pe.action:(pe.lines[0]||''),secNa(j,'ps')?2:pe.action?1:pp.done>=pp.total?0:null]);
   if(isDay(j)){ const ae=apEval(j), ap=apProgress(j); rows.push(['自動点滅器',ae.action?'処置：'+ae.action:(ae.lines[0]||''),ae.action?1:ap.done>=ap.total?0:null]); } else rows.push(['自動点滅器','（昼間点灯時のみ）',2]);
-  const de=bundenEval(j), bd=bundenProgress(j); rows.push(['分電盤内点検',de.action?'処置：'+de.action:bd.done>=bd.total?'異常なし':'',de.action?1:bd.done>=bd.total?0:null]);
+  const de=bundenEval(j), bd=bundenProgress(j); rows.push(['分電盤内点検',secNa(j,'bunden')?'該当なし':de.action?'処置：'+de.action:bd.done>=bd.total?'異常なし':'',secNa(j,'bunden')?2:de.action?1:bd.done>=bd.total?0:null]);
   rows.push(['点検結果',causeText(j),null,true]);
   return prSum3(rows,['良','要処置','該当なし']);
 }
@@ -3553,7 +3586,7 @@ function prNotes(j,p){
 function prPoleNotes(p,jobs){
   const L=[]; const tag=j=>jobs.length>1?'['+(j.date||'')+' '+(j.kind==='応急点検工'?'点検':(j.work||'作業'))+'] ':'';
   const log=[], ky=[], inh=[];
-  (p.history||[]).forEach(x=>log.push('台帳との相違：'+x.label+' '+(x.from||'空欄')+' → '+(x.to||'空欄')+(x.src?'（'+x.src+'）':'')));
+  // 台帳の変更履歴はログに出さない（台帳タブ・変更履歴CSVで確認）
   if(p.memo) log.push('台帳メモ：'+p.memo);
   jobs.forEach(j=>{ const n=prNotes(j,p); n.log.forEach(x=>log.push(tag(j)+x)); n.ky.forEach(x=>ky.push(tag(j)+x)); n.inh.forEach(x=>inh.push(tag(j)+x)); });
   const un=jobs.reduce((a,j)=>a+unkCount(j),0)+unkCount(p); if(un) inh.push('「ー」（後で確認）が '+un+' 件あります');
