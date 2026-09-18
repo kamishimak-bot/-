@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -275,6 +275,44 @@ label.lb.unk-l{display:flex;align-items:center;gap:8px}
 .qt td{padding:8px}
 .warnbar{font-size:13.5px}
 
+/* 案内カード */
+.guide{margin:12px 12px 0;border:1.5px solid #9EC5FF;background:#EEF5FF;border-radius:14px;overflow:hidden}
+.guide:not(.open){position:sticky;top:calc(var(--hdh,60px) + 6px);z-index:18;box-shadow:0 4px 14px rgba(23,32,42,.10)}
+.guide.mini{position:sticky;top:calc(var(--hdh,60px) + 4px);z-index:18;box-shadow:none}
+.guide.mini{border:0;background:transparent;margin:6px 12px 0;text-align:right}
+.guide .gh{display:flex;align-items:center;gap:8px;padding:8px 12px;width:100%;border:0;background:transparent;text-align:left}
+.guide.open .gh{border-bottom:1px solid #C9DDFB}
+.gl-list{padding:6px 12px 4px}
+.gl-list .gl{display:flex;gap:10px;margin-top:6px;background:#fff;border-color:#D6E4F7}
+.gl-list .gl.cur{border:1.5px solid var(--todo);background:#fff}
+.gl-list .gl.done{opacity:.75}
+.gl-list .gln b{display:inline-flex;width:24px;height:24px;border-radius:50%;align-items:center;justify-content:center;background:#fff;border:1.5px solid #B8C2CC;color:var(--ink2);font-size:13px}
+.gl-list .gl.cur .gln b{background:var(--todo);border-color:var(--todo);color:#fff}
+.gl-list .gl.done .gln b{background:var(--ok);border-color:var(--ok);color:#fff}
+.gl-list .glb{flex:1;min-width:0}
+.gl-list .glt{font-weight:800;font-size:15px}
+.gl-list .glt .now{margin-left:8px;font-size:11.5px;color:#fff;background:var(--todo);border-radius:999px;padding:1px 8px;vertical-align:middle}
+.gl-list .gld{font-size:13.5px;color:var(--ink2);line-height:1.45;margin-top:2px}
+.gl-list .gnow{margin:6px 0;padding:8px 10px;background:#EEF5FF;border-radius:10px;font-size:14.5px}
+.gl-list .gnow b{font-size:15px}
+.gfoot{padding:4px 12px 10px;text-align:right}
+.gfoot .lnk{border:0;background:transparent;color:var(--ink2);font-size:12.5px;text-decoration:underline}
+.guide .gt{flex:1;min-width:0}
+.guide .gx{flex:0 0 auto;border:1px solid #9EC5FF;background:#fff;color:var(--todo);border-radius:999px;min-height:30px;padding:0 12px;font-weight:700;font-size:13px}
+.gsteps{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--ink2);overflow-x:auto}
+.gsteps .gs{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.gsteps .gs b{display:inline-flex;width:20px;height:20px;border-radius:50%;align-items:center;justify-content:center;background:#fff;border:1.5px solid #B8C2CC;color:var(--ink2);font-size:12px}
+.gsteps .gs.cur{color:var(--todo);font-weight:800}.gsteps .gs.cur b{background:var(--todo);border-color:var(--todo);color:#fff}
+.gsteps .gs.done b{background:var(--ok);border-color:var(--ok);color:#fff}
+.gsteps i{flex:0 0 12px;height:1.5px;background:#B8C2CC}
+.guide .gb{padding:8px 12px 12px;font-size:15px;line-height:1.4}
+.guide .gb b{font-size:16px}
+.guide .gd{font-size:13.5px;color:var(--ink2);margin-top:4px}
+.guide .ga{display:flex;gap:8px;margin-top:10px}.guide .ga .btn{flex:1;min-height:50px;font-size:16px}
+.menu .mh{font-size:12.5px;color:var(--ink2);font-weight:700;margin:14px 0 4px;padding-left:2px;grid-column:1/-1}
+.gl{padding:10px 12px;border:1px solid var(--line);border-radius:12px;margin-top:8px;font-size:14px}
+.gl b{display:block;font-size:15px;margin-bottom:2px}
+.gl div{color:var(--ink2);font-size:13.5px;line-height:1.45}
 /* 大きい項目の「該当なし」ボタン */
 .sec-hdw{display:flex;align-items:stretch}
 .sec-hdw .sec-hd{flex:1;min-width:0}
@@ -1239,7 +1277,7 @@ const LINES=['上り線','中央','下り線'];
 function routeText(p){ return p.route==='その他' ? (p.routeOther||'') : (p.route||''); }
 function staText(p){ return [routeText(p), p.line, p.kp? 'KP'+p.kp : ''].filter(Boolean).join(' '); }
 function blankJob(kind,work){ return {id:uid('j'),kind:kind||'',work:work||'',workOther:'',date:new Date().toISOString().slice(0,10),parent:null,
-  closed:0,secNa:{},survey:{},kyogi:{rows:[],docNo:'',tachiai:''},seko:{},meas:{ins:'',earth:'',torque:'',lux:'',volt:'',volt0:'',amp:'',plumb:''},pics:[],memo:'',
+  closed:0,secNa:{},ledgerOk:0,survey:{},kyogi:{rows:[],docNo:'',tachiai:''},seko:{},meas:{ins:'',earth:'',torque:'',lux:'',volt:'',volt0:'',amp:'',plumb:''},pics:[],memo:'',
   insp:{start:0,end:0,names:'',items:{},breaker:{trip:'',ins:'',v1:'',v1val:'',cableBreak:'',upTrip:'',upIns:'',v2:'',damage:''},ps:{kind:'',v1:'',v1val:'',v2:'',v2val:'',model:'',stock:'',damage:''},ap:{hood:'',v1:'',v1val:'',v2:'',v2val:'',damage:''},bunden:{timer:'',timerMemo:'',fuse:'',fuseMemo:'',mag:'',magMemo:''},cause:'',causeOther:'',result:'',resultOther:'',report:'',reportHow:'',reportHowOther:'',reportWhen:'',reportDone:''}}; }
 function blankPole(){ return {id:uid('p'),no:'',route:'',routeOther:'',line:'',kp:'',addr:'',jobs:[],history:[],
   ledger:{setchi:'',gaibu:'',shomeiKubun:'',lanes:'',sumikiri:'',kisoType:'',hikikomi:'',hikikomiOther:'',kansei:'',poleType:'',height:'',heightOther:'',arm:'',armLen:'',armLenOther:'',togu:'KSH-2',toguOther:'',lamp:'',lampModel:'',lampModelOther:'',watt:'',newTogu:'',maker:'',makerOther:'',angle:'',mapUrl:'',sonota:''},
@@ -1364,6 +1402,57 @@ function inheritText(p){
 /* ============ 画面描画 ============ */
 const $ = s=>document.querySelector(s);
 let lastKey='';
+/* ===== 案内（初めての人向け）：画面ごとの「いま・次にやること」と、初回の使い方ガイド ===== */
+function ledgerFilled(p){ if(!p) return {done:0,total:LEDGER_REQ.length,rest:[]}; const rest=LEDGER_REQ.filter(([k,l,f])=>!f(p)).map(x=>x[1]); return {done:LEDGER_REQ.length-rest.length,total:LEDGER_REQ.length,rest}; }
+const GUIDE_STEPS=[
+  ['現場','現場（工事）を選ぶ','工事ごとにデータが分かれています。初回は「＋ 新しい現場」。事務所から受け取ったファイルは「取り込み」'],
+  ['管理番号','管理番号（照明柱）を選ぶ','照明柱1本＝1つの管理番号。左の色が状態（灰 未着手／青 現調中／橙 要協議／緑 完了）。無ければ「＋ 管理番号」、まとめて作るならメニュー「台帳を一括登録」'],
+  ['台帳','台帳を打ち込む','管理番号を開くと最初に「台帳」が出ます。路線・距離標・ポール型式・灯具・ランプなど基本情報を入れ、全景・銘板の写真を撮ります。入力できたら「▶ 応急点検／現場調査を始める」'],
+  ['作業','作業を入力する','不具合対応は「応急点検」、決まった工事は「現場調査」から。画面下のタブは ①現調 → ②協議 → ③施工 → 写真 の順。項目は上から押していくだけ。分からなければ「ー」、該当しない大きな項目は見出し右の「該当なし」。右下の「▼ 次の未入力へ」で残りに飛べます'],
+  ['完了','完了して送る','各作業の一番下の「✔ 完了」→ メニュー「事務所へ送る」。チェックリストはメニュー「印刷・PDF」']
+];
+function guideSteps(cur){ return '<div class="gsteps">'+GUIDE_STEPS.map((x,i)=>'<span class="gs'+(i<cur?' done':i===cur?' cur':'')+'"><b>'+(i+1)+'</b>'+x[0]+'</span>').join('<i></i>')+'</div>'; }
+/* 案内カード：普段は「いま・次にやること」の一文。タップで開くと5段階の使い方をまとめて表示（いまの段階を強調） */
+function guideCard(cur,title,body,actions){
+  const open=!!V.guideOpen;
+  let h='<div class="guide'+(open?' open':'')+'"><button class="gh" data-guide="toggle"><span class="gt">'+guideSteps(cur)+'</span><span class="gx">'+(open?'閉じる ▴':'使い方 ▾')+'</span></button>';
+  if(!open){ h+='<div class="gb"><b>'+title+'</b>'+(body?'<div class="gd">'+body+'</div>':'')+(actions?'<div class="ga">'+actions+'</div>':'')+'</div>'; }
+  else {
+    h+='<div class="gl-list">'+GUIDE_STEPS.map((x,i)=>{ const isCur=i===cur; return '<div class="gl'+(isCur?' cur':i<cur?' done':'')+'"><div class="gln"><b>'+(i+1)+'</b></div><div class="glb"><div class="glt">'+x[1]+(isCur?'<span class="now">いまここ</span>':'')+'</div>'+(isCur?'<div class="gnow"><b>'+title+'</b>'+(body?'<div class="gd">'+body+'</div>':'')+(actions?'<div class="ga">'+actions+'</div>':'')+'</div>':'')+'<div class="gld">'+x[2]+'</div></div></div>'; }).join('')+'</div>'
+      + '<div class="gfoot"><button class="lnk" data-guide="hide">案内カードを小さくする（右上の「？」で戻せます）</button></div>';
+  }
+  return h+'</div>';
+}
+function guideFor(screen){
+  if(screen==='sites'){ let idx=[]; try{ idx=JSON.parse(Store.get('dl:index')||'[]'); }catch(e){} return guideCard(0,'現場（工事）をタップして開きます',idx.length?'新しい工事は下の「＋ 新しい現場」から。事務所から受け取ったファイルは「取り込み」':'まず下の「＋ 新しい現場」で工事名を登録してください'); }
+  if(screen==='poles'){ const n=SITE.poles.length; return guideCard(1,n?'管理番号（照明柱）をタップして開きます':'まず管理番号（照明柱）を登録します',n?'開くと最初に「台帳」を打ち込み、その後で点検・現調に入ります。左の色が状態：灰＝未着手、青＝現調中、橙＝要協議、緑＝完了':'下の「＋ 管理番号」で1本ずつ追加（開いたらまず台帳を打ち込みます）。メニュー →「台帳を一括登録」でCSVからまとめて作ることもできます'); }
+  if(screen==='pole'){ const p=pole(); const n=p.jobs.length; const lf=ledgerFilled(p);
+    if(V.tab==='ledger'){
+      if(lf.done<lf.total) return guideCard(2,'まず台帳を打ち込みます　残り '+(lf.total-lf.done)+' 項目','未記入：'+lf.rest.join('・')+'。事前台帳・設計図・現地の銘板を見て入力し、全景・銘板の写真も撮っておきます。入力できたら下の「▶ 応急点検／現場調査を始める」へ');
+      if(!n) return guideCard(2,'台帳は入力済み → 次は作業を始めます','点灯しないなどの不具合対応なら「応急点検」、設計で決まっている工事なら「現場調査」','<button class="btn pri" data-startjob="応急点検工">▶ 応急点検を始める</button><button class="btn pri" id="startSurvey">▶ 現場調査を始める</button>');
+      return guideCard(2,'台帳は入力済みです','変更があれば直してください（変更履歴に残ります）。作業の続きは下の「作業一覧」タブ');
+    }
+    if(!n) return guideCard(3,lf.done<lf.total?'先に「台帳」タブで台帳を打ち込んでください（残り '+(lf.total-lf.done)+' 項目）':'この管理番号で何をしますか？',lf.done<lf.total?'台帳を入れてから、点検・現調に入ります':'点灯しないなどの不具合対応なら「応急点検」、設計で決まっている工事なら「現場調査」から始めます',lf.done<lf.total?'<button class="btn pri" data-tab="ledger">▶ 台帳を打ち込む</button>':'<button class="btn pri" data-startjob="応急点検工">▶ 応急点検を始める</button><button class="btn pri" id="startSurvey">▶ 現場調査を始める</button>');
+    return guideCard(3,'作業をタップして続きを入力します','状態は 点検中→現調中→要協議→施工中→完了 と進みます。別の作業を足すときは下の「＋ 作業を追加」'); }
+  if(screen==='job'){ const j=job(), p=pole(); if(!j) return '';
+    if(j.kind==='応急点検工'){ const I=j.insp; const ip=inspProgress(j);
+      if(!I.start) return guideCard(3,'「▶ 点検開始」を押してから点検します','時刻が記録され、所要時間が作業報告書に使えます');
+      if(ip.done<ip.total) return guideCard(3,'各項目を上から順に押していきます　残り '+(ip.total-ip.done)+' 件','分からない項目は「ー」、該当しない大きな項目は見出し右の「該当なし」。右下の「▼ 次の未入力へ」で飛べます');
+      if(!I.end) return guideCard(3,'点検が終わったら「■ 点検終了」を押します','');
+      if(!reportReady(j)) return guideCard(3,'監督職員へ報告して、報告方法・日付・完了を記入します','点検結果と復旧方法は自動で判定されています（違えば選び直し）');
+      if(!j.closed && !p.jobs.some(x=>x.parent===j.id)) return guideCard(4,'次は？','取替などの工事に進むなら「派生」ボタン、この点検だけで終わるなら一番下の「✔ 完了」');
+      return guideCard(4,'この点検は入力済みです','メニュー →「事務所へ送る」で事務所に渡せます'); }
+    const sp=surveyProgress(j), kp=sekoProgress(j);
+    if(V.tab==='survey'){ if(sp.done<sp.total) return guideCard(3,'① '+survName(j,true)+'：上から順に入力　残り '+(sp.total-sp.done)+' 件','先頭の「台帳」は現地と違うところだけ直します。分からない項目は「ー」、該当しない大きな項目は見出し右の「該当なし」。右下の「▼ 次の未入力へ」が便利です'); return guideCard(3,'① '+survName(j,true)+' は入力済み',sp.warn?'要協議が '+sp.warn+' 件あります → 下の「協議」タブで処置を決めてから施工へ':'次は下の「施工」タブへ'); }
+    if(V.tab==='kyogi') return guideCard(3,'② 協議：設計と現地の違いを整理します','要協議の項目ごとに「処置」を決めると、状態が施工に進めるようになります。文章はメニュー →「協議事項の文章をコピー」で打合せ簿に貼れます');
+    if(V.tab==='seko'){ if(kp.done<kp.total) return guideCard(3,'③ 施工：工程ごとに「完了」を押していきます　残り '+(kp.total-kp.done)+' 件','測定値は数字を入れると自動で判定。写真は各工程の「写真を追加」'); if(!j.closed) return guideCard(4,'施工は入力済み → 一番下の「✔ 完了」を押します','完了にすると新設灯具などが台帳に反映されます'); return guideCard(4,'この作業は完了です','メニュー →「事務所へ送る」／「印刷・PDF」でチェックリストが出せます'); }
+    if(V.tab==='pics') return guideCard(3,'写真：現調・着手前・撤去中・取付後・完了の区分で保存します','写真帳に使う区分ごとに撮っておくと後で楽です');
+  }
+  return '';
+}
+function guideFirstRun(){ if(Store.get('dl:guideSeen')==='1') return; Store.set('dl:guideSeen','1'); V.guideOpen=true; }
+function openGuide(){ Store.set('dl:guideHide','0'); V.guideOpen=true; $('#sheet').classList.remove('open'); render(); window.scrollTo(0,0); }
+function guideHtml(screen){ if(Store.get('dl:guideHide')==='1'&&!V.guideOpen) return '<div class="guide mini"><button class="gx" data-guide="open">？ 使い方</button></div>'; return guideFor(screen); }
 function render(){
   const main=$('#main'), bar=$('#bar');
   const key=V.screen+'|'+V.tab+'|'+V.poleId+'|'+V.jobId;
@@ -1383,6 +1472,7 @@ function render(){
   markAnswered();
   decorateUnk();
   updateTodoFab();
+  { const hd=document.querySelector('header'); if(hd) document.documentElement.style.setProperty('--hdh', hd.offsetHeight+'px'); }
 }
 function setHeader(back, title, sub){
   $('#hdBack').textContent = back? '‹ '+back : '';
@@ -1401,7 +1491,7 @@ function renderSites(main,bar){
   { const sh=syncStatusHtml(); if(sh) top+='<div class="pad" style="padding-bottom:0">'+sh+'</div>'; }
   if(due.length) top+='<div class="pad" style="padding-bottom:0"><div class="inherit" style="margin:0;border-color:var(--warn);background:var(--warn-bg)"><b style="color:var(--warn)">本日の監督職員への報告　'+due.length+'件</b>'+due.sort((a,b)=>a.when.localeCompare(b.when)).map(r=>'<button class="list-item" style="background:transparent;padding:8px 0" data-goreport="'+r.siteId+'|'+r.poleId+'|'+r.jobId+'"><div class="li-main"><div class="li-t">'+esc(r.no||'管理番号未設定')+'　'+esc(r.cause||'')+(r.result?' → '+esc(r.result):'')+'</div><div class="li-s">'+(r.when<today?'<b style="color:var(--warn)">期限超過 '+esc(r.when)+'</b>':'本日')+'　'+esc(r.how||'')+'　'+esc(r.siteName||'')+'</div></div><span class="chev"></span></button>').join('')+'</div></div>';
   if(soon.length) top+='<div class="note" style="padding:10px 14px 0">今後の報告予定 '+soon.length+'件（最短 '+esc(soon.map(r=>r.when).sort()[0])+'）</div>';
-  main.innerHTML = top + (idx.length ? idx.map(x=>(
+  main.innerHTML = guideHtml('sites') + top + (idx.length ? idx.map(x=>(
     '<div class="li-wrap"><button class="list-item" data-opensite="'+x.id+'"><div class="li-main"><div class="li-t">'+esc(x.name||'（工事名なし）')+'</div>'
     + '<div class="li-s">'+esc(x.place||'')+'　管理番号 '+x.n+'本　完了 '+x.done+'本　'+fmtDT(x.updated)+'</div>'
     + '<div class="prog"><i style="width:'+(x.n? Math.round(x.done/x.n*100):0)+'%"></i></div></div><span class="chev"></span></button><button class="li-del" data-delsite="'+x.id+'" title="この現場を削除">削除</button></div>'
@@ -1431,7 +1521,7 @@ function renderPoles(main,bar){
       + '<div class="li-s">'+esc(p.addr||'')+'　作業 '+p.jobs.length+'件'+(lj?'　最新：'+esc(lj.date||'')+' '+esc(jobLabel(lj)):'')+'</div>'+(p.jobs.length?'<div class="li-s" style="margin-top:3px">'+[...new Set(p.jobs.map(j=>j.kind==='応急点検工'?'応急点検':j.kind.replace('道路照明',''))) ].map(k=>'<span class="stt" style="background:var(--surface);color:var(--ink2);margin-right:4px">'+esc(k)+'</span>').join('')+'</div>':'')+'</div>'
       + '<span class="stt" style="background:'+s.c+'">'+s.t+'</span></button><button class="li-del" data-delpole="'+p.id+'" title="この管理番号を削除">削除</button></div>';
   }).join('') : '<div class="empty">該当する管理番号はありません。</div>';
-  main.innerHTML=h;
+  main.innerHTML=guideHtml('poles')+h;
   bar.innerHTML='<button class="nav" id="hdBack2"><span class="ic">‹</span>現場一覧</button><button class="btn pri" id="newPole">＋ 管理番号</button><button class="btn" id="perfBtn">品質・出来高</button><button class="btn" id="stockBtn">在庫</button><button class="btn" id="todoBtn">未入力</button><button class="btn" id="siteInfo">現場情報</button>';
 }
 
@@ -1611,8 +1701,9 @@ function renderPole(main,bar){
   const p=pole(); if(!p){ V.screen='poles'; return render(); }
   snapLedger(p);
   const s=stInfo(poleStatus(p));
-  setHeader('一覧', (p.no||'管理番号未設定')+(staText(p)?'　'+staText(p):''), SITE.name||'');
+  setHeader('一覧', (p.no||'管理番号未設定')+(staText(p)?'　'+staText(p):''), '現場 › '+(p.no||'管理番号')+'　'+(SITE.name||''));
   let h='<div class="pole-head"><div style="display:flex;align-items:center;gap:10px"><span class="stt" style="background:'+s.c+'">'+s.t+'</span><span class="meta">作業 '+p.jobs.length+'件</span></div><div class="meta">'+esc(p.addr||'')+'</div></div>';
+  h+=guideHtml('pole');
   if(V.tab==='ledger') h+=tabLedger(p); else h+=tabJobs(p);
   main.innerHTML=h;
   bar.innerHTML='<button class="nav" id="prevPole"><span class="ic">◀</span>前</button>'+[['ledger','台帳','📇'],['jobs','作業一覧','🗂']].map(([k,t,i])=>'<button class="nav" data-tab="'+k+'" aria-selected="'+(V.tab===k)+'"><span class="ic">'+i+'</span>'+t+'</button>').join('')+'<button class="nav" id="poleMenu"><span class="ic">⋯</span>この管理番号</button><button class="nav" id="nextPole"><span class="ic">▶</span>次</button>';
@@ -1621,7 +1712,7 @@ function renderPole(main,bar){
 function tabJobs(p){
   const jobs=p.jobs.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||''));
   let h='';
-  if(!jobs.length) h+='<div class="empty">作業はまだありません。応急点検から始めるか、補修・修繕の作業を直接追加してください。</div>';
+  if(!jobs.length) h+='<div class="empty" style="padding:18px 20px">作業はまだありません。上の案内から「応急点検」または「現場調査」を始めてください。</div>';
   jobs.forEach(j=>{
     const s=stInfo(status(j)); const par=j.parent? p.jobs.find(x=>x.id===j.parent):null;
     let sub='';
@@ -1637,13 +1728,14 @@ function renderJob(main,bar){
   const p=pole(), j=job(); if(!p||!j){ V.screen='pole'; V.tab='jobs'; return render(); }
   snapLedger(p);
   const s=stInfo(status(j));
-  setHeader('作業一覧', (p.no||'管理番号未設定')+'　'+jobLabel(j), (j.date||'')+(staText(p)?'　'+staText(p):''));
+  setHeader('作業一覧', (p.no||'管理番号未設定')+'　'+jobLabel(j), '現場 › '+(p.no||'管理番号')+' › '+(j.kind==='応急点検工'?'応急点検':(j.work||'作業'))+(j.date?'　'+j.date:''));
   let h='<div class="pole-head"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="stt" style="background:'+s.c+'">'+s.t+'</span>';
   if(j.kind==='応急点検工'){ const ip=inspProgress(j); h+='<span class="meta">点検 '+ip.done+'/'+ip.total+'　写真 '+j.pics.length+'枚'+(j.insp.start?'　'+elapsed(j):'')+'</span>'; }
   else { const sp=surveyProgress(j), kp=sekoProgress(j); h+='<span class="meta">現調 '+sp.done+'/'+sp.total+'　施工 '+kp.done+'/'+kp.total+'　写真 '+j.pics.length+'枚</span>'; }
   h+='</div></div>';
-  const tabs = j.kind==='応急点検工' ? [['insp','点検'],['pics','写真']] : [['survey',survName(j)],['kyogi','協議'],['seko','施工'],['pics','写真']];
+  const tabs = j.kind==='応急点検工' ? [['insp','点検'],['pics','写真']] : [['survey','①'+survName(j)],['kyogi','②協議'],['seko','③施工'],['pics','写真']];
   if(!tabs.some(t=>t[0]===V.tab)) V.tab=tabs[0][0];
+  h+=guideHtml('job');
   h+=({insp:tabInsp,survey:tabSurvey,kyogi:tabKyogi,seko:tabSeko,pics:tabPics})[V.tab](j);
   main.innerHTML=h;
   const ICON={insp:'🔍',survey:'📋',kyogi:'💬',seko:'🔧',pics:'📷'};
@@ -1929,7 +2021,9 @@ function newToguSuggest(p){
 function quickLedger(p){
   const L=p.ledger; const filled=[p.no,p.route,p.line,p.kp,L.poleType,L.togu,L.lamp].filter(Boolean).length;
   const open = V.qlOpen!=null ? V.qlOpen : filled<5;
-  return '<section class="sec'+(open?' open':'')+'" data-ql="1"><button class="sec-hd" data-toggle style="border-left-color:var(--rule)"><span class="nm">台帳（変更があった項目）</span><span class="st">'+filled+'/7 記入</span><span class="caret"></span></button><div class="sec-body"><div class="pad" style="padding-top:6px">'
+  const j=job(); const ok=j&&j.ledgerOk; const opn = ok ? false : open;
+  return '<section class="sec'+(opn?' open':'')+'" data-ql="1"><div class="sec-hdw"><button class="sec-hd'+(ok?' done':'')+'" data-toggle style="border-left-color:var(--rule)"><span class="nm">台帳（変更があった項目）</span><span class="st"'+(ok?' style="background:var(--ok-bg);color:var(--ok);font-weight:700"':'')+'>'+(ok?'変更なし　'+fmtDT(ok).replace(/ .*$/,''):filled+'/7 記入')+'</span><span class="caret"></span></button><button class="secna" data-ledgerok="1" aria-pressed="'+(!!ok)+'" title="台帳は現地と同じ（変更なし）">変更なし</button></div><div class="sec-body"><div class="pad" style="padding-top:6px">'
+    + (ok?'<div class="note" style="padding:0 0 6px;color:var(--ok);font-weight:600">現地と事前台帳が同じことを確認済みです（'+fmtDT(ok)+'）。違いが見つかったら右上の「変更なし」をもう一度押して解除し、直してください</div>':'')
     + '<div class="note" style="padding:0 0 6px">台帳の全項目です。現地で事前台帳と違っていたら、ここで直してください。変更前→変更後が台帳の変更履歴に残ります（例：高圧ナトリウムランプ → LED）</div>'
     + ledgerFieldsHtml(p)
     + '<div class="picrow" style="margin-top:10px"><button class="picbtn" id="addAttach"><span class="cam"></span>全景・銘板の写真</button><div class="thumbs" id="attachList">'+attachListHtml(p)+'</div></div>'
@@ -2306,6 +2400,10 @@ document.addEventListener('click', async e=>{
   if(d && d.startjob){ const j=blankJob(d.startjob, d.startjob==='応急点検工' ? '調査' : (($('#njWork')||{}).value||'')); pole().jobs.push(j); V.screen='job'; V.jobId=j.id; V.tab = j.kind==='応急点検工' ? 'insp' : 'survey'; $('#sheet').classList.remove('open'); touch(true); toast(jobLabel(j)+' を追加しました'); return; }
   if(b && b.id==='startSurvey'){ openSheet('<h2>現場調査へ</h2><div class="note" style="padding:0 0 8px">現場調査を行う作業の工種と作業内容を選んでください。</div><label class="lb">作業内容</label><select id="njWork"><option value="" selected>—</option>'+WORK.map(o=>'<option>'+o+'</option>').join('')+'</select><div class="menu" style="margin-top:8px"><button data-startjob="道路照明維持補修工">道路照明維持補修工<small>ランプ・器具・自動点滅器等の取替</small></button><button data-startjob="道路照明維持修繕工">道路照明維持修繕工<small>照明灯・配管配線の取替、建替</small></button></div>'); return; }
   if(d && d.mkjob){ const j=blankJob(d.mkjob, $('#njWork')? $('#njWork').value : ''); if(d.mkjob==='応急点検工') j.work='調査'; pole().jobs.push(j); V.screen='job'; V.jobId=j.id; V.tab = j.kind==='応急点検工' ? 'insp' : 'survey'; $('#sheet').classList.remove('open'); touch(true); return; }
+  if(b.id==='mGuide'||(d && d.guide==='open')){ openGuide(); return; }
+  if(d && d.guide==='toggle'){ V.guideOpen=!V.guideOpen; render(); return; }
+  if(d && d.guide==='hide'){ Store.set('dl:guideHide','1'); V.guideOpen=false; render(); return; }
+  if(d && d.ledgerok){ const j=job(); if(!j) return; j.ledgerOk=j.ledgerOk?0:Date.now(); if(j.ledgerOk) V.qlOpen=false; touch(true); toast(j.ledgerOk?'台帳：変更なしにしました':'台帳：変更なしを解除しました'); return; }
   if(d && d.secna){ const j=job(); if(!j) return; j.secNa=j.secNa||{}; j.secNa[d.secna]=!j.secNa[d.secna]; touch(true); return; }
   if(d && d.delsite){ let idx=[]; try{ idx=JSON.parse(Store.get('dl:index')||'[]'); }catch(e){} const x=idx.find(y=>y.id===d.delsite); if(!x) return; if(!confirm('現場「'+(x.name||'（工事名なし）')+'」を削除します。管理番号 '+x.n+'本の台帳・作業・写真がこの端末から消えます。よろしいですか？')) return; if(!confirm('本当に削除しますか？（この操作は取り消せません。必要なら先に「書き出し」で保存してください）')) return; await deleteSite(d.delsite); render(); toast('現場を削除しました'); return; }
   if(d && d.delpole){ const p=SITE.poles.find(x=>x.id===d.delpole); if(!p) return; if(!confirm('管理番号 '+(p.no||'（未設定）')+' を削除します。作業 '+p.jobs.length+'件と写真も消えます。よろしいですか？')) return; await deletePole(p); touch(true); toast('削除しました'); return; }
@@ -2401,7 +2499,7 @@ document.addEventListener('click', async e=>{
   if(d && d.opensite){ if(await loadSite(d.opensite)){ V={screen:'poles',poleId:null,tab:'ledger',filter:'all'}; render(); } return; }
   if(b && b.id==='newPole'){ const p=blankPole(); const last=sortedPoles().slice(-1)[0]; SITE.poles.push(p); V.screen='pole'; V.poleId=p.id; V.tab='ledger'; touch(); render(); setTimeout(()=>{const el=document.querySelector('[data-ledger="no"]'); el&&el.focus();},50); return; }
   if(b && b.id==='siteInfo'){ openSiteInfo(); return; }
-  if(d && d.openpole){ V.screen='pole'; V.poleId=d.openpole; V.tab='jobs'; render(); return; }
+  if(d && d.openpole){ V.screen='pole'; V.poleId=d.openpole; const p=pole(); const lf=ledgerFilled(p); V.tab=(p&&(p.jobs.length===0||lf.done<lf.total))?'ledger':'jobs'; render(); return; }
   if(d && d.f){ V.filter=d.f; render(); return; }
   if(d && d.fr){ V.fRoute=d.fr; render(); return; }
   if(d && d.fk){ V.fKind=d.fk; render(); return; }
@@ -2565,12 +2663,13 @@ function openJobMenu(){
 }
 function openMenu(){
   let h='<h2>メニュー</h2><div class="menu">';
+  h+='<button id="mGuide">使い方<small>はじめての方へ：画面の流れと操作のコツ</small></button>';
   if(V.screen==='job'){ h+='<button id="mDelJob" style="color:var(--warn)">この作業を削除<small>写真も消えます</small></button>'; }
   if(SITE && V.screen!=='sites'){
-    h+='<button id="mSend">事務所へ送る<small>前回送信から変わった分だけを共有・保存</small></button>'
+    h+='<div class="mh">データのやり取り</div><button id="mSend">事務所へ送る<small>前回送信から変わった分だけを共有・保存</small></button>'
       + '<button id="mExport">現場データを書き出し<small>全体管理アプリ・共有サーバーへ渡すファイル（写真なし）</small></button>'
       + '<button id="mExportP">現場データを書き出し（写真込み）<small>容量が大きくなります。写真ごと移すとき</small></button>'
-      + '<button id="mMat">資材・数量一覧（発注用）<small>現調の内容から必要資材を自動集計</small></button>'
+      + '<div class="mh">一覧・出力</div><button id="mMat">資材・数量一覧（発注用）<small>現調の内容から必要資材を自動集計</small></button>'
       + '<button id="mStock">在庫管理<small>受入・使用を記録し残数を確認</small></button>'
       + '<button id="mTodo">未入力一覧<small>管理番号ごとに台帳・点検・現調・施工の残り件数</small></button>'
       + '<button id="mCsv">出来形一覧CSV<small>管理番号ごとの型式・測定値・判定</small></button>'
@@ -2580,14 +2679,14 @@ function openMenu(){
       + '<button id="mSum">品質管理総括表データ（CSV）<small>社内様式「データ」シートに貼り付ける用</small></button>'
       + '<button id="mText">協議事項の文章をコピー<small>工事打合せ簿に貼る用</small></button>'
       + '<button id="mPrint">印刷・PDF<small>1管理番号1組のチェックリスト（図＋要点＋全項目）／画面の印刷</small></button>'
-      + '<button id="mSite">現場情報・規定値</button>';
+      + '<div class="mh">設定</div><button id="mSite">現場情報・規定値</button>';
   }
   if(SITE && V.screen!=='sites') h+='<button id="mLedgerCsv">台帳を一括登録（CSV取り込み）<small>既設台帳・MICHIデータ・設計図から管理番号を先に作る</small></button>';
-  h+='<button id="mSpec">仕様書ライブラリ<small>器具形式ごとの仕様書PDF。新設灯具を決めると自動添付</small></button>'
+  h+='<div class="mh">ライブラリ（全現場共通）</div><button id="mSpec">仕様書ライブラリ<small>器具形式ごとの仕様書PDF。新設灯具を決めると自動添付</small></button>'
     + '<button id="mFig">図ライブラリ<small>仕様書・解説・基準の図を登録。チェックリストの図に使い、変更箇所を赤で表示</small></button>'
     + '<button id="mRef">参考資料ライブラリ<small>基準書・特記仕様書・写真管理基準などを現場で参照</small></button>'
     + '<button id="mPlan">施工計画書ライブラリ<small>施工計画書・安全計画・規制図など</small></button>'
-    + '<button id="mImport">現場データを取り込み<small>他の端末や全体管理アプリからのファイル（マージ）</small></button>'
+    + '<div class="mh">端末間</div><button id="mImport">現場データを取り込み<small>他の端末や全体管理アプリからのファイル（マージ）</small></button>'
     + '<button id="mSync">端末間の連携<small>受信フォルダの自動取り込み（PC）・端末名・履歴</small></button>'
     + '<button id="mSites">現場一覧へ</button></div>';
   openSheet(h);
@@ -3074,6 +3173,7 @@ function toast(m){ const el=$('#toast'); el.textContent=m; el.classList.add('sho
   window.addEventListener('beforeunload',()=>{ if(saveTimer){clearTimeout(saveTimer);save();} });
 })();
 
+guideFirstRun();
 /* ============ 図ライブラリ（v88）：仕様書・解説・基準の図を登録し、チェックリストの図に使う ============
    登録した図に「部位」と「対象形式」を付けておくと、印刷の1枚目で台帳・現調の内容に合う図を自動で選び、変更・取替・新設した箇所を赤で表示する */
 const FIG_PARTS=[['togu','灯具'],['pole','ポール'],['kiso','基礎'],['haikan','配管・配線'],['ap','自動点滅器']];
@@ -3250,6 +3350,7 @@ document.addEventListener('click', async e=>{
   if(d.editfig){ openFigEdit(d.editfig); return; }
   if(b.id==='figSaveMeta'){ const lib=figLib(); const s=lib.find(x=>x.id===d.id); if(s){ Object.assign(s,figReadMeta()); libSave('fig',lib); } toast('保存しました'); openFigLib(); return; }
 });
+document.addEventListener('change', e=>{ if(e.target&&e.target.id==='guideHide'){ Store.set('dl:guideHide', e.target.checked?'1':'0'); render(); } });
 $('#figPdfInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(!f) return; const dt=await readAsDataURL(f); openFigPages(dt,f.name); });
 
 /* ============ 印刷・PDF：1管理番号1枚のチェックリスト（v86） ============
@@ -3577,6 +3678,7 @@ function prNotes(j,p){
       if(j.insp.report) log.push('報告：'+j.insp.report+(j.insp.reportHow?'（'+(j.insp.reportHow==='その他'?(j.insp.reportHowOther||'その他'):j.insp.reportHow)+(j.insp.reportWhen?' '+j.insp.reportWhen:'')+(j.insp.reportDone==='有'?' 完了':'')+'）':''));
       const kids=p.jobs.filter(x=>x.parent===j.id); if(kids.length) inh.push('派生：'+kids.map(k=>(k.date||'')+' '+jobLabel(k)).join('、'));
     }
+    if(j.ledgerOk) log.push('台帳：現地と同じ（変更なし）　確認 '+fmtDT(j.ledgerOk));
     if(j.closed) log.push('工種の完了：'+fmtDT(j.closed)+'（これ以上の施工は派生しない）');
     if(j.memo) log.push('作業メモ：'+j.memo);
     const par=j.parent?p.jobs.find(x=>x.id===j.parent):null; if(par) inh.push('派生元：'+(par.date||'')+' '+jobLabel(par)+(causeText(par)?'（'+causeText(par)+' → '+resultText(par)+'）':''));
