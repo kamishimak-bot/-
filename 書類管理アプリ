@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="書類管理">
+<title>道路照明 書類管理アプリ v23</title>
+<style>
+:root{
+  --bg:#EEF1F4; --paper:#FFFFFF; --ink:#1B2733; --muted:#66737F; --line:#D5DCE3;
+  --blue:#1F5FA8; --blue-bg:#E7EFF9; --late:#C0392B; --late-bg:#FBE9E7;
+  --soon:#C77700; --soon-bg:#FFF3DC; --ok:#2C7A4B; --ok-bg:#E4F3EA; --gray:#8B97A3;
+  --r:10px; --pad:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic UI",Meiryo,sans-serif;font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--blue)}
+h1,h2,h3{margin:0;font-weight:700}
+h2{font-size:17px}
+h3{font-size:15px}
+
+/* ヘッダー */
+header{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:10px;padding:8px var(--pad)}
+.hd h1{font-size:16px;white-space:nowrap}
+.hd select{flex:1;min-width:0;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.tabs{display:flex;border-top:1px solid var(--line);overflow-x:auto}
+.tabs button{flex:1;min-width:72px;padding:9px 4px;border:0;background:none;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tabs button.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+.tabs button .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:4px;border-radius:9px;background:var(--late);color:#fff;font-size:11px;line-height:18px;vertical-align:1px}
+
+main{padding:var(--pad);max-width:1080px;margin:0 auto}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:var(--pad);margin-bottom:12px}
+.card h2{margin-bottom:8px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grow{flex:1}
+.muted{color:var(--muted);font-size:13px}
+.small{font-size:12px}
+.btn{padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.btn.p{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.btn.s{padding:4px 10px;font-size:13px}
+.btn.danger{color:var(--late);border-color:#E7B8B3}
+.btn:disabled{opacity:.45;cursor:default}
+label.f{display:block;margin:8px 0}
+label.f span{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+input[type=text],input[type=date],input[type=number],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff}
+textarea{min-height:64px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+
+/* 期限レーン（ホームの主役） */
+.lane{display:flex;gap:10px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x mandatory}
+.tk{flex:0 0 150px;scroll-snap-align:start;border-radius:var(--r);padding:12px 12px 10px;background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--gray);cursor:pointer}
+.tk.late{border-top-color:var(--late);background:var(--late-bg)}
+.tk.soon{border-top-color:var(--soon);background:var(--soon-bg)}
+.tk.ok{border-top-color:var(--blue)}
+.tk .d{font-size:34px;font-weight:800;line-height:1;letter-spacing:-1px}
+.tk .d small{font-size:13px;font-weight:600;margin-left:2px}
+.tk .t{font-size:13px;font-weight:700;margin-top:6px;line-height:1.3}
+.tk .m{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* 進捗 */
+.bar{height:10px;border-radius:5px;background:#E3E8ED;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--blue)}
+.bar i.g{background:var(--ok)}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kpi div{background:#F6F8FA;border-radius:8px;padding:8px 10px}
+.kpi b{font-size:22px;display:block}
+.kpi .late b{color:var(--late)} .kpi .soon b{color:var(--soon)} .kpi .ok b{color:var(--ok)}
+@media(max-width:640px){.kpi{grid-template-columns:repeat(2,1fr)}}
+
+/* 書類一覧 */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.chip{padding:5px 10px;border-radius:14px;border:1px solid var(--line);background:#fff;font-size:13px}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.dl{list-style:none;margin:0;padding:0}
+.dl li{display:grid;grid-template-columns:8px 1fr auto;gap:10px;align-items:center;padding:10px 8px;border-bottom:1px solid var(--line);cursor:pointer}
+.dl li:last-child{border-bottom:0}
+.dl li .lb{width:8px;height:100%;min-height:36px;border-radius:4px;background:var(--gray)}
+.dl li.late .lb{background:var(--late)} .dl li.soon .lb{background:var(--soon)} .dl li.ok .lb{background:var(--blue)} .dl li.done .lb{background:var(--ok)} .dl li.na .lb{background:#CBD2D9}
+.dl li.done .nm,.dl li.na .nm{color:var(--muted)}
+.nm{font-weight:700}
+.st{font-size:12px;padding:3px 8px;border-radius:12px;background:#EEF1F4;white-space:nowrap}
+.st.s1{background:#EEF1F4} .st.s2{background:var(--blue-bg);color:var(--blue)} .st.s3{background:var(--soon-bg);color:var(--soon)} .st.s4{background:var(--ok-bg);color:var(--ok)} .st.s5{background:var(--ok);color:#fff} .st.s0{background:#F3F4F6;color:var(--gray)}
+.cat{font-size:12px;color:var(--muted)}
+.due{font-size:12px;color:var(--muted)}
+.due.late{color:var(--late);font-weight:700} .due.soon{color:var(--soon);font-weight:700}
+.tag{display:inline-block;font-size:11px;padding:1px 6px;border-radius:4px;background:#F0F3F6;color:var(--muted);margin-left:4px}
+
+/* 詳細シート */
+.sheet-bg{position:fixed;inset:0;background:rgba(20,30,40,.45);z-index:40;display:none}
+.sheet-bg.on{display:block}
+.sheet{position:fixed;right:0;top:0;bottom:0;width:min(560px,100%);background:var(--paper);z-index:41;overflow-y:auto;padding:var(--pad);transform:translateX(100%);transition:transform .2s}
+.sheet.on{transform:none}
+@media(prefers-reduced-motion:reduce){.sheet{transition:none}}
+.sheet .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+.req{list-style:none;margin:0;padding:0}
+.req li{display:flex;gap:8px;align-items:flex-start;padding:7px 0;border-bottom:1px dashed var(--line)}
+.req li input{margin-top:4px}
+.req li .x{margin-left:auto;color:var(--gray);background:none;border:0;font-size:16px}
+.req li.done span{color:var(--muted);text-decoration:line-through}
+.stbtns{display:flex;flex-wrap:wrap;gap:6px}
+.stbtns button{padding:7px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:13px}
+.stbtns button.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.link{background:var(--blue-bg);border-radius:8px;padding:10px;font-size:13px}
+.link.none{background:#F3F4F6;color:var(--muted)}
+
+/* 工程 */
+.sub{display:flex;gap:6px;margin-bottom:10px}
+.sub button{padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:#fff}
+.sub button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.gantt{overflow-x:auto}
+.gt{display:grid;min-width:640px;font-size:12px}
+.gt .hcell{border-bottom:1px solid var(--line);padding:4px 2px;text-align:center;color:var(--muted);white-space:nowrap;position:relative}
+.gt .hcell.m{border-left:1px solid var(--line)}
+.gt .lbl{padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:700;display:flex;flex-direction:column;justify-content:center;background:#fff;position:sticky;left:0;z-index:2}
+.gt .lbl small{font-weight:400;color:var(--muted)}
+.gt .trk{position:relative;border-bottom:1px solid var(--line);height:46px;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(100%/var(--w) - 1px),var(--line) calc(100%/var(--w) - 1px),var(--line) calc(100%/var(--w)))}
+.gt .pl,.gt .ac{position:absolute;height:12px;border-radius:6px}
+.gt .pl{top:9px;background:#B9CCE6}
+.gt .ac{top:25px;background:var(--blue)}
+.gt .ac.g{background:var(--ok)}
+.gt .today{position:absolute;top:0;bottom:0;width:2px;background:var(--late);z-index:1}
+.lg{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:6px}
+.lg i{display:inline-block;width:18px;height:8px;border-radius:4px;vertical-align:middle;margin-right:4px}
+.kt{display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.kt:last-child{border-bottom:0}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;min-width:640px}
+.wk .dy{background:#F6F8FA;border-radius:8px;padding:6px;min-height:120px}
+.wk .dy.today{outline:2px solid var(--blue)}
+.wk .dy.hol{background:#FBF0F0}
+.wk .dy h4{margin:0 0 4px;font-size:12px;color:var(--muted)}
+.wk .it{font-size:12px;background:#fff;border-left:3px solid var(--blue);border-radius:4px;padding:3px 6px;margin-bottom:4px;cursor:pointer}
+.wk .it.doc{border-left-color:var(--soon)}
+.wk .it.imp{border-left-color:var(--ok)}
+.wk .it.hol{border-left-color:var(--late)}
+
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th,table.t td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.t th{color:var(--muted);font-weight:600;font-size:12px}
+.empty{padding:24px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:8px;z-index:60;font-size:14px;display:none}
+.toast.on{display:block}
+details summary{cursor:pointer;color:var(--blue);font-size:13px}
+.src{font-size:11px;color:var(--muted)}
+/* 詳細工程表（取込データ） */
+.dg{border-collapse:collapse;font-size:11px;min-width:900px}
+.dg th,.dg td{border:1px solid #444;padding:0;height:22px;text-align:center;white-space:nowrap;min-width:22px}
+.dg th{background:#fff;font-weight:400}
+.dg th.sat,.dg td.sat{background:#DCEBF7}.dg th.sun,.dg td.sun{background:#F8D8EA}
+.dg th.sat,.dg th.sun{color:#1F5FA8}.dg th.sun{color:#C0392B}
+.dg td.lb{text-align:center;padding:2px 6px;background:#fff;min-width:80px}
+.dg td.lb.g{min-width:26px;width:26px;max-width:26px;white-space:normal;word-break:break-all;line-height:1.25;padding:2px 4px}
+.dg td.tk{position:relative;height:64px;padding:0}
+.dg .tr{position:absolute;left:0;right:0;top:0;bottom:0}
+.dg .b{position:absolute;height:0;border-top:2px solid #000}
+.dg .b.r{border-top-color:#D00}
+.dg .b:before{content:'';position:absolute;left:-4px;top:-4px;width:6px;height:6px;border-radius:50%;background:inherit;background:#000}
+.dg .b.r:before{background:#D00}
+.dg .b:after{content:'';position:absolute;right:-1px;top:-4px;border:4px solid transparent;border-left:7px solid #000;border-right:0}
+.dg .b.r:after{border-left-color:#D00}
+.dg .b span{position:absolute;left:2px;top:-15px;font-size:11px;color:#000;background:transparent}
+.dg .b.r span{color:#D00}
+.dg .today{position:absolute;top:0;bottom:0;width:0;border-left:2px dashed var(--blue);z-index:1}
+.dg td.note{text-align:left;padding:6px;white-space:normal;height:auto}
+.wk3{border-collapse:collapse;font-size:11px;min-width:1000px}
+.wk3 th,.wk3 td{border:1px solid #444;padding:0;height:20px;text-align:center;white-space:nowrap;min-width:30px}
+.wk3 th.sun,.wk3 td.sun{background:#F5B7D0}.wk3 th.sat,.wk3 td.sat{background:#CDEFF6}
+.wk3 td.lb{text-align:left;padding:2px 6px;min-width:140px;background:#fff;white-space:normal}
+.wk3 td.tk{position:relative;height:40px}
+.wk3 .tr{position:absolute;left:0;right:0;top:0;bottom:0}
+.wk3 .b{position:absolute;height:0;border-top:2px solid #000}
+.wk3 .b.r{border-top-color:#D00;top:24px}.wk3 .b.p{top:12px}
+.wk3 .b span{position:absolute;left:2px;top:-14px;font-size:10px;white-space:nowrap}
+.wk3 .b.r span{color:#D00}
+.wk3 td.hol{color:#C0392B;font-size:10px;line-height:1.1}
+.wk3 td.txt{text-align:left;padding:4px 6px;white-space:normal;vertical-align:top;height:auto}
+.wk3 td.txt.on{color:#D00}
+.lg2{font-size:11px;margin-top:4px}.lg2 i{display:inline-block;width:24px;border-top:2px solid #000;vertical-align:middle;margin:0 6px 0 2px}.lg2 i.r{border-top-color:#D00}
+@media print{header,.sub,.btn,.muted.small.hint{display:none!important}main{padding:0;max-width:none}.card{border:0;page-break-inside:avoid}@page{size:A3 landscape;margin:8mm}.dg,.wk3{min-width:0;width:100%}}
+/* 時系列 */
+.tl{position:relative;padding-left:26px}
+.tl:before{content:'';position:absolute;left:9px;top:0;bottom:0;width:2px;background:var(--line)}
+.tl .mh{position:relative;font-weight:700;margin:14px 0 6px;color:var(--ink)}
+.tl .mh:before{content:'';position:absolute;left:-23px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--ink)}
+.tl .ms{position:relative;margin:8px 0;padding:6px 10px;border-radius:6px;background:var(--blue-bg);color:var(--blue);font-weight:700;font-size:13px}
+.tl .ms:before{content:'';position:absolute;left:-21px;top:11px;width:8px;height:8px;border-radius:50%;background:var(--blue)}
+.tl .ms.today{background:var(--late-bg);color:var(--late)}.tl .ms.today:before{background:var(--late)}
+.tl .ev{position:relative;display:grid;grid-template-columns:68px 1fr auto;gap:8px;align-items:center;padding:7px 8px;border-radius:6px;cursor:pointer}
+.tl .ev:hover{background:#F6F8FA}
+.tl .ev:before{content:'';position:absolute;left:-21px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--gray)}
+.tl .ev.late:before{background:var(--late)}.tl .ev.soon:before{background:var(--soon)}.tl .ev.ok:before{background:var(--blue)}.tl .ev.done:before{background:var(--ok)}.tl .ev.na:before{background:#CBD2D9}
+.tl .ev.done .nm,.tl .ev.na .nm{color:var(--muted)}
+.tl .ev .dt{font-size:12px;color:var(--muted);white-space:nowrap}
+.tl .ev.late .dt{color:var(--late);font-weight:700}.tl .ev.soon .dt{color:var(--soon);font-weight:700}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <h1>書類管理 <small id="ver" style="font-size:11px;color:var(--muted);font-weight:400"></small></h1>
+    <select id="projSel" onchange="selProj(this.value)"></select>
+    <button class="btn s" onclick="openProjForm()">＋ 工事</button>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-t="home" onclick="go('home')">期限</button>
+    <button data-t="docs" onclick="go('docs')">書類</button>
+    <button data-t="imp" onclick="go('imp')">現場アプリ</button>
+    <button data-t="set" onclick="go('set')">工事情報</button>
+  </nav>
+</header>
+<main id="main"></main>
+
+<div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet"></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileGenba" accept=".json,application/json" style="display:none" onchange="importGenba(this.files[0]);this.value=''">
+<input type="file" id="fileSched" accept=".xlsx,.xls" style="display:none" onchange="importSched(this.files[0]);this.value=''">
+<input type="file" id="fileApp" accept=".json,application/json" style="display:none" onchange="importApp(this.files[0]);this.value=''">
+
+<script>
+/* ==========================================================
+   書類テンプレート（沖縄総合事務局＝国交省直轄の標準一式）
+   出典：国土交通省「工事関係書類一覧表」（H23.6.1、
+   https://www.mlit.go.jp/tec/sekisan/sekou/pdf/230601kouzikankeisyoruiichiran1.pdf ）
+   電気通信設備工事共通仕様書（令和8年3月）の書類は cat:"電気" で追加（条項は要確認）
+   rule: C=契約日基準 S=着工日基準 E=工期末基準 M=毎月 X=都度（期限なし）
+   n: 基準日からの日数
+   ========================================================== */
+const TPL = [
+ // 契約前（落札決定日基準）出典：沖縄総合事務局「工事請負契約書記載要領」、建設リサイクル法第12条
+ {id:'recycle',cat:'1 契約関係',ass:'亮和',sub:'D',name:'建設リサイクル法 説明書（分別解体等の計画等）',rule:'A',n:10,biz:true,form:'説明書・別表3・別紙4',src:'建設工事に係る資材の再資源化等に関する法律第12条第1項／工事請負契約書記載要領',kind:'提出',note:'様式は発注者から届く → 記入 → 担当課（防災情報課）に事前説明 → 提出 → 承認。承認日が契約日の条件（契約保証と遅い方）。期限は目安（落札決定から休日除く10日）で、様式が届く時期に合わせて直す',req:['発注者から様式（説明書・別表3・別紙4）が届く（発注者待ち）','説明書（表紙：宛名 分任支出負担行為担当官 南部国道事務所長、工事名・場所）','別表3 分別解体等の計画等（工事の種類：維持・修繕／電気、特定建設資材：コンクリート・アスファルト）','別表3 工作物の調査結果（周辺状況・作業場所・搬出経路）','別表3 工程ごとの作業内容（仮設・土工・基礎・本体・付属品）','別表3 廃棄物発生見込量（コンクリート塊・アスファルト塊 トン）','別紙4 再資源化等をする施設の名称及び所在地','別紙4 再資源化等に要する費用（直接工事費・運搬費含む）','工程表（工程の概要を示す資料）','担当課への事前説明・了解'],link:'recycle'},
+ {id:'hosho',cat:'1 契約関係',ass:'武富',sub:'上島',name:'契約保証（保証会社・保険・保証金）',rule:'A',n:7,biz:true,form:'－',src:'工事請負契約書記載要領（落札決定の翌日から7日以内・休日除く）',kind:'提出',note:'保証会社なら金額（請負代金の10/100以上、低入札は30/100）、履行保証保険なら「免除」。保証債務の有効期限は契約保証期間経過後6か月以上',req:['保証会社または保険会社との保証契約','保証証券（有効期限＝契約保証期間＋6か月以上）','契約書 契約保証金欄の記載（金額または「免除」）']},
+ {id:'hoken',cat:'1 契約関係',ass:'武富',sub:'上島',name:'その他保険（労災上乗せ・賠償責任等）',rule:'C',n:7,strict:true,form:'－',src:'社内手続き（契約後）',kind:'社内',note:'契約してから加入手続き（契約日＋7日目安、着工前まで）。契約日が入るまで期限は出ない',req:['労災上乗せ保険（法定外補償）','請負業者賠償責任保険','保険証券の写し（発注者から求められた場合）']},
+ {id:'keiyakusho',cat:'1 契約関係',ass:'上島',sub:'亮和',name:'工事請負契約書（電子契約・押印）',rule:'X',form:'－',src:'工事請負契約書記載要領（沖縄総合事務局）',kind:'発注者待ち',note:'こちらがやるのは「必要情報のメール」と「届いた電子契約書への押印」だけ。契約書自体は発注者（契約係）が作って送ってくる。期限は付けず、状態を「発注者待ち」で追う',req:['契約係からの連絡事項に必要情報をメールで回答（契約保証・技術者【主任／監理】・許可区分【中央／沖縄県】・中間前金払か部分払・債権譲渡の希望）','発注者から電子契約書が届く（発注者待ち）','電子契約書の内容確認（保証金欄、別紙4が綴られているか）','押印（電子署名）して返す']},
+ {id:'hojosha',cat:'3 設計照査・施工体制・計画',ass:'上島',sub:'亮和',name:'専任補助者の配置の申出書',rule:'S',n:0,form:'－',src:'工事請負契約書記載要領',kind:'提出',cond:'専任補助者の配置を希望する場合（工期の始期まで）',req:['申出書','担当課での確認']},
+ // 契約関係（着手前）
+ {id:'asp',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'情報共有システム（ASP：Asper／CALS等）利用申込',rule:'C',n:7,form:'－',src:'工事施工中における受発注者間の情報共有システム活用ガイドライン（国交省）／特記仕様書',kind:'提出',note:'契約後速やかに。施工計画書以降の提出書類はこのシステムで受け渡すため、着手前に利用開始しておく',req:['利用するシステムの確認（特記仕様書・監督職員と協議：Asper／CALS等）','ASP事業者への利用申込書','利用者登録（受注者側：現場代理人・主任技術者・担当者、発注者側：監督職員）','ID・パスワードの受領','利用開始の連絡（監督職員）','利用料の支払い']},
+ {id:'cobris',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'再生資源利用計画書・促進計画書（コブリス）',rule:'C',n:14,form:'－',src:'共通仕様書1-1-1-18／建設副産物情報交換システム（COBRIS）',kind:'提出',note:'コブリスに工事を登録して計画書を作成。施工計画書に添付',req:['COBRIS 工事登録','再生資源利用計画書（資材搬入）','再生資源利用促進計画書（副産物搬出）','施工計画書へ添付']},
+ {id:'douro',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'道路使用許可申請書（警察署）',rule:'C',n:14,form:'－',src:'道路交通法第77条／共通仕様書1-1-1-35',kind:'提出',note:'着工前に許可を受ける。規制図は施工計画書の交通管理と同じもの',req:['道路使用許可申請書','規制図・保安施設配置図','工程表（作業期間）','手数料','許可証の携行（施工時）'],link:'douro'},
+ {id:'agent',cat:'2 工事前準備',ass:'上島',sub:'亮和',name:'現場代理人等通知書',rule:'C',n:7,form:'様式-1',src:'工事請負契約書第10条',kind:'提出',req:['現場代理人・主任（監理）技術者の経歴書','資格者証の写し','雇用関係を示す書類（健康保険証等）','専任・兼任の確認']},
+ {id:'uchiwake',cat:'2 工事前準備',ass:'上島',name:'請負代金内訳書',rule:'C',n:14,form:'様式-2',src:'工事請負契約書第3条',kind:'提出',cond:'工期6か月以上かつ請負代金1億円以上',req:['内訳書（工事数量総括表と整合）','諸経費の内訳']},
+ {id:'kotei',cat:'2 工事前準備',ass:'上島',sub:'亮和',name:'工事工程表',rule:'C',n:14,form:'様式-3',src:'工事請負契約書第3条',kind:'提出',req:['全体工程表（バーチャート）','主要工種の予定期間'],link:'kotei'},
+ {id:'kentaikyo',cat:'2 工事前準備',ass:'武富',sub:'上島',name:'建退共掛金収納書',rule:'C',n:30,form:'様式-4',src:'共通仕様書1-1-1-40',kind:'提出',req:['掛金収納書（発注者提出用）','証紙購入の記録（受払簿）']},
+ {id:'corins',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'登録内容確認書（コリンズ）',rule:'C',n:14,form:'－',src:'共通仕様書1-1-1-5',kind:'提示',note:'受注時は契約後10日以内（土日祝除く）。変更・完成時も',req:['コリンズ登録内容確認書','監督職員の確認']},
+ {id:'maebarai',cat:'2 工事前準備',ass:'上島',name:'請求書（前払金）',rule:'C',n:14,form:'様式-5',src:'工事請負契約書第34条',kind:'提出',cond:'前払金を請求する場合',req:['前払金保証証書','請求書']},
+ // 施工計画
+ {id:'keikaku',cat:'3 設計照査・施工体制・計画',ass:'上島',sub:'亮和',name:'施工計画書',rule:'S',n:-1,form:'－',src:'共通仕様書1-1-1-4',kind:'提出',req:['工事概要','計画工程表','現場組織表','指定機械・主要機械','主要資材','施工方法（主要工種）','施工管理計画（品質・出来形・写真）','安全管理（安全計画）','緊急時の体制及び対応','交通管理（規制図）','環境対策','現場作業環境の整備','再生資源利用（促進）計画書（コブリス）'],link:'keikaku'},
+ {id:'shosa',cat:'3 設計照査・施工体制・計画',ass:'亮和',sub:'上島',name:'設計図書の照査確認資料',rule:'S',n:-1,form:'－',src:'工事請負契約書第18条',kind:'提出',note:'契約書18条該当事実がなければ「提示」',req:['照査結果一覧','数量・図面との相違（現調の要協議事項）'],link:'shosa'},
+ {id:'taisei',cat:'3 設計照査・施工体制・計画',ass:'亮和',sub:'D',name:'施工体制台帳・施工体系図',rule:'S',n:-1,form:'様式-8',src:'共通仕様書1-1-1-10',kind:'提出',cond:'下請契約がある場合（総額にかかわらず作成が望ましい）',req:['施工体制台帳','下請契約書の写し','施工体系図','作業員名簿','下請の主任技術者資格・雇用関係']},
+ {id:'hinsyoin',cat:'3 設計照査・施工体制・計画',ass:'亮和',sub:'上島',name:'品質証明員通知書',rule:'S',n:-1,form:'様式-7',src:'共通仕様書3-1-1-8',kind:'提出',cond:'契約図書で規定された場合',req:['品質証明員の資格・経歴']},
+ {id:'sogo',cat:'3 設計照査・施工体制・計画',ass:'上島',sub:'亮和',name:'総合評価計画書',rule:'S',n:-1,form:'－',src:'総合評価落札方式の実施について',kind:'提出',cond:'総合評価で契約した場合',req:['技術提案の実施計画']},
+ // 電気通信設備工事 特有
+ {id:'shodaku',cat:'3 設計照査・施工体制・計画',ass:'上島',sub:'亮和',name:'器材仕様書・機器承諾図',rule:'S',n:-1,form:'－',src:'電気通信設備工事共通仕様書（令和8年3月）※条項要確認',kind:'提出',req:['LED灯具の承諾図・仕様書','照明柱・基礎の製作図','電源装置・ブレーカ等の仕様書'],link:'shodaku'},
+ {id:'mani_k',cat:'3 設計照査・施工体制・計画',ass:'D',sub:'上島',name:'産業廃棄物処理委託契約（マニフェスト契約）',rule:'S',n:-1,form:'－',src:'廃棄物処理法第12条／共通仕様書1-1-1-18',kind:'社内',note:'着工前に収集運搬・処分それぞれと委託契約。施工中のマニフェスト（提示）の前提',req:['収集運搬業者との委託契約書','処分業者との委託契約書','各業者の許可証の写し','電子マニフェスト（JWNET）加入の確認']},
+ {id:'jikko',cat:'3 設計照査・施工体制・計画',ass:'上島',name:'実行予算書（社内）',rule:'S',n:-1,form:'－',src:'社内手続き',kind:'社内',req:['数量拾い（資材・数量一覧）','資材の見積（見積依頼書）','労務・外注（交通誘導員・ユニック等）','機械・仮設・経費','安全対策費'],link:'jikko'},
+ {id:'sekozu',cat:'4 施工',ass:'亮和',sub:'上島',name:'施工図',rule:'S',n:14,form:'－',src:'電気通信設備工事共通仕様書（令和8年3月）※条項要確認',kind:'提出',req:['平面図（対象柱・管理番号）','照明柱詳細図・ベースプレート図','配管配線図'],link:'zumen'},
+ // 施工中
+ {id:'denryoku',cat:'4 施工',ass:'亮和',sub:'D',name:'電力申請（沖縄電力 供給申込）',rule:'X',form:'－',src:'沖縄電力 供給申込手続き',kind:'提出',cond:'照明柱の新設・引込変更など電力の申込が必要な場合。施工の前に',note:'現場アプリの台帳「電力申請番号」、現調の同系統負荷設備（VA合計）が材料',req:['供給申込書（沖縄電力）','同系統の負荷設備（VA合計・電流）','引込位置・電力柱番号','工程（受電希望日）'],link:'denryoku'},
+ {id:'uchiawase',cat:'5 施工中',ass:'上島',sub:'亮和',name:'工事打合せ簿（協議・承諾・報告・通知）',rule:'X',form:'様式-9',src:'共通仕様書1-1-1-2',kind:'提出',note:'都度。件数を「必要なもの」に追加して管理',req:[],link:'kyogi'},
+ {id:'kankei',cat:'5 施工中',ass:'亮和',sub:'D',name:'関係機関協議資料（道路使用許可等）',rule:'X',form:'－',src:'共通仕様書1-1-1-35',kind:'提示',req:['道路占用（道路管理者）','沖縄電力・NTT等の埋設物確認','近隣協議・工事のお知らせ'],link:'maisetsu'},
+ {id:'zairyo',cat:'5 施工中',ass:'上島',sub:'亮和',name:'材料確認書',rule:'X',form:'様式-10',src:'共通仕様書2-1-2-1',kind:'提出',note:'材料搬入前',req:['承諾図・仕様書','材料納入伝票','出荷証明・ミルシート'],link:'zairyo'},
+ {id:'dankai',cat:'5 施工中',ass:'亮和',sub:'上島',name:'段階確認書',rule:'X',form:'様式-11',src:'共通仕様書3-1-1-6',kind:'提出',note:'接地極設置（床掘部埋戻し前）など',req:['段階確認一覧（施工計画書）','確認結果の記録'],link:'dankai'},
+ {id:'tachiai',cat:'5 施工中',ass:'亮和',sub:'上島',name:'確認・立会依頼書',rule:'X',form:'様式-12',src:'共通仕様書3-1-1-6',kind:'提出',req:[]},
+ {id:'yakan',cat:'5 施工中',ass:'亮和',sub:'上島',name:'休日・夜間作業届',rule:'X',form:'－',src:'共通仕様書1-1-1-36',kind:'提出',note:'現道上の工事は提出',req:[],link:'yakan'},
+ {id:'anzen',cat:'5 施工中',ass:'上島',sub:'D',name:'安全教育・訓練実施資料',rule:'M',form:'－',src:'共通仕様書1-1-1-26',kind:'提示',note:'月当たり半日以上',req:['実施記録（日時・内容・講師）','参加者名簿','実施状況写真']},
+ {id:'rikou',cat:'5 施工中',ass:'上島',sub:'亮和',name:'工事履行報告書',rule:'M',form:'様式-14',src:'工事請負契約書第11条／共通仕様書1-1-1-24',kind:'提出',req:['履行報告書（予定・実施進捗率）','実施工程表'],link:'rikou'},
+ {id:'jiko',cat:'5 施工中',ass:'亮和',sub:'上島',name:'工事事故速報・事故報告書',rule:'X',form:'様式-13',src:'共通仕様書1-1-1-29',kind:'提出',cond:'事故発生時のみ',req:['速報（直ちに連絡）','事故報告書（SAS）']},
+ {id:'bubun',cat:'5 施工中',ass:'上島',name:'出来高内訳書・部分払請求',rule:'X',form:'様式-18/19',src:'工事請負契約書第37条',kind:'提出',cond:'部分払を請求する場合',req:['出来高内訳書','既済部分検査請求書','出来形報告書']},
+ {id:'enki',cat:'5 施工中',ass:'上島',sub:'亮和',name:'工期延期届',rule:'X',form:'様式-23',src:'工事請負契約書第21条',kind:'提出',cond:'工期延長を請求する場合',req:['延期理由書','変更工程表']},
+ {id:'manifest',cat:'5 施工中',ass:'D',sub:'上島',name:'産業廃棄物管理票（マニフェスト）',rule:'X',form:'－',src:'共通仕様書1-1-1-18',kind:'提示',req:['マニフェストE票','処分場の許可証写し'],link:'sanpai'},
+ // 完成時
+ {id:'dekigata',cat:'6 完成',ass:'亮和',sub:'上島',name:'出来形管理図表',rule:'E',n:0,form:'様式-31',src:'共通仕様書1-1-1-23',kind:'提出',note:'施工中は提示',req:['出来形管理表（基礎寸法・埋設深さ等）','測定位置の略図'],link:'dekigata'},
+ {id:'suryo',cat:'6 完成',ass:'亮和',sub:'上島',name:'出来形数量計算書',rule:'E',n:0,form:'－',src:'共通仕様書3-1-1-7',kind:'提出',req:['数量計算書','数量総括表'],link:'suryo'},
+ {id:'hinshitsu',cat:'6 完成',ass:'亮和',sub:'上島',name:'品質管理図表',rule:'E',n:0,form:'様式-32',src:'共通仕様書1-1-1-23',kind:'提出',note:'施工中は提示',req:['品質管理総括表','絶縁・接地・電圧・電流・ELB・照度の記録','生コン配合・圧縮試験'],link:'hinshitsu'},
+ {id:'zairyosho',cat:'6 完成',ass:'上島',sub:'亮和',name:'材料品質証明資料',rule:'E',n:0,form:'－',src:'共通仕様書2-1-2-1',kind:'提出',req:['ミルシート・試験成績表','JIS等の証明']},
+ {id:'hinshomei',cat:'6 完成',ass:'亮和',sub:'上島',name:'品質証明書',rule:'E',n:0,form:'様式-33',src:'共通仕様書3-1-1-8',kind:'提出',cond:'契約図書で規定された場合',req:['品質証明書','品質証明員の確認記録']},
+ {id:'shashin',cat:'6 完成',ass:'D',sub:'亮和',name:'工事写真',rule:'E',n:0,form:'－',src:'電気通信設備工事写真管理基準（案）／電子納品運用ガイドライン',kind:'提出',req:['着手前・施工中・完成写真（写真管理基準どおり）','電子納品データ'],link:'shashin'},
+ {id:'kanseizu',cat:'6 完成',ass:'亮和',sub:'D',name:'工事完成図',rule:'E',n:0,form:'－',src:'共通仕様書1-1-1-19／3-1-1-9',kind:'納品',req:['位置詳細図','照明柱詳細図','LED灯具更新明細表','撤去位置詳細図・撤去照明柱詳細図'],link:'zumen'},
+ {id:'daicho',cat:'6 完成',ass:'亮和',sub:'D',name:'工事管理台帳（施設台帳）',rule:'E',n:0,form:'－',src:'共通仕様書3-1-1-9',kind:'納品',req:['照明施設台帳（管理番号ごと）','台帳変更履歴'],link:'daicho'},
+ {id:'shiken',cat:'6 完成',ass:'亮和',sub:'上島',name:'試験成績書',rule:'E',n:0,form:'－',src:'電気通信設備工事共通仕様書（令和8年3月）※条項要確認',kind:'提出',req:['絶縁抵抗・接地抵抗・電圧・電流の測定結果','総合動作確認'],link:'hinshitsu'},
+ {id:'toriatsukai',cat:'6 完成',ass:'上島',sub:'亮和',name:'取扱説明書',rule:'E',n:0,form:'－',src:'電気通信設備工事共通仕様書（令和8年3月）※条項要確認',kind:'納品',req:['LED灯具・電源装置の取扱説明書','保守要領']},
+ {id:'hasseihin',cat:'6 完成',ass:'亮和',sub:'上島',name:'現場発生品調書',rule:'E',n:0,form:'様式-28',src:'共通仕様書1-1-1-17',kind:'提出',cond:'現場発生品がある場合',req:['発生品の品名・数量・引渡先'],link:'hasseihin'},
+ {id:'saisei3',cat:'6 完成',ass:'亮和',sub:'D',name:'再生資源利用実施書・促進実施書',rule:'E',n:0,form:'－',src:'共通仕様書1-1-1-18',kind:'提出',cond:'該当資材・副産物がある場合',req:['建設副産物情報交換システムで作成']},
+ {id:'soui',cat:'6 完成',ass:'上島',sub:'亮和',name:'創意工夫・社会性等の実施状況',rule:'E',n:0,form:'様式-34',src:'共通仕様書3-1-1-16',kind:'提出',cond:'実施した場合（工事成績評定の対象）',req:['説明資料','実施写真']},
+ {id:'sogohokoku',cat:'6 完成',ass:'上島',sub:'亮和',name:'総合評価実施報告書',rule:'E',n:0,form:'－',src:'総合評価落札方式の実施について',kind:'提出',cond:'総合評価で契約した場合',req:['技術提案の実施結果']},
+ {id:'kansei',cat:'6 完成',ass:'亮和',sub:'D',name:'完成通知書',rule:'E',n:0,form:'様式-29',src:'工事請負契約書第31条',kind:'提出',req:['完成通知書','完成検査の準備（書類一式）']},
+ {id:'hikiwatashi',cat:'6 完成',ass:'上島',name:'引渡書・請求書（完成代金）',rule:'E',n:14,form:'様式-30/5',src:'工事請負契約書第31条・第32条',kind:'提出',note:'完成検査合格後',req:['引渡書','請求書']},
+];
+const CATS=['1 契約関係','2 工事前準備','3 設計照査・施工体制・計画','4 施工','5 施工中','6 完成'];
+const CL=c=>{const p=P();return (p&&p.catNames&&p.catNames[c])||c};
+const OLDCAT={'契約前':'1 契約関係','契約':'2 工事前準備','施工計画':'3 設計照査・施工体制・計画','電気':'4 施工','施工中':'5 施工中','完成':'6 完成','2 工事始め':'2 工事前準備','3 設計照査':'3 設計照査・施工体制・計画','4 施工体制・計画':'3 設計照査・施工体制・計画','5 施工':'4 施工','6 施工中':'5 施工中','7 完成':'6 完成'};
+const STATUS=['未着手','作成中','発注者待ち','社内確認','提出済','承認済','該当なし'];
+const STCLS={'未着手':'s1','作成中':'s2','発注者待ち':'s3','社内確認':'s3','提出済':'s4','承認済':'s5','該当なし':'s0'};
+
+/* 工種（工程表の初期行）。match: 現場アプリの工種・作業内容と照合する語 */
+const KOTEI_DEF=[
+ {name:'準備工（施工計画・届出）'},
+ {name:'応急点検工',match:['応急']},
+ {name:'LED灯具取替',match:['LED灯具取替','灯具交換']},
+ {name:'照明柱建替',match:['建替']},
+ {name:'照明柱新設',match:['新設']},
+ {name:'配管配線取替',match:['配管配線']},
+ {name:'撤去（照明灯）',match:['撤去']},
+ {name:'完成書類・検査'},
+ {name:'後片付け'},
+];
+
+/* ==================== 状態 ==================== */
+const VER='v23';const KEY='dl-shorui-v1';
+let S={projects:[],cur:null,tab:'home',ksub:'all',wk0:null,dcat:'all',dst:'open'};
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=Object.assign(S,j);}catch(e){}
+  for(const p of S.projects)for(const d of p.docs){const t=TPL.find(x=>x.id===d.tid);if(t)d.cat=t.cat;else if(OLDCAT[d.cat])d.cat=OLDCAT[d.cat]}
+  if(OLDCAT[S.dcat])S.dcat=OLDCAT[S.dcat]
+  for(const p of S.projects)if(p.catNames)for(const k of Object.keys(p.catNames))if(OLDCAT[k]){if(!p.catNames[OLDCAT[k]])p.catNames[OLDCAT[k]]=p.catNames[k];delete p.catNames[k]}
+  for(const p of S.projects){if(!p.members||!p.members.length)p.members=MEMBERS.slice();p.members=p.members.map(x=>String(x).trim()).filter(Boolean);for(const d of p.docs){if(d.assignee)d.assignee=String(d.assignee).trim();const t=TPL.find(x=>x.id===d.tid);if(t&&t.ass&&!d.assignee)d.assignee=t.ass;if(d.sub===undefined)d.sub=(t&&t.sub)||''}p.docs=p.docs.filter(d=>d.tid!=='zenkin');addMissing(p,true)}}
+const now=()=>new Date().toISOString();
+function touch(o){o.u=now();o.by=S.me||''}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('保存できません（容量超過）')}if(SH.handle)SH.dirty=true}
+const P=()=>S.projects.find(p=>p.id===S.cur);
+const uid=()=>Math.random().toString(36).slice(2,9);
+const ymd=x=>`${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`;
+const today=()=>ymd(new Date());
+function addDays(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return ymd(x)}
+function diff(a,b){return Math.round((new Date(a+'T00:00:00')-new Date(b+'T00:00:00'))/86400000)}
+function fmt(d){if(!d)return '';const x=new Date(d+'T00:00:00');return `${x.getMonth()+1}/${x.getDate()}(${'日月火水木金土'[x.getDay()]})`}
+function monthEnd(y,m){return ymd(new Date(y,m+1,0))}
+function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),2200)}
+
+/* ==================== 工事・書類生成 ==================== */
+function addBiz(d,n){let x=d;let c=0;while(c<n){x=addDays(x,1);const g=new Date(x+'T00:00:00').getDay();if(g!==0&&g!==6)c++}return x}
+function dueOf(t,p,ym){
+  if(t.rule==='K'){const c=[p.recycleOkDate,p.hoshoDate].filter(Boolean).sort();if(c.length)return c[c.length-1];return p.awardDate?addBiz(p.awardDate,7):''}
+  if(t.rule==='A')return p.awardDate?(t.biz?addBiz(p.awardDate,t.n):addDays(p.awardDate,t.n)):'';
+  if(t.rule==='C'){const base=p.contractDate||(t.strict?'':[p.recycleOkDate,p.hoshoDate].filter(Boolean).sort().pop()||'');return base?addDays(base,t.n):''}
+  if(t.rule==='S')return p.startDate?addDays(p.startDate,t.n):'';
+  if(t.rule==='E')return p.endDate?addDays(p.endDate,t.n):'';
+  if(t.rule==='M'&&ym){const [y,m]=ym.split('-').map(Number);return monthEnd(y,m-1)}
+  return '';
+}
+function months(p){
+  const out=[];if(!p.startDate||!p.endDate)return out;
+  let d=new Date(p.startDate+'T00:00:00');const e=new Date(p.endDate+'T00:00:00');
+  while(d<=e){out.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);d=new Date(d.getFullYear(),d.getMonth()+1,1)}
+  return out;
+}
+function mkDoc(t,p,ym){
+  return {id:uid(),tid:t.id,name:t.name+(ym?`（${ym.replace('-','年')}月）`:''),cat:t.cat,ym:ym||'',due:dueOf(t,p,ym),dueAuto:true,status:'未着手',req:t.req.map(r=>({t:r,done:false})),memo:'',submitted:'',approved:'',assignee:t.ass||'',sub:t.sub||''};
+}
+function buildDocs(p){
+  const docs=[];
+  for(const t of TPL){
+    if(t.rule==='M'){for(const ym of months(p))docs.push(mkDoc(t,p,ym))}
+    else docs.push(mkDoc(t,p));
+  }
+  return docs;
+}
+function recalc(p){
+  // 自動期限の再計算＋毎月書類の増減
+  for(const d of p.docs){const t=TPL.find(x=>x.id===d.tid);if(t&&d.dueAuto)d.due=dueOf(t,p,d.ym)}
+  const ms=months(p);
+  for(const t of TPL.filter(x=>x.rule==='M')){
+    for(const ym of ms){if(!p.docs.some(d=>d.tid===t.id&&d.ym===ym))p.docs.push(mkDoc(t,p,ym))}
+    p.docs=p.docs.filter(d=>!(d.tid===t.id&&d.ym&&!ms.includes(d.ym)&&d.status==='未着手'));
+  }
+}
+function newProject(f){
+  const p={id:uid(),members:MEMBERS.slice(),awardDate:f.awardDate||'',recycleOkDate:'',hoshoDate:'',name:f.name,client:f.client||'沖縄総合事務局 南部国道事務所',contractDate:f.contractDate||'',startDate:f.startDate||'',endDate:f.endDate||'',agent:f.agent||'',engineer:f.engineer||'',docs:[],kotei:KOTEI_DEF.map(k=>({id:uid(),name:k.name,match:k.match||[],ps:'',pe:'',as:'',ae:'',qty:'',done:'',pct:''})),week:[],imp:null};
+  p.docs=buildDocs(p);S.projects.push(p);S.cur=p.id;save();
+}
+
+/* ==================== 期限判定 ==================== */
+function dueCls(d){
+  if(d.status==='該当なし')return 'na';
+  if(d.status==='提出済'||d.status==='承認済')return 'done';
+  if(!d.due)return '';
+  const n=diff(d.due,today());
+  return n<0?'late':n<=7?'soon':'ok';
+}
+const MEMBERS=['上島','亮和','D','武富'];
+function members(p){return (p.members&&p.members.length)?p.members:MEMBERS}
+function assFilter(list){if(!S.dass||S.dass==='all')return list;if(S.dass==='none')return list.filter(d=>!d.assignee&&!d.sub);return list.filter(d=>d.assignee===S.dass||d.sub===S.dass)}
+function assChips(p){const ms=members(p);return ms.length?`<div class="filters"><span class="small muted" style="padding:5px 0">担当</span>${['all',...ms,'none'].map(a=>`<button class="chip ${(S.dass||'all')===a?'on':''}" onclick="S.dass='${esc(a)}';save();render()">${a==='all'?'全員':a==='none'?'未割当':esc(a)}</button>`).join('')}</div>`:''}
+function isProv(d,p){const t=TPL.find(x=>x.id===d.tid);return !!(t&&t.rule==='C'&&!t.strict&&!p.contractDate&&d.dueAuto&&d.due)}
+function reqPct(d){if(!d.req.length)return null;return Math.round(d.req.filter(r=>r.done).length/d.req.length*100)}
+
+/* ==================== 画面 ==================== */
+function go(t){S.tab=t;save();render()}
+function render(){
+  const sel=document.getElementById('projSel');
+  sel.innerHTML=S.projects.map(p=>`<option value="${p.id}" ${p.id===S.cur?'selected':''}>${esc(p.name)}</option>`).join('')||'<option>工事が未登録</option>';
+  const p=P();
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.tab));
+  const late=p?p.docs.filter(d=>dueCls(d)==='late').length:0;
+  document.querySelector('#tabs [data-t=home]').innerHTML='期限'+(late?`<span class="n">${late}</span>`:'');
+  const m=document.getElementById('main');
+  if(!p){m.innerHTML=shareCard()+`<div class="card"><h2>最初に工事を登録します</h2><p class="muted">工事名と契約日・着工日・工期末を入れると、沖縄総合事務局（国交省直轄）の標準書類一式が期限付きで並びます。</p><button class="btn p" onclick="openProjForm()">工事を登録する</button></div>`;return}
+  if(S.tab==='kotei')S.tab='home';({home:rHome,docs:rDocs,imp:rImp,set:rSet})[S.tab](m,p);
+}
+
+/* ---- 期限（ホーム） ---- */
+function rHome(m,p){
+  const open=p.docs.filter(d=>d.due&&!['提出済','承認済','該当なし'].includes(d.status)).sort((a,b)=>a.due.localeCompare(b.due));
+  const late=open.filter(d=>diff(d.due,today())<0),soon=open.filter(d=>{const n=diff(d.due,today());return n>=0&&n<=7});
+  const appl=p.docs.filter(d=>d.status!=='該当なし'),done=appl.filter(d=>['提出済','承認済'].includes(d.status));
+  const lane=open.slice(0,12).map(d=>{const n=diff(d.due,today());const c=n<0?'late':n<=7?'soon':'ok';
+    return `<div class="tk ${c}" onclick="openDoc('${d.id}')"><div class="d">${n<0?'':''}${Math.abs(n)}<small>${n<0?'日超過':n===0?'日 今日':'日後'}</small></div><div class="t">${esc(d.name)}</div><div class="m">${fmt(d.due)}　${esc(d.status)}${reqPct(d)!==null?`　必要なもの ${reqPct(d)}%`:''}</div></div>`}).join('');
+  m.innerHTML=`
+  <div class="card">
+    <h2>次の期限</h2>
+    ${open.length?`<div class="lane">${lane}</div>`:'<div class="empty">期限のある未提出書類はありません</div>'}
+    <div class="kpi">
+      <div class="late"><b>${late.length}</b><span class="muted">期限超過</span></div>
+      <div class="soon"><b>${soon.length}</b><span class="muted">7日以内</span></div>
+      <div><b>${open.length}</b><span class="muted">未提出（期限あり）</span></div>
+      <div class="ok"><b>${done.length}<small>/${appl.length}</small></b><span class="muted">提出・承認済</span></div>
+    </div>
+  </div>
+  ${!p.contractDate?`<div class="card" style="border-left:5px solid var(--soon)"><h2>契約日が未確定</h2><div class="small">契約日＝契約保証がとれた日と、建設リサイクル法 説明書の承認日の遅い方（記載要領）。${p.awardDate?`落札決定 ${fmt(p.awardDate)}。契約保証の期限は翌日から休日除く7日＝${fmt(addBiz(p.awardDate,7))}（祝日は手で調整）。`:'工事情報に落札決定日を入れると契約前の書類に期限が付きます。'}<br>説明書承認 ${p.recycleOkDate?fmt(p.recycleOkDate):'未'}　契約保証 ${p.hoshoDate?fmt(p.hoshoDate):'未'}${contractHint(p)}</div><div class="muted small">契約日が決まると「契約」区分の期限（現場代理人通知・内訳書・工程表・建退共・コリンズ）が自動で付きます。</div></div>`:''}
+  <div class="card">
+    <h2>進み具合</h2>
+    ${CATS.map(c=>{const a=appl.filter(d=>d.cat===c),dn=a.filter(d=>['提出済','承認済'].includes(d.status));const pc=a.length?Math.round(dn.length/a.length*100):0;
+      return `<div class="row" style="margin:6px 0"><span style="width:110px" class="small">${esc(CL(c))}</span><div class="bar grow"><i class="${pc===100?'g':''}" style="width:${pc}%"></i></div><span class="small" style="width:62px;text-align:right">${dn.length}/${a.length}</span></div>`}).join('')}
+  </div>
+  <div class="card">
+    <h2>工事</h2>
+    <div class="muted">${esc(p.client)}</div>
+    <div class="row muted small">契約 ${p.contractDate?fmt(p.contractDate):'未設定'}　着工 ${p.startDate?fmt(p.startDate):'未設定'}　工期末 ${p.endDate?fmt(p.endDate):'未設定'}${p.endDate?`　残り ${diff(p.endDate,today())}日`:''}</div>
+    ${p.imp?`<div class="small muted">現場アプリ取込：${esc(p.imp.at)}　管理番号 ${p.imp.ledgers.length}件　作業 ${p.imp.works.length}件（完了 ${p.imp.works.filter(w=>w.closed).length}）</div>`:'<div class="small muted">現場アプリのデータは未取込（「現場アプリ」タブから）</div>'}
+    <div class="small muted" id="shStatus">${shareLabel()}${SH.status==='再接続が必要'?' <a href="#" onclick="reconnectShare();return false">再接続</a>':''}</div>
+  </div>`;
+}
+
+/* ---- 書類一覧 ---- */
+function rDocs(m,p){
+  const vw=`<div class="sub">${[['list','一覧'],['time','時系列'],['ass','担当別']].map(([k,l])=>`<button class="${(S.dview||'list')===k?'on':''}" onclick="S.dview='${k}';save();render()">${l}</button>`).join('')}</div>`;
+  if(S.dview==='time'){m.innerHTML=vw+timelineCard(p);return}
+  if(S.dview==='ass'){m.innerHTML=vw+assigneeCard(p);return}
+  let list=assFilter(p.docs.slice());
+  if(S.dcat!=='all')list=list.filter(d=>d.cat===S.dcat);
+  if(S.dst==='open')list=list.filter(d=>!['提出済','承認済','該当なし'].includes(d.status));
+  else if(S.dst==='late')list=list.filter(d=>dueCls(d)==='late'||dueCls(d)==='soon');
+  else if(S.dst==='done')list=list.filter(d=>['提出済','承認済'].includes(d.status));
+  list.sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
+  m.innerHTML=vw+`
+  <div class="card">
+    <div class="filters">${['all','open','late','done','allst'].map(k=>`<button class="chip ${S.dst===k?'on':''}" onclick="S.dst='${k}';save();render()">${{all:'すべて',open:'未提出',late:'期限間近・超過',done:'提出済',allst:'該当なし含む'}[k]}</button>`).join('')}</div>
+    <div class="filters">${['all',...CATS].map(c=>`<button class="chip ${S.dcat===c?'on':''}" onclick="S.dcat='${c}';save();render()">${c==='all'?'全区分':esc(CL(c))}</button>`).join('')}</div>
+    ${assChips(p)}
+    <div class="row"><span class="muted small grow">${list.length}件</span><button class="btn s" onclick="addCustomDoc()">＋ 書類を追加</button><button class="btn s" onclick="exportCsv()">CSV</button></div>
+  </div>
+  <div class="card" style="padding:4px 8px">
+    ${list.length?`<ul class="dl">${list.map(d=>{const c=dueCls(d);const t=TPL.find(x=>x.id===d.tid);const rp=reqPct(d);
+      return `<li class="${c}" onclick="openDoc('${d.id}')"><div class="lb"></div><div><div class="nm">${esc(d.name)}${t&&t.cond?'<span class="tag">該当時</span>':''}${t&&t.kind==='提示'?'<span class="tag">提示</span>':''}</div><div class="cat">${esc(CL(d.cat))}${d.due?` ・ <span class="due ${c==='late'||c==='soon'?c:''}">期限 ${fmt(d.due)}${isProv(d,p)?'<span class="tag">仮</span>':''}${c==='late'?`（${-diff(d.due,today())}日超過）`:''}</span>`:' ・ 都度'}${rp!==null?` ・ 必要なもの ${rp}%`:''}${d.assignee?` ・ 担当 ${esc(d.assignee)}`:''}</div></div><span class="st ${STCLS[d.status]}">${d.status}</span></li>`}).join('')}</ul>`:'<div class="empty">該当する書類はありません</div>'}
+  </div>`;
+}
+function addCustomDoc(){
+  const name=prompt('書類名');if(!name)return;const p=P();
+  p.docs.push({id:uid(),tid:'',name,cat:'5 施工中',ym:'',due:'',dueAuto:false,status:'未着手',req:[],memo:'',submitted:'',approved:'',assignee:''});save();render();openDoc(p.docs[p.docs.length-1].id);
+}
+
+/* ---- 担当別（人ごとに担当書類を区分） ---- */
+function assigneeCard(p){
+  const open=d=>!['提出済','承認済','該当なし'].includes(d.status);
+  const groups=[...members(p),''];
+  const row=(d,mm)=>{const c=dueCls(d);const t=TPL.find(x=>x.id===d.tid)||{};return `<li class="${c}" onclick="openDoc('${d.id}')"><div class="lb"></div><div><div class="nm">${esc(d.name)}${t.cond?'<span class="tag">該当時</span>':''}${mm&&d.assignee!==mm&&d.sub===mm?`<span class="tag">副（担当 ${esc(d.assignee||'未割当')}）</span>`:''}</div><div class="cat">${esc(CL(d.cat))}${d.due?` ・ <span class="due ${c==='late'||c==='soon'?c:''}">期限 ${fmt(d.due)}</span>`:' ・ 都度'}</div></div><span class="st ${STCLS[d.status]}">${d.status}</span></li>`};
+  const sec=groups.map(mm=>{const ds=p.docs.filter(d=>(mm?(d.assignee===mm||d.sub===mm):(!d.assignee&&!d.sub))&&d.status!=='該当なし').sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));if(!ds.length)return '';
+    const o=ds.filter(open),late=o.filter(d=>dueCls(d)==='late').length;const showAll=S.assAll===mm;
+    return `<div class="card" style="padding:8px 8px 4px"><div class="row" style="padding:4px 8px"><h2 class="grow">${mm?esc(mm):'<span class="muted">未割当</span>'}</h2><span class="small muted">未提出 ${o.length}${late?` <span class="due late">超過 ${late}</span>`:''}　提出済 ${ds.length-o.length}</span><button class="btn s" onclick="S.assAll=${showAll?'null':`'${esc(mm)}'`};save();render()">${showAll?'未提出のみ':'提出済も表示'}</button></div><ul class="dl">${(showAll?ds:o).map(d=>row(d,mm)).join('')||'<li class="empty">未提出の書類はありません</li>'}</ul></div>`}).join('');
+  return `<div class="card"><div class="muted small">担当は各書類の詳細シートで設定。候補は工事情報の「担当者の一覧」から。未割当の書類は末尾にまとめて表示</div></div>${sec}`;
+}
+/* ---- 書類の時系列 ---- */
+function timelineCard(p){
+  const hideNa=S.tlHideNa!==false;
+  const docs=assFilter(p.docs.filter(d=>!(hideNa&&d.status==='該当なし')));
+  const dated=docs.filter(d=>d.due).sort((a,b)=>a.due.localeCompare(b.due));
+  const undated=docs.filter(d=>!d.due);
+  const t0=today();
+  const ms=[['落札決定',p.awardDate],['契約',p.contractDate],['着工',p.startDate],['工期末',p.endDate]].filter(x=>x[1]);
+  // 月ごとにまとめ、節目と今日を差し込む
+  const items=[...dated.map(d=>({k:'d',d,at:d.due})),...ms.map(([n,at])=>({k:'m',n,at})),{k:'t',at:t0}].sort((a,b)=>a.at.localeCompare(b.at)||(a.k!=='d'?-1:b.k!=='d'?1:0)||a.d.cat.localeCompare(b.d.cat)||TPL.findIndex(x=>x.id===a.d.tid)-TPL.findIndex(x=>x.id===b.d.tid));
+  let out='',curM='';
+  for(const it of items){
+    const ym=it.at.slice(0,7);if(ym!==curM){curM=ym;out+=`<div class="mh">${+ym.slice(0,4)}年${+ym.slice(5)}月</div>`}
+    if(it.k==='m')out+=`<div class="ms">◆ ${it.n}　${fmt(it.at)}</div>`;
+    else if(it.k==='t')out+=`<div class="ms today">▶ 今日 ${fmt(it.at)}</div>`;
+    else{const d=it.d,c=dueCls(d),t=TPL.find(x=>x.id===d.tid)||{};out+=`<div class="ev ${c}" onclick="openDoc('${d.id}')"><span class="dt">${fmt(d.due)}${isProv(d,p)?'<span class="tag">仮</span>':''}</span><span><span class="nm">${esc(d.name)}</span>${t.cond?'<span class="tag">該当時</span>':''}${t.kind==='提示'?'<span class="tag">提示</span>':''}<span class="cat" style="margin-left:6px">${esc(CL(d.cat))}</span>${d.assignee?`<span class="tag">${esc(d.assignee)}</span>`:''}</span><span class="st ${STCLS[d.status]}">${d.status}</span></div>`}
+  }
+  const und=undated.length?`<div class="mh" style="margin-top:20px">都度（施工中に発生したとき）</div>${undated.map(d=>{const t=TPL.find(x=>x.id===d.tid)||{};return `<div class="ev ${dueCls(d)}" onclick="openDoc('${d.id}')"><span class="dt">${t.kind==='発注者待ち'?'発注者待ち':'都度'}</span><span><span class="nm">${esc(d.name)}</span>${t.cond?'<span class="tag">該当時</span>':''}${t.kind==='提示'?'<span class="tag">提示</span>':''}<span class="cat" style="margin-left:6px">${esc(CL(d.cat))}</span>${t.note||t.cond?`<div class="muted small" style="white-space:normal;line-height:1.35">${esc((t.cond?'該当時：'+t.cond:t.note.split('。')[0]))}</div>`:''}</span><span class="st ${STCLS[d.status]}">${d.status}</span></div>`}).join('')}`:'';
+  const missing=[['落札決定日',p.awardDate],['契約日',p.contractDate],['着工日',p.startDate],['工期末',p.endDate]].filter(x=>!x[1]).map(x=>x[0]);
+  return `<div class="card"><div class="row"><h2 class="grow">必要書類の時系列</h2><label class="small"><input type="checkbox" ${hideNa?'checked':''} onchange="S.tlHideNa=this.checked;save();render()"> 該当なしを隠す</label><button class="btn s" onclick="window.print()">印刷</button></div>
+  ${missing.length?`<div class="muted small">${missing.join('・')}が未設定のため、その基準の書類は「都度」に出ています（工事情報で設定）</div>`:''}
+  ${assChips(p)}
+  <div class="tl">${out}${und}</div></div>`;
+}
+/* ---- 書類詳細シート ---- */
+function openDoc(id){
+  const p=P();const d=p.docs.find(x=>x.id===id);if(!d)return;const t=TPL.find(x=>x.id===d.tid)||{};
+  const lk=t.link?linkInfo(t.link,p):null;
+  const sh=document.getElementById('sheet');
+  sh.innerHTML=`
+  <div class="top"><div><h2>${esc(d.name)}</h2><div class="muted small">${esc(CL(d.cat))}${t.form?`　${esc(t.form)}`:''}${t.kind?`　${esc(t.kind)}`:''}</div></div><button class="btn s" onclick="closeSheet()">閉じる</button></div>
+  ${t.cond?`<div class="link none">該当する場合のみ：${esc(t.cond)}</div>`:''}
+  ${t.note?`<div class="muted small" style="margin:6px 0">${esc(t.note)}</div>`:''}
+  <h3 style="margin-top:12px">状態</h3>
+  <div class="stbtns">${STATUS.map(s=>`<button class="${d.status===s?'on':''}" onclick="setSt('${d.id}','${s}')">${s}</button>`).join('')}</div>
+  <div class="grid2">
+    <label class="f"><span>提出期限${isProv(d,p)?'（仮：契約日の見込みから。契約日を入れると確定）':''}${d.dueAuto&&t.rule&&t.rule!=='X'&&!isProv(d,p)?'（自動：'+({A:'落札決定日',K:'契約保証と説明書承認の遅い方',C:'契約日',S:'着工日',E:'工期末',M:'毎月末'}[t.rule]||'')+(t.biz?'・休日除く':'')+'基準）':''}</span><input type="date" value="${d.due}" onchange="upd('${d.id}','due',this.value);upd('${d.id}','dueAuto',false)"></label>
+    <label class="f"><span>担当</span><select onchange="upd('${d.id}','assignee',this.value)"><option value="">未割当</option>${[...new Set([...members(p),...(d.assignee?[d.assignee]:[])])].map(m=>`<option value="${esc(m)}" ${d.assignee===m?'selected':''}>${esc(m)}</option>`).join('')}</select></label>
+    <label class="f"><span>提出日</span><input type="date" value="${d.submitted}" onchange="upd('${d.id}','submitted',this.value)"></label>
+    <label class="f"><span>承認・受理日</span><input type="date" value="${d.approved}" onchange="upd('${d.id}','approved',this.value)"></label>
+  </div>
+  ${d.dueAuto?'':`<button class="btn s" onclick="upd('${d.id}','dueAuto',true);recalc(P());save();openDoc('${d.id}')">期限を自動計算に戻す</button>`}
+  <h3 style="margin-top:14px">必要なもの ${reqPct(d)!==null?`<span class="muted small">${d.req.filter(r=>r.done).length}/${d.req.length}</span>`:''}</h3>
+  <ul class="req">${d.req.map((r,i)=>`<li class="${r.done?'done':''}"><input type="checkbox" ${r.done?'checked':''} onchange="const dd=P().docs.find(x=>x.id==='${d.id}');dd.req[${i}].done=this.checked;touch(dd);save();openDoc('${d.id}');render()"><span>${esc(r.t)}</span><button class="x" title="削除" onclick="delReq('${d.id}',${i})">×</button></li>`).join('')}</ul>
+  <div class="row" style="margin-top:6px"><input type="text" id="reqNew" placeholder="追加する項目（添付・データ・承認など）" class="grow" onkeydown="if(event.key==='Enter')addReq('${d.id}')"><button class="btn s" onclick="addReq('${d.id}')">追加</button></div>
+  <h3 style="margin-top:14px">現場アプリから読み取った内容</h3>
+  ${lk?`<div class="link ${lk.ok?'':'none'}">${lk.html}</div>`:'<div class="link none">この書類に対応する読み取りはありません</div>'}
+  <label class="f" style="margin-top:12px"><span>メモ</span><textarea onchange="upd('${d.id}','memo',this.value)">${esc(d.memo)}</textarea></label>
+  <div class="src">根拠：${esc(t.src||'手動追加')}${d.u?`　最終更新 ${new Date(d.u).toLocaleString('ja-JP')}${d.by?' '+esc(d.by):''}`:''}</div>
+  <div style="margin-top:16px"><button class="btn s danger" onclick="delDoc('${d.id}')">この書類を削除</button></div>`;
+  sh.classList.add('on');document.getElementById('sheetBg').classList.add('on');
+}
+function closeSheet(){document.getElementById('sheet').classList.remove('on');document.getElementById('sheetBg').classList.remove('on')}
+function upd(id,k,v){const d=P().docs.find(x=>x.id===id);d[k]=v;touch(d);save();render()}
+function setSt(id,s){const d=P().docs.find(x=>x.id===id);d.status=s;touch(d);if(s==='提出済'&&!d.submitted)d.submitted=today();if(s==='承認済'&&!d.approved)d.approved=today();save();openDoc(id);render()}
+function addReq(id){const el=document.getElementById('reqNew');if(!el.value.trim())return;const dd=P().docs.find(x=>x.id===id);dd.req.push({t:el.value.trim(),done:false});touch(dd);save();openDoc(id);render()}
+function delReq(id,i){const dd=P().docs.find(x=>x.id===id);dd.req.splice(i,1);touch(dd);save();openDoc(id);render()}
+function delDoc(id){if(!confirm('この書類を一覧から削除しますか？'))return;const p=P();const d=p.docs.find(x=>x.id===id);if(d&&d.tid){p.removed=p.removed||[];p.removed.push(d.tid)}(p.del=p.del||[]).push(id);p.docs=p.docs.filter(x=>x.id!==id);save();closeSheet();render()}
+
+/* ---- 現場アプリのデータと書類の対応 ---- */
+function linkInfo(key,p){
+  const I=p.imp;if(!I)return {ok:false,html:'現場アプリのデータが未取込です。「現場アプリ」タブでJSONを読み込むと、ここに記載用の情報が出ます。'};
+  const W=I.works,L=I.ledgers;const n=x=>`<b>${x}</b>`;
+  const closed=W.filter(w=>w.closed);
+  switch(key){
+   case 'recycle':{const kc=W.filter(w=>/建替|新設|撤去/.test(w.kubun)).length;return {ok:true,html:`工事の種類：維持・修繕工事／電気。特定建設資材：コンクリート（基礎）・アスファルト（舗装復旧）。基礎の撤去・新設を伴う作業 ${n(kc)}件（建替・新設・撤去）→ コンクリート塊の発生見込みの根拠。配管配線の掘削 ${n(W.filter(w=>/配管配線|新設/.test(w.kubun)).length)}件 → アスファルト塊。`}}
+   case 'douro':{const n2=W.filter(w=>w.plan).length;return {ok:true,html:`施工予定日のある作業 ${n(n2)}件（${minmax(W.map(w=>w.plan))}）。この期間で申請。規制箇所は路線別：${countBy(L,'route')}`}}
+   case 'jikko':return {ok:true,html:`作業内容の内訳：${countBy(W,'kubun')}。数量は現場アプリの「資材・数量一覧」CSV、見積は「見積依頼書」から。`};
+   case 'denryoku':{const ws=W.filter(w=>/新設|配管配線/.test(w.kubun));return {ok:ws.length>0,html:ws.length?`新設・配管配線の作業 ${n(ws.length)}件：${ws.map(w=>w.no).join('、')}。台帳の電力申請番号と現調の同系統負荷設備（VA合計）を確認。`:'新設・配管配線の作業はありません（申込不要の見込み）'}}
+   case 'kotei':return {ok:true,html:`管理番号 ${n(L.length)}件。作業内容の内訳：${countBy(W,'kubun')}。施工予定日あり ${n(W.filter(w=>w.plan).length)}件（${minmax(W.map(w=>w.plan))}）`};
+   case 'keikaku':return {ok:true,html:`工事概要の材料：管理番号 ${n(L.length)}本、路線 ${countBy(L,'route')}、作業内容 ${countBy(W,'kubun')}。主要資材は現場アプリの「資材・数量一覧」CSVを添付。`};
+   case 'shosa':return {ok:W.some(w=>w.kyogi),html:`現調の要協議 ${n(W.filter(w=>w.kyogi).length)}件（${W.filter(w=>w.kyogi).map(w=>w.no).join('、')||'なし'}）。台帳との相違は台帳変更履歴CSVを添付。`};
+   case 'shodaku':return {ok:true,html:`新設灯具の型式・メーカー：${countBy(L,'lamp')}。仕様書は現場アプリの仕様書ライブラリから。`};
+   case 'zumen':return {ok:true,html:`対象の管理番号 ${n(L.length)}件。図面機能（施工図・完成図PDF）が現場アプリに実装されたら、その出力を添付。`};
+   case 'kyogi':return {ok:W.some(w=>w.kyogi),html:`要協議の作業 ${n(W.filter(w=>w.kyogi).length)}件。協議文は現場アプリの現調タブ「設計照査」から。`};
+   case 'maisetsu':return {ok:true,html:`建替・新設の作業 ${n(W.filter(w=>/建替|新設/.test(w.kubun)).length)}件は埋設物確認資料（沖縄電力・NTT・水道・下水道・ガス・通信・道路管理者）が必要。提出状況は現調「新設ポール・基礎」で確認。`};
+   case 'zairyo':return {ok:true,html:`発注・使用する主要材料：灯具 ${countBy(L,'lamp')}。数量は「資材・数量一覧」、納入は「在庫管理」の受入記録から。`};
+   case 'dankai':return {ok:true,html:`基礎新設（接地極設置＝床掘部埋戻し前に段階確認）の対象：${n(W.filter(w=>/建替|新設/.test(w.kubun)).length)}件。`};
+   case 'yakan':{const hol=W.filter(w=>w.plan&&[0,6].includes(new Date(w.plan+'T00:00:00').getDay()));return {ok:hol.length>0,html:hol.length?`土日に施工予定の作業 ${n(hol.length)}件：${hol.map(w=>`${w.no}(${fmt(w.plan)})`).join('、')} → 現道上なら休日作業届が必要`:'土日に施工予定の作業はありません'}}
+   case 'rikou':{const pc=W.length?Math.round(closed.length/W.length*100):0;return {ok:true,html:`実施進捗率の材料：作業 ${n(W.length)}件中 完了 ${n(closed.length)}件（${n(pc+'%')}）。工程表タブの工種別と合わせて記入。`}}
+   case 'sanpai':return {ok:closed.length>0,html:`完了した作業 ${n(closed.length)}件の処分記録（残土・産廃・撤去品）を現場アプリの施工タブで確認。`};
+   case 'dekigata':return {ok:true,html:`基礎出来形の対象：${n(W.filter(w=>/建替|新設/.test(w.kubun)).length)}件（建替・新設）。現場アプリの出来形CSVを添付。土被り・舗装厚は配管配線工程から。`};
+   case 'suryo':return {ok:true,html:`数量の材料：作業内容別 ${countBy(W,'kubun')}。配管・ケーブルの延長は現調の合計、実測は施工の配管・配線から。`};
+   case 'hinshitsu':return {ok:true,html:`測定値あり ${n(W.filter(w=>w.meas).length)}件／完了 ${n(closed.length)}件。現場アプリの「品質管理総括表データ（CSV）」→「品質管理総括表_アプリ連携.xlsx」で作成。`};
+   case 'shashin':return {ok:true,html:`写真 ${n(I.photos)}枚（JSON内の枚数、写真なし送信なら0）。整理は写真帳スキルで。`};
+   case 'daicho':return {ok:true,html:`台帳 ${n(L.length)}件。完了反映済み（更新年月日入り） ${n(L.filter(l=>l.updated).length)}件。台帳CSV・台帳変更履歴CSVを添付。`};
+   case 'hasseihin':return {ok:true,html:`撤去を含む作業 ${n(W.filter(w=>/撤去|建替|LED灯具取替/.test(w.kubun)).length)}件（撤去灯具・ポール・安定器など）。品名・数量は施工タブの撤去品から。`};
+  }
+  return null;
+}
+function countBy(arr,k){const c={};for(const x of arr){const v=x[k]||'未設定';c[v]=(c[v]||0)+1}return Object.entries(c).map(([k,v])=>`${esc(k)} ${v}`).join('、')||'なし'}
+function minmax(ds){ds=ds.filter(Boolean).sort();return ds.length?`${fmt(ds[0])}〜${fmt(ds[ds.length-1])}`:'－'}
+
+/* ---- 工程 ---- */
+function rKotei(m,p){
+  const sub=`<div class="sub">${[['all','全体工程'],['kind','工種別'],['week','週間']].map(([k,l])=>`<button class="${S.ksub===k?'on':''}" onclick="S.ksub='${k}';save();render()">${l}</button>`).join('')}</div>`;
+  if(S.ksub==='kind'){m.innerHTML=sub+kindCard(p);return}
+  if(S.ksub==='week'){m.innerHTML=sub+week3Card(p,S.wk0||today());return}
+  m.innerHTML=sub+schedImportCard(p)+(p.sched?detailGantt(p):ganttCard(p)+koteiEdit(p));
+}
+function koteiProg(k,p){
+  // 現場アプリから自動集計（match語で作業内容・工種を照合）
+  if(p.imp&&k.match.length){const ws=p.imp.works.filter(w=>k.match.some(s=>(w.kubun+w.kind).includes(s)));if(ws.length)return {qty:ws.length,done:ws.filter(w=>w.closed).length,pct:Math.round(ws.filter(w=>w.closed).length/ws.length*100),auto:true,dates:ws.map(w=>w.plan).filter(Boolean).sort()}}
+  if(k.name.startsWith('完成書類')){const a=p.docs.filter(d=>d.cat==='6 完成'&&d.status!=='該当なし'),dn=a.filter(d=>['提出済','承認済'].includes(d.status));return {qty:a.length,done:dn.length,pct:a.length?Math.round(dn.length/a.length*100):0,auto:true}}
+  const q=+k.qty||0,d=+k.done||0;return {qty:q,done:d,pct:k.pct!==''?+k.pct:(q?Math.round(d/q*100):0),auto:false};
+}
+function ganttCard(p){
+  const ds=[p.startDate,p.endDate,...p.kotei.flatMap(k=>[k.ps,k.pe,k.as,k.ae])].filter(Boolean).sort();
+  if(!ds.length)return `<div class="card"><div class="empty">工事情報に着工日・工期末を入れると工程表が出ます</div></div>`;
+  // 週の列（月曜始まり）
+  const s=new Date(ds[0]+'T00:00:00');s.setDate(s.getDate()-((s.getDay()+6)%7));
+  const e=new Date(ds[ds.length-1]+'T00:00:00');
+  const weeks=[];for(let d=new Date(s);d<=e;d.setDate(d.getDate()+7))weeks.push(new Date(d));
+  if(weeks.length>60)return `<div class="card"><div class="empty">期間が長すぎます（60週超）。日付を確認してください</div></div>`;
+  const w=weeks.length,x0=weeks[0].getTime(),span=w*7*86400000;
+  const pos=d=>Math.max(0,Math.min(100,(new Date(d+'T00:00:00')-x0)/span*100));
+  const bar=(a,b,cls)=>a&&b&&b>=a?`<div class="${cls}" style="left:${pos(a)}%;width:${Math.max(1,pos(addDays(b,1))-pos(a))}%"></div>`:'';
+  const t0=today();
+  const head=weeks.map((d,i)=>`<div class="hcell ${d.getDate()<=7?'m':''}">${d.getDate()<=7||i===0?`${d.getMonth()+1}月`:''}<br>${d.getDate()}</div>`).join('');
+  const rows=p.kotei.map(k=>{const pr=koteiProg(k,p);const ac=k.as&&k.ae?bar(k.as,k.ae,'ac'+(pr.pct===100?' g':'')):(k.as?bar(k.as,pr.pct===100&&k.ae?k.ae:t0,'ac'+(pr.pct===100?' g':'')):'');
+    return `<div class="lbl">${esc(k.name)}<small>${pr.pct}%${pr.auto?'（自動）':''}${pr.qty?` ${pr.done}/${pr.qty}`:''}</small></div><div class="trk" style="--w:${w}">${bar(k.ps,k.pe,'pl')}${ac}${t0>=ds[0]?`<div class="today" style="left:${pos(t0)}%"></div>`:''}</div>`}).join('');
+  return `<div class="card"><h2>全体工程</h2><div class="gantt"><div class="gt" style="grid-template-columns:150px repeat(${w},minmax(28px,1fr))"><div class="lbl"></div>${head}${rows}</div></div>
+  <div class="lg"><span><i style="background:#B9CCE6"></i>予定</span><span><i style="background:var(--blue)"></i>実績</span><span><i style="background:var(--ok)"></i>完了</span><span><i style="background:var(--late);width:2px"></i>今日</span></div></div>`;
+}
+function koteiEdit(p){
+  return `<div class="card"><h2>工種の予定・実績</h2><div class="muted small" style="margin-bottom:6px">進捗は現場アプリの作業内容から自動集計。該当がない工種は数量・完了数を手入力</div>
+  <table class="t"><tr><th>工種</th><th>予定</th><th>実績</th><th>数量／完了</th><th></th></tr>
+  ${p.kotei.map(k=>{const pr=koteiProg(k,p);return `<tr><td><input type="text" value="${esc(k.name)}" onchange="kupd('${k.id}','name',this.value)" style="min-width:120px"></td>
+   <td><input type="date" value="${k.ps}" onchange="kupd('${k.id}','ps',this.value)"><input type="date" value="${k.pe}" onchange="kupd('${k.id}','pe',this.value)"></td>
+   <td><input type="date" value="${k.as}" onchange="kupd('${k.id}','as',this.value)"><input type="date" value="${k.ae}" onchange="kupd('${k.id}','ae',this.value)"></td>
+   <td>${pr.auto?`<span class="muted">${pr.done}/${pr.qty}（自動）</span>`:`<div class="row" style="flex-wrap:nowrap"><input type="number" value="${k.qty}" placeholder="数量" onchange="kupd('${k.id}','qty',this.value)" style="width:64px"><input type="number" value="${k.done}" placeholder="完了" onchange="kupd('${k.id}','done',this.value)" style="width:64px"></div>`}</td>
+   <td><button class="btn s danger" onclick="kdel('${k.id}')">×</button></td></tr>`}).join('')}</table>
+  <div class="row" style="margin-top:8px"><button class="btn s" onclick="kadd()">＋ 工種を追加</button><button class="btn s" onclick="kfill()">予定を現場アプリの施工予定日で埋める</button></div></div>`;
+}
+function kupd(id,k,v){const x=P().kotei.find(y=>y.id===id);x[k]=v;touch(x);save();render()}
+function kdel(id){if(!confirm('この工種を削除しますか？'))return;const p=P();(p.del=p.del||[]).push(id);p.kotei=p.kotei.filter(k=>k.id!==id);save();render()}
+function kadd(){const name=prompt('工種名');if(!name)return;P().kotei.push({id:uid(),name,match:[],ps:'',pe:'',as:'',ae:'',qty:'',done:'',pct:''});save();render()}
+function kfill(){const p=P();if(!p.imp){toast('現場アプリのデータが未取込です');return}let n=0;
+  for(const k of p.kotei){const pr=koteiProg(k,p);if(pr.auto&&pr.dates&&pr.dates.length){if(!k.ps)k.ps=pr.dates[0];if(!k.pe)k.pe=pr.dates[pr.dates.length-1];n++}}
+  save();render();toast(`${n}工種の予定を埋めました`)}
+function kindCard(p){
+  return `<div class="card"><h2>工種別の進み具合</h2>${p.kotei.map(k=>{const pr=koteiProg(k,p);
+   return `<div class="kt"><div><b>${esc(k.name)}</b><div class="bar" style="margin-top:4px"><i class="${pr.pct===100?'g':''}" style="width:${pr.pct}%"></i></div><div class="muted small">${k.ps?`予定 ${fmt(k.ps)}〜${fmt(k.pe)}`:'予定未設定'}${k.as?`　実績 ${fmt(k.as)}〜${k.ae?fmt(k.ae):''}`:''}</div></div><div style="text-align:right"><b style="font-size:20px">${pr.pct}%</b><div class="muted small">${pr.qty?`${pr.done}/${pr.qty}件`:'－'}${pr.auto?'<br>現場アプリから':''}</div></div></div>`}).join('')}
+   ${p.imp?`<h3 style="margin-top:14px">管理番号ごとの状況（現場アプリ）</h3><table class="t"><tr><th>管理番号</th><th>路線</th><th>作業</th><th>施工予定</th><th>状態</th></tr>${p.imp.works.slice().sort((a,b)=>(a.plan||'9').localeCompare(b.plan||'9')).map(w=>`<tr><td>${esc(w.no)}</td><td>${esc(w.route)}</td><td>${esc(w.kubun||w.kind)}</td><td>${w.plan?fmt(w.plan):'－'}</td><td>${w.closed?'<span class="st s5">完了</span>':w.kyogi?'<span class="st s3">要協議</span>':'<span class="st s2">進行中</span>'}</td></tr>`).join('')}</table>`:''}
+  </div>`;
+}
+function weekCard(p,base,full){
+  const b=new Date(base+'T00:00:00');b.setDate(b.getDate()-((b.getDay()+6)%7));
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(b);d.setDate(d.getDate()+i);return ymd(d)});
+  const items=d=>{const out=[];
+    for(const x of p.week.filter(x=>x.d===d))out.push(`<div class="it ${x.hol?'hol':''}" onclick="event.stopPropagation();wdel('${x.id}')">${esc(x.t)}</div>`);
+    if(p.imp)for(const w of p.imp.works.filter(w=>w.plan===d))out.push(`<div class="it imp">${esc(w.no)} ${esc(w.kubun||w.kind)}${w.closed?' ✔':''}</div>`);
+    for(const dc of p.docs.filter(x=>x.due===d&&!['提出済','承認済','該当なし'].includes(x.status)))out.push(`<div class="it doc" onclick="event.stopPropagation();openDoc('${dc.id}')">期限 ${esc(dc.name)}</div>`);
+    return out.join('')};
+  const t0=today();
+  return `<div class="card"><div class="row" style="margin-bottom:8px"><h2 class="grow">週間工程 ${fmt(days[0])}〜${fmt(days[6])}</h2>${full?`<button class="btn s" onclick="wmove(-7)">‹ 前週</button><button class="btn s" onclick="S.wk0=null;save();render()">今週</button><button class="btn s" onclick="wmove(7)">翌週 ›</button>`:`<button class="btn s" onclick="S.tab='kotei';S.ksub='week';save();render()">週間工程へ</button>`}</div>
+  <div style="overflow-x:auto"><div class="wk">${days.map(d=>{const g=new Date(d+'T00:00:00').getDay();return `<div class="dy ${d===t0?'today':''} ${g===0||g===6?'hol':''}" onclick="wadd('${d}')"><h4>${fmt(d)}</h4>${items(d)}</div>`}).join('')}</div></div>
+  <div class="muted small" style="margin-top:6px">日をタップで予定を追加。緑＝現場アプリの施工予定、橙＝書類の期限、青＝手入力。予定をタップで削除</div></div>`;
+}
+function wmove(n){S.wk0=addDays(S.wk0||today(),n);save();render()}
+function wadd(d){const t=prompt(`${fmt(d)} の予定（作業内容・管理番号・人員など）`);if(!t)return;P().week.push({id:uid(),d,t,hol:/休|規制/.test(t)});save();render()}
+function wdel(id){const p=P();const x=p.week.find(y=>y.id===id);if(!confirm(`「${x.t}」を削除しますか？`))return;(p.del=p.del||[]).push(id);p.week=p.week.filter(y=>y.id!==id);save();render()}
+
+/* ==================== 工程データの取込（Excel） ==================== */
+function schedImportCard(p){
+  return `<div class="card"><div class="row"><h2 class="grow">工程データ</h2><button class="btn s p" onclick="document.getElementById('fileSched').click()">Excelを読み込む</button>${p.sched?`<button class="btn s" onclick="window.print()">印刷</button><button class="btn s danger" onclick="if(confirm('取り込んだ工程データを消しますか？')){P().sched=null;save();render()}">消す</button>`:''}</div>
+  <div class="muted small hint">「工程データ_取込用.xlsx」のシート「全体工程」「週間」を読み込みます。${p.sched?`取込 ${esc(p.sched.at)}：全体工程 ${p.sched.rows.length}行、週間 ${p.sched.wk.length}行`:'未取込（取り込むまでは工種の手入力表で表示）'}</div></div>`;
+}
+function toYmd(v,yr){
+  if(v===undefined||v===null||v==='')return '';
+  if(Object.prototype.toString.call(v)==='[object Date]'&&!isNaN(v))return `${v.getFullYear()}-${String(v.getMonth()+1).padStart(2,'0')}-${String(v.getDate()).padStart(2,'0')}`;
+  if(typeof v==='number'){const d=new Date(Math.round((v-25569)*86400000));return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`}
+  const s=String(v).trim().replace(/[年月]/g,'/').replace(/日/,'');
+  let m=s.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/);if(m)return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+  m=s.match(/^(\d{1,2})[\/-](\d{1,2})/);if(m)return `${yr}-${m[1].padStart(2,'0')}-${m[2].padStart(2,'0')}`;
+  return '';
+}
+function importSched(f){
+  if(!f)return;if(typeof XLSX==='undefined'){toast('Excel読込ライブラリが読めません（オンラインで開いてください）');return}
+  const r=new FileReader();r.onload=()=>{try{
+    const wb=XLSX.read(new Uint8Array(r.result),{type:'array',cellDates:true});const p=P();const yr=(p.startDate||today()).slice(0,4);
+    const sh=n=>{const ws=wb.Sheets[n];return ws?XLSX.utils.sheet_to_json(ws,{header:1,defval:''}):null};
+    const g=sh('全体工程'),w=sh('週間');if(!g&&!w)throw new Error('シート「全体工程」「週間」が見つかりません');
+    const rows=[],wk=[];
+    if(g){let cur='';for(const r0 of g.slice(1)){if(!r0.some(x=>x!==''))continue;const [ks,bs,nm,ps,pe,as,ae,h1,h2,memo]=r0;if(ks)cur=String(ks).trim();
+      rows.push({k:cur,b:String(bs||'').trim(),n:String(nm||'').trim(),ps:toYmd(ps,yr),pe:toYmd(pe,yr),as:toYmd(as,yr),ae:toYmd(ae,yr),h1:String(h1||'').toUpperCase(),h2:String(h2||'').toUpperCase(),memo:String(memo||'').trim()})}}
+    if(w){for(const r0 of w.slice(1)){if(!r0.some(x=>x!==''))continue;const [ds,de,ks,kb,nm,memo]=r0;const s=toYmd(ds,yr);if(!s&&!nm)continue;
+      wk.push({s,e:toYmd(de,yr)||s,k:String(ks||'').trim(),kb:String(kb||'').trim(),n:String(nm||'').trim(),memo:String(memo||'').trim()})}}
+    p.sched={at:new Date().toLocaleString('ja-JP'),u:now(),rows:rows.filter(x=>x.k||x.n),wk};save();render();toast(`全体工程 ${p.sched.rows.length}行・週間 ${wk.length}行を取り込みました`);
+  }catch(e){toast('読み込めませんでした：'+e.message)}};r.readAsArrayBuffer(f);
+}
+/* 詳細工程表（AM/PM列、予定＝黒、施工完了＝赤） */
+function detailGantt(p){
+  const R=p.sched.rows.filter(r=>r.k!=='備考');const notes=p.sched.rows.filter(r=>r.k==='備考');
+  const ds=R.flatMap(r=>[r.ps,r.pe,r.as,r.ae]).filter(Boolean).sort();
+  if(!ds.length)return '<div class="card"><div class="empty">全体工程に日付がありません</div></div>';
+  const days=[];for(let d=ds[0];d<=ds[ds.length-1];d=addDays(d,1))days.push(d);
+  if(days.length>90)return '<div class="card"><div class="empty">期間が90日を超えています。分けて取り込んでください</div></div>';
+  const x0=days[0];const tot=days.length*2;const t0=today();
+  const col=(d,h)=>diff(d,x0)*2+(h==='PM'?1:0);
+  const bar=(s,e,h1,h2,cls,label,lane)=>{if(!s||!e||e<s)return '';const a=col(s,h1==='PM'?'PM':'AM'),b=col(e,h2==='AM'?'AM':'PM')+1;const top=18+lane*24+(cls==='r'?9:0);return `<div class="b ${cls}" style="left:${a/tot*100}%;width:${(b-a)/tot*100}%;top:${top}px"><span>${esc(label)}</span></div>`};
+  const lanes=items=>{let prevA=-99,prevLen=0,lane=0;return items.slice().sort((x,y)=>(x.ps||x.as).localeCompare(y.ps||y.as)).map(it=>{const a=col(it.ps||it.as,it.h1==='PM'?'PM':'AM');const over=(a-prevA)*23<prevLen*11+6;lane=over?(lane?0:1):0;prevA=a;prevLen=(it.n||'').length;return {it,lane}})};
+  // 工種ごとにまとめる
+  const groups=[];for(const r of R){let g=groups.find(x=>x.k===r.k);if(!g){g={k:r.k,rows:[]};groups.push(g)}let row=g.rows.find(x=>x.b===r.b);if(!row){row={b:r.b,items:[]};g.rows.push(row)}row.items.push(r)}
+  const hd1=days.map(d=>{const g=new Date(d+'T00:00:00').getDay();const c=g===0?'sun':g===6?'sat':'';return `<th colspan="2" class="${c}">${fmt(d).replace('(','<br>(')}</th>`}).join('');
+  const hd2=days.map(d=>{const g=new Date(d+'T00:00:00').getDay();const c=g===0?'sun':g===6?'sat':'';return `<th class="${c}">AM</th><th class="${c}">PM</th>`}).join('');
+  const cells=days.map(d=>{const g=new Date(d+'T00:00:00').getDay();const c=g===0?'sun':g===6?'sat':'';return `<td class="${c}"></td><td class="${c}"></td>`}).join('');
+  let body='';
+  for(const g of groups){g.rows.forEach((row,i)=>{
+    body+=`<tr>${i===0?`<td class="lb g" rowspan="${g.rows.length}"><span>${esc(g.k)}</span></td>`:''}<td class="lb">${esc(row.b).replace(/\s+/g,'<br>')}</td><td class="tk" colspan="${tot}" style="padding:0"><div class="tr"><table class="dg" style="position:absolute;inset:0;width:100%;height:100%;border:0;min-width:0"><tr>${cells}</tr></table>${lanes(row.items).map(({it,lane})=>bar(it.ps,it.pe,it.h1,it.h2,'p',it.n,lane)+bar(it.as,it.ae,it.h1,it.h2,'r','',lane)).join('')}${t0>=x0&&t0<=days[days.length-1]?`<div class="today" style="left:${col(t0,'AM')/tot*100}%"></div>`:''}</div></td></tr>`})}
+  return `<div class="card"><div class="row"><h2 class="grow">詳細工程表</h2><span class="lg2"><i></i>予定<i class="r"></i>施工完了　<span style="color:var(--blue)">┆</span> 今日</span></div>
+  <div class="muted small hint">${esc(p.name)}　工期 ${p.startDate?fmt(p.startDate):'－'}〜${p.endDate?fmt(p.endDate):'－'}</div>
+  <div style="overflow-x:auto"><table class="dg"><tr><th rowspan="2" colspan="2" style="min-width:110px">工種・施工箇所</th>${hd1}</tr><tr>${hd2}</tr>${body}
+  ${notes.length?`<tr><td class="lb" colspan="2">備考</td><td class="note" colspan="${tot}">${notes.map(n=>`・${esc(n.n||n.memo)}`).join('<br>')}</td></tr>`:''}</table></div></div>`;
+}
+/* 週間工程表（前週の実施／今週の予定／翌週の予定） */
+function week3Card(p,base){
+  const b=new Date(base+'T00:00:00');b.setDate(b.getDate()-b.getDay()); // 日曜始まり
+  const d0=ymd(b);const days=[...Array(21)].map((_,i)=>addDays(d0,i-7));
+  const wkOf=d=>d<days[7]?0:d<days[14]?1:2;
+  const W=(p.sched?p.sched.wk:[]).filter(x=>x.s<=days[20]&&x.e>=days[0]);
+  const G=(p.sched?p.sched.rows:[]).filter(r=>r.k!=='備考');
+  // 工種行：週間シートの予定・実施、全体工程の行、現場アプリの作業内容、手入力
+  const rowsMap=new Map();const add=(k,item)=>{if(!rowsMap.has(k))rowsMap.set(k,[]);rowsMap.get(k).push(item)};
+  for(const x of W.filter(x=>/^(予定|実施)$/.test(x.kb)))add(x.k||x.n,{s:x.s,e:x.e,cls:x.kb==='実施'?'r':'p',n:x.n});
+  for(const r of G){const k=r.k+(r.b?' '+r.b:'');if(r.ps&&r.pe>=days[0]&&r.ps<=days[20])add(k,{s:r.ps,e:r.pe,cls:'p',n:r.n});if(r.as&&r.ae>=days[0]&&r.as<=days[20])add(k,{s:r.as,e:r.ae,cls:'r',n:''})}
+  if(p.imp)for(const w of p.imp.works.filter(w=>w.plan&&w.plan>=days[0]&&w.plan<=days[20]))add(w.kubun||w.kind,{s:w.plan,e:w.plan,cls:w.closed?'r':'p',n:w.no});
+  for(const x of p.week.filter(x=>x.d>=days[0]&&x.d<=days[20]))add('手入力の予定',{s:x.d,e:x.d,cls:'p',n:x.t});
+  const tot=21,cx=d=>diff(d,days[0]);
+  const cls=d=>{const g=new Date(d+'T00:00:00').getDay();return g===0?'sun':g===6?'sat':''};
+  const hd=days.map(d=>`<th class="${cls(d)}">${new Date(d+'T00:00:00').getDate()}</th>`).join('');
+  const hy=days.map(d=>`<th class="${cls(d)}">${'日月火水木金土'[new Date(d+'T00:00:00').getDay()]}</th>`).join('');
+  const bg=`<table class="wk3" style="position:absolute;inset:0;width:100%;height:100%;border:0;min-width:0"><tr>${days.map(d=>`<td class="${cls(d)}"></td>`).join('')}</tr></table>`;
+  const bar=it=>{const a=Math.max(0,cx(it.s)),e=Math.min(20,cx(it.e))+1;return `<div class="b ${it.cls}" style="left:${a/tot*100}%;width:${(e-a)/tot*100}%"><span>${esc(it.n)}</span></div>`};
+  let body='';for(const [k,items] of rowsMap)body+=`<tr><td class="lb">${esc(k)}</td><td class="tk" colspan="21"><div class="tr">${bg}${items.map(bar).join('')}</div></td></tr>`;
+  if(!rowsMap.size)body=`<tr><td class="lb">（工種の予定なし）</td><td class="tk" colspan="21"><div class="tr">${bg}</div></td></tr>`;
+  // 書類・検査・閉所・打合せ・立会
+  const docsIn=p.docs.filter(d=>d.due>=days[0]&&d.due<=days[20]&&d.status!=='該当なし');
+  const subIn=p.docs.filter(d=>d.submitted>=days[0]&&d.submitted<=days[20]);
+  const line=(label,fn)=>`<tr><td class="lb">${label}</td>${days.map(d=>`<td class="${cls(d)} hol">${fn(d)}</td>`).join('')}</tr>`;
+  const kbOn=(d,kb)=>W.filter(x=>x.kb===kb&&x.s<=d&&x.e>=d);
+  const marks=(d,kb,mark)=>kbOn(d,kb).length?mark:'';
+  const docCell=d=>[...docsIn.filter(x=>x.due===d).map(x=>`<span title="${esc(x.name)}" style="color:#000">■</span>`),...subIn.filter(x=>x.submitted===d).map(x=>`<span title="${esc(x.name)}提出" style="color:#D00">■</span>`),...kbOn(d,'書類').map(x=>`<span title="${esc(x.n)}">■</span>`)].join('');
+  const holCell=d=>{const h=kbOn(d,'閉所');if(h.length)return '休日<br>○';return new Date(d+'T00:00:00').getDay()===0?'休日':''};
+  const memo=kb=>[0,1,2].map(i=>`<td class="txt ${i===1?'on':''}" colspan="7">${W.filter(x=>x.kb===kb&&wkOf(x.s)===i).map(x=>`・${esc(x.n)}`).join('<br>')}</td>`).join('');
+  const side=kb=>W.filter(x=>x.kb===kb).map(x=>`・${esc(x.n)}`).join('<br>')||'';
+  const docList=[...docsIn.map(x=>`■ ${fmt(x.due)} 期限 ${esc(x.name)}`),...subIn.map(x=>`<span style="color:#D00">■</span> ${fmt(x.submitted)} 提出 ${esc(x.name)}`)].join('<br>');
+  return `<div class="card"><div class="row"><h2 class="grow">週間工程表　${fmt(days[7])}〜${fmt(days[13])}</h2><button class="btn s" onclick="wmove(-7)">‹ 前週</button><button class="btn s" onclick="S.wk0=null;save();render()">今週</button><button class="btn s" onclick="wmove(7)">翌週 ›</button><button class="btn s" onclick="window.print()">印刷</button></div>
+  <div class="muted small hint">${esc(p.name)}　黒＝予定工程、赤＝実施工程・提出済。■＝書類の期限（赤は提出）。日をタップして予定を足すのは「期限」タブの週間欄から</div>
+  <div style="overflow-x:auto"><table class="wk3">
+   <tr><th rowspan="2" style="min-width:140px">工種</th><th colspan="7">前週の予定及び実施</th><th colspan="7">今週の予定</th><th colspan="7">翌週の予定</th></tr><tr>${hd}</tr><tr><th>曜日</th>${hy}</tr>
+   ${body}
+   ${line('書類作成及び提出',docCell)}
+   ${line('検査等',d=>marks(d,'検査','○'))}
+   ${line('現場閉所予定及び実施',holCell)}
+   ${line('打合せ希望',d=>marks(d,'打合せ希望','○'))}
+   ${line('立会希望',d=>marks(d,'立会希望','○'))}
+   <tr><td class="lb">記事</td>${memo('記事')}</tr>
+  </table></div>
+  <div class="grid2" style="margin-top:8px;font-size:12px">
+   <div><b>打合せ取り決め事項</b><div>${side('取決め')||'<span class="muted">（週間シートの区分「取決め」）</span>'}</div><b style="display:block;margin-top:6px">書類（この3週）</b><div>${docList||'<span class="muted">なし</span>'}</div></div>
+   <div><b>施工報告</b><div>${side('施工報告')||'<span class="muted">（区分「施工報告」）</span>'}</div><b style="display:block;margin-top:6px">懸念・確認事項</b><div>${side('懸念')||'<span class="muted">（区分「懸念」）</span>'}</div><b style="display:block;margin-top:6px">資材置場</b><div>${side('資材置場')||''}</div></div>
+  </div></div>`;
+}
+
+/* ==================== 共有フォルダ（事務所の共有サーバー）で自動同期 ==================== */
+const SH={handle:null,file:'shorui-kanri_共有データ.json',dirty:false,lastText:'',status:'未接続',at:'',timer:null,busy:false};
+const idb={open:()=>new Promise((ok,ng)=>{const r=indexedDB.open('shorui-kanri',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>ok(r.result);r.onerror=()=>ng(r.error)}),
+  get:async k=>{const db=await idb.open();return new Promise(ok=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)})},
+  set:async(k,v)=>{const db=await idb.open();return new Promise(ok=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>ok()})}};
+const canShare=()=>!!window.showDirectoryPicker;
+async function pickShare(){
+  if(!canShare()){toast('この機能はPCのChrome／Edgeで、https のURLから開いたときだけ使えます');return}
+  try{const hd=await window.showDirectoryPicker({mode:'readwrite'});await idb.set('dir',hd);SH.handle=hd;SH.status='接続';await syncShare(true);startShare();render();toast('共有フォルダに接続しました')}catch(e){if(e.name!=='AbortError')toast('接続できません：'+e.message)}
+}
+async function restoreShare(){
+  if(!canShare())return;const hd=await idb.get('dir');if(!hd)return;SH.handle=hd;
+  const q=await hd.queryPermission({mode:'readwrite'});if(q==='granted'){SH.status='接続';await syncShare(true);startShare()}else SH.status='再接続が必要';render();
+}
+async function reconnectShare(){const hd=SH.handle;if(!hd)return pickShare();const q=await hd.requestPermission({mode:'readwrite'});if(q==='granted'){SH.status='接続';await syncShare(true);startShare();render()}}
+function disconnectShare(){SH.handle=null;SH.status='未接続';idb.set('dir',null);clearInterval(SH.timer);render()}
+function startShare(){clearInterval(SH.timer);SH.timer=setInterval(()=>syncShare(false),5000)}
+async function readShare(){try{const fh=await SH.handle.getFileHandle(SH.file);const f=await fh.getFile();return await f.text()}catch(e){return ''}}
+async function writeShare(text){const fh=await SH.handle.getFileHandle(SH.file,{create:true});const w=await fh.createWritable();await w.write(text);await w.close()}
+async function syncShare(force){
+  if(!SH.handle||SH.busy)return;SH.busy=true;
+  try{
+    const text=await readShare();
+    let changed=false;
+    if(text&&text!==SH.lastText){const R=JSON.parse(text);if(R&&R.projects){changed=mergeInto(S,R);SH.lastText=text}}
+    if(SH.dirty||force||(!text)){const out={projects:S.projects,delProj:S.delProj||[],savedAt:now(),savedBy:S.me||''};const t=JSON.stringify(out);if(t!==SH.lastText){await writeShare(t);SH.lastText=t}SH.dirty=false}
+    SH.at=new Date().toLocaleTimeString('ja-JP');SH.status='接続';
+    if(changed){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()}
+    else{const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel()}
+  }catch(e){SH.status='エラー：'+e.message;const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel()}
+  SH.busy=false;
+}
+function shareLabel(){return SH.handle?`共有フォルダ ${SH.status}${SH.at?'　最終同期 '+SH.at:''}`:'共有フォルダ 未接続'}
+/* マージ：id ごとに更新時刻の新しい方。削除は del リストで伝える */
+function newer(a,b){return (b&&b.u||'')>(a&&a.u||'')}
+function mergeList(local,remote,del){const m=new Map(local.map(x=>[x.id,x]));let ch=false;
+  for(const r of remote){if(del.has(r.id))continue;const l=m.get(r.id);if(!l){m.set(r.id,r);ch=true}else if(newer(l,r)){m.set(r.id,r);ch=true}}
+  for(const id of del){if(m.has(id)){m.delete(id);ch=true}}
+  return {list:[...m.values()],ch}}
+function mergeInto(S,R){
+  let ch=false;const delP=new Set([...(S.delProj||[]),...(R.delProj||[])]);S.delProj=[...delP];
+  for(const rp of R.projects){if(delP.has(rp.id))continue;let lp=S.projects.find(p=>p.id===rp.id);
+    if(!lp){S.projects.push(rp);ch=true;continue}
+    const del=new Set([...(lp.del||[]),...(rp.del||[])]);lp.del=[...del];lp.removed=[...new Set([...(lp.removed||[]),...(rp.removed||[])])];
+    if((rp.pu||'')>(lp.pu||'')){for(const k of ['name','client','awardDate','recycleOkDate','hoshoDate','contractDate','startDate','endDate','agent','engineer','members','catNames','pu','pby'])lp[k]=rp[k];ch=true}
+    let r=mergeList(lp.docs,rp.docs||[],del);lp.docs=r.list;ch=ch||r.ch;
+    r=mergeList(lp.kotei,rp.kotei||[],del);lp.kotei=r.list;ch=ch||r.ch;
+    r=mergeList(lp.week,rp.week||[],del);lp.week=r.list;ch=ch||r.ch;
+    if(rp.sched&&(rp.sched.u||'')>(lp.sched&&lp.sched.u||'')){lp.sched=rp.sched;ch=true}
+    if(rp.imp&&(rp.imp.u||'')>(lp.imp&&lp.imp.u||'')){lp.imp=rp.imp;ch=true}
+    if(ch)recalc(lp);
+  }
+  for(const id of delP){if(S.projects.some(p=>p.id===id)){S.projects=S.projects.filter(p=>p.id!==id);ch=true}}
+  if(!S.cur||!S.projects.find(p=>p.id===S.cur))S.cur=S.projects[0]?.id||null;
+  return ch;
+}
+function shareCard(){
+  return `<div class="card"><h2>皆で共有（事務所の共有サーバー）</h2>
+  <div class="muted small" style="margin-bottom:6px">共有サーバー上のフォルダを選ぶと、その中の「${SH.file}」に自動で保存・読み込みします（5秒ごと）。同じフォルダを選んだPC同士でデータが揃います。書類・工種・予定は項目ごとに更新時刻の新しい方が残るので、同時に別の書類を触っても消えません。</div>
+  <div class="row"><span id="shStatus" class="small grow">${shareLabel()}</span>
+   ${SH.handle?(SH.status==='再接続が必要'?`<button class="btn s p" onclick="reconnectShare()">再接続</button>`:`<button class="btn s" onclick="syncShare(true)">今すぐ同期</button>`)+`<button class="btn s danger" onclick="disconnectShare()">切断</button>`:`<button class="btn s p" onclick="pickShare()">共有フォルダを選ぶ</button>`}</div>
+  <label class="f" style="margin-top:8px"><span>自分の名前（誰が更新したか記録用）</span><input type="text" value="${esc(S.me||'')}" placeholder="例：上島" onchange="S.me=this.value;save()"></label>
+  <div class="muted small">PCのChrome／Edgeで、GitHub Pages の https のURLから開いたときに使えます（ファイルを直接開いた file:// では使えません）。ブラウザを開き直したときは「再接続」を1回押します。</div></div>`;
+}
+
+/* ---- 現場アプリ取込 ---- */
+function rImp(m,p){
+  m.innerHTML=`<div class="card"><h2>現場アプリのデータを読む</h2>
+  <p class="muted">「道路照明 現場アプリ」で書き出したJSON（事務所へ送る／書き出し）を読み込むと、管理番号・作業・施工予定日・完了・測定値の有無を取り込み、書類の記載欄に使います。写真なしのJSONで十分です。</p>
+  <div class="row"><button class="btn p" onclick="document.getElementById('fileGenba').click()">JSONを読み込む</button>${p.imp?`<button class="btn s danger" onclick="if(confirm('取込データを消しますか？')){P().imp=null;save();render()}">取込データを消す</button>`:''}</div>
+  ${p.imp?`<h3 style="margin-top:14px">読み取り結果（${esc(p.imp.at)}）</h3>
+   <table class="t"><tr><th>項目</th><th>値</th></tr>
+   <tr><td>現場名</td><td>${esc(p.imp.name||'（読めず）')}</td></tr>
+   <tr><td>形式・バージョン</td><td>${esc(p.imp.format)} v${esc(p.imp.version)}</td></tr>
+   <tr><td>管理番号</td><td>${p.imp.ledgers.length}件</td></tr>
+   <tr><td>作業</td><td>${p.imp.works.length}件（完了 ${p.imp.works.filter(w=>w.closed).length}、要協議 ${p.imp.works.filter(w=>w.kyogi).length}、施工予定日あり ${p.imp.works.filter(w=>w.plan).length}、測定値あり ${p.imp.works.filter(w=>w.meas).length}）</td></tr>
+   <tr><td>作業内容の内訳</td><td>${countBy(p.imp.works,'kubun')}</td></tr>
+   <tr><td>写真</td><td>${p.imp.photos}枚</td></tr>
+   <tr><td>JSONの上位キー</td><td class="small">${esc(p.imp.keys.join(', '))}</td></tr></table>
+   <details style="margin-top:8px"><summary>読み取りの仕組み</summary><div class="muted small">現場アプリのJSON（format "dl-genba"）は項目名を推定して読んでいます。管理番号や作業が0件のときは、JSONの上位キー名をこの画面の表からClaudeに伝えれば対応表を直せます。</div></details>`:''}
+  </div>
+  <div class="card"><h2>このアプリのデータ</h2><div class="row"><button class="btn" onclick="exportApp()">書き出し（JSON）</button><button class="btn" onclick="document.getElementById('fileApp').click()">取り込み（JSON）</button></div><div class="muted small" style="margin-top:6px">データはこの端末（ブラウザ）内に保存。PC↔iPadの移動や控えはJSONで</div></div>`;
+}
+/* 現場アプリJSONの読み取り（項目名は推定。実データで確定させる） */
+function pick(o,keys){for(const k of keys){if(o&&o[k]!==undefined&&o[k]!==null&&o[k]!=='')return o[k]}return ''}
+function findArr(o,keys){for(const k of keys){if(o&&Array.isArray(o[k]))return o[k]}return null}
+function analyzeGenba(j){
+  const site=j.site||j.genba||j;
+  let ledgers=findArr(j,['ledgers','poles','kanri','items','daicho'])||findArr(site,['ledgers','poles','kanri','items','daicho'])||[];
+  if(!ledgers.length){ // 深さ2までで「管理番号らしい」配列を探す
+    for(const v of Object.values(j)){if(Array.isArray(v)&&v.length&&typeof v[0]==='object'&&Object.keys(v[0]).some(k=>/no|kanri|管理番号|id/i.test(k))&&Object.keys(v[0]).some(k=>/works|sagyo|作業|jobs/i.test(k))){ledgers=v;break}
+      if(v&&typeof v==='object'&&!Array.isArray(v))for(const vv of Object.values(v)){if(Array.isArray(vv)&&vv.length&&typeof vv[0]==='object'&&Object.keys(vv[0]).some(k=>/works|sagyo|作業|jobs/i.test(k))){ledgers=vv;break}}
+      if(ledgers.length)break}
+  }
+  let photos=0;const cnt=x=>{if(typeof x==='string'){if(x.startsWith('data:image'))photos++}else if(Array.isArray(x))x.forEach(cnt);else if(x&&typeof x==='object')Object.values(x).forEach(cnt)};cnt(j);
+  const L=[],W=[];
+  for(const l of ledgers){
+    const no=pick(l,['no','kanriNo','id','管理番号','num','number']);
+    const led=l.ledger||l.daicho||l;
+    L.push({no,route:pick(led,['route','rosen','路線']),lamp:pick(led,['newLamp','newFixture','lampNew','新設灯具','fixture']),updated:pick(led,['updated','koshin','更新年月日'])});
+    const ws=findArr(l,['works','sagyo','jobs','作業'])||[];
+    for(const w of ws){
+      const pre=w.pre||w.chakushu||w.seko?.pre||{};
+      W.push({no,route:pick(led,['route','rosen','路線']),kind:pick(w,['kind','koushu','工種','type']),kubun:pick(w,['kubun','content','sagyoNaiyo','作業内容','work']),
+        plan:pick(pre,['date','planDate','sekoDate'])||pick(w,['planDate','sekoDate','施工予定日','plan']),closed:!!pick(w,['closed','done','完了']),
+        kyogi:JSON.stringify(w).includes('要協議'),meas:!!(w.meas||w.sokutei||w.測定)});
+    }
+  }
+  return {at:new Date().toLocaleString('ja-JP'),name:pick(site,['name','siteName','工事名','genbaName'])||pick(j,['name','siteName']),format:j.format||'?',version:j.version||'?',keys:Object.keys(j).slice(0,20),ledgers:L,works:W,photos};
+}
+function importGenba(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);const p=P();p.imp=analyzeGenba(j);p.imp.u=now();save();render();toast(`管理番号 ${p.imp.ledgers.length}件・作業 ${p.imp.works.length}件を読み取りました`)}catch(e){toast('読み込めませんでした：'+e.message)}};r.readAsText(f)}
+function exportApp(){const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`shorui-kanri_${today()}.json`;a.click()}
+function importApp(f){if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!j.projects)throw new Error('形式が違います');if(!confirm('この端末のデータを置き換えます。よろしいですか？'))return;S=Object.assign(S,j);save();render();toast('取り込みました')}catch(e){toast('取り込めませんでした：'+e.message)}};r.readAsText(f)}
+function exportCsv(){const p=P();const rows=[['区分','書類名','期限','状態','必要なもの(完了/全)','提出日','承認日','主担当','副担当','メモ']];
+  for(const d of p.docs)rows.push([CL(d.cat),d.name,d.due,d.status,d.req.length?`${d.req.filter(r=>r.done).length}/${d.req.length}`:'',d.submitted,d.approved,d.assignee,d.sub||'',d.memo]);
+  const csv='\uFEFF'+rows.map(r=>r.map(c=>`"${String(c??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=`書類一覧_${p.name}_${today()}.csv`;a.click()}
+
+/* ---- 工事情報 ---- */
+function rSet(m,p){
+  m.innerHTML=shareCard()+`<div class="card"><h2>工事情報</h2>
+  <label class="f"><span>工事名</span><input type="text" value="${esc(p.name)}" onchange="pupd('name',this.value)"></label>
+  <label class="f"><span>発注者</span><input type="text" value="${esc(p.client)}" onchange="pupd('client',this.value)"></label>
+  <div class="grid2">
+   <label class="f"><span>落札決定日（契約前の書類の基準）</span><input type="date" value="${p.awardDate||''}" onchange="pupd('awardDate',this.value)"></label>
+   <label class="f"><span>リサイクル法 説明書の承認日</span><input type="date" value="${p.recycleOkDate||''}" onchange="pupd('recycleOkDate',this.value)"></label>
+   <label class="f"><span>契約保証がとれた日</span><input type="date" value="${p.hoshoDate||''}" onchange="pupd('hoshoDate',this.value)"></label>
+   <label class="f"><span>契約日${contractHint(p)}</span><input type="date" value="${p.contractDate}" onchange="pupd('contractDate',this.value)"></label>
+   <label class="f"><span>着工日（工事着手日）</span><input type="date" value="${p.startDate}" onchange="pupd('startDate',this.value)"></label>
+   <label class="f"><span>工期末</span><input type="date" value="${p.endDate}" onchange="pupd('endDate',this.value)"></label>
+   <label class="f"><span>現場代理人</span><input type="text" value="${esc(p.agent)}" onchange="pupd('agent',this.value)"></label>
+   <label class="f"><span>担当者（カンマ区切り。書類の担当の選択肢）</span><input type="text" value="${esc((p.members||[]).join(','))}" onchange="pupd('members',this.value.split(/[,、\s]+/).filter(Boolean))"></label>
+   <label class="f"><span>主任（監理）技術者</span><input type="text" value="${esc(p.engineer)}" onchange="pupd('engineer',this.value)"></label>
+  </div>
+  <div class="muted small">日付を変えると、自動計算の期限と毎月の書類（履行報告・安全教育）が更新されます。手で直した期限はそのままです。</div></div>
+  <div class="card"><h2>区分の名称</h2><div class="muted small" style="margin-bottom:6px">表示名を変えられます（空欄で元に戻す）。書類の並び順は変わりません</div>
+  ${CATS.map(c=>`<label class="f" style="margin:4px 0"><span>${esc(c)}</span><input type="text" value="${esc((p.catNames||{})[c]||'')}" placeholder="${esc(c)}" onchange="setCat('${c}',this.value)"></label>`).join('')}</div>
+  <div class="card"><h2>書類テンプレートの根拠</h2><div class="muted small">国土交通省「工事関係書類一覧表」（H23.6.1）の提出書類を基本に、電気通信設備工事共通仕様書（令和8年3月）の承諾図・施工図・試験成績書・取扱説明書を加えています。期限の日数（現場代理人通知＝契約後7日、内訳書・工程表＝契約後14日〈契約書第3条〉、建退共＝契約後1か月、施工計画書＝着手前など）は目安です。特記仕様書で別に定めがあればここで直してください。</div>
+  <div class="row" style="margin-top:8px"><button class="btn s" onclick="if(confirm('標準一式にない書類があれば追加します（既存はそのまま）')){addMissing()}">標準一式の不足分を追加</button></div></div>
+  <div class="card"><h2>この工事を削除</h2><button class="btn danger" onclick="delProj()">工事を削除（この端末から）</button></div>`;
+}
+function contractHint(p){const c=[p.recycleOkDate,p.hoshoDate].filter(Boolean).sort();if(!c.length)return '';const d=c[c.length-1];return p.contractDate?'':`（見込み ${fmt(d)}＝承認日と保証取得日の遅い方 <a href="#" onclick="pupd('contractDate','${d}');return false">この日にする</a>）`}
+function setCat(c,v){const p=P();p.catNames=p.catNames||{};if(v.trim())p.catNames[c]=v.trim();else delete p.catNames[c];p.pu=now();save();render()}
+function pupd(k,v){const p=P();p[k]=v;p.pu=now();p.pby=S.me||'';recalc(p);save();render()}
+function addMissing(p,quiet){p=p||P();let n=0;for(const t of TPL){if(t.rule==='M')continue;if((p.removed||[]).includes(t.id))continue;if(!p.docs.some(d=>d.tid===t.id)){p.docs.push(mkDoc(t,p));n++}}recalc(p);save();if(!quiet){render();toast(`${n}件追加`)}return n}
+function delProj(){const p=P();if(!confirm(`「${p.name}」の書類・工程データをすべて削除します。よろしいですか？`))return;(S.delProj=S.delProj||[]).push(p.id);S.projects=S.projects.filter(x=>x.id!==p.id);S.cur=S.projects[0]?.id||null;save();render()}
+function openProjForm(){
+  const sh=document.getElementById('sheet');
+  sh.innerHTML=`<div class="top"><h2>工事を登録</h2><button class="btn s" onclick="closeSheet()">閉じる</button></div>
+  <label class="f"><span>工事名</span><input type="text" id="pf_name" placeholder="令和8年度 南部国道管内道路照明施設設置外工事"></label>
+  <label class="f"><span>発注者</span><input type="text" id="pf_client" value="沖縄総合事務局 南部国道事務所"></label>
+  <div class="grid2">
+   <label class="f"><span>落札決定日</span><input type="date" id="pf_aw"></label>
+   <label class="f"><span>契約日（未確定なら空欄）</span><input type="date" id="pf_c"></label>
+   <label class="f"><span>着工日</span><input type="date" id="pf_s"></label>
+   <label class="f"><span>工期末</span><input type="date" id="pf_e"></label>
+   <label class="f"><span>現場代理人</span><input type="text" id="pf_a"></label>
+  </div>
+  <button class="btn p" onclick="submitProj()">標準書類一式を作って登録</button>
+  <div class="muted small" style="margin-top:8px">登録後に「工事情報」で日付を変えれば期限は再計算されます</div>`;
+  sh.classList.add('on');document.getElementById('sheetBg').classList.add('on');
+}
+function submitProj(){const g=id=>document.getElementById(id).value;if(!g('pf_name').trim()){toast('工事名を入れてください');return}
+  newProject({name:g('pf_name').trim(),awardDate:g('pf_aw'),client:g('pf_client'),contractDate:g('pf_c'),startDate:g('pf_s'),endDate:g('pf_e'),agent:g('pf_a')});closeSheet();S.tab='home';render();toast('標準書類一式を登録しました')}
+function selProj(id){S.cur=id;save();render()}
+
+document.getElementById('ver').textContent=VER;load();if(S.cur&&!P())S.cur=S.projects[0]?.id||null;render();restoreShare();
+</script>
+</body>
+</html>
