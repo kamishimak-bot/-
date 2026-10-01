@@ -293,8 +293,8 @@ const TPL = [
 const CATS=['1 契約関係','2 工事前準備','3 設計照査・施工体制・計画','4 施工','5 施工中','6 完成'];
 const CL=c=>{const p=P();return (p&&p.catNames&&p.catNames[c])||c};
 const OLDCAT={'契約前':'1 契約関係','契約':'2 工事前準備','施工計画':'3 設計照査・施工体制・計画','電気':'4 施工','施工中':'5 施工中','完成':'6 完成','2 工事始め':'2 工事前準備','3 設計照査':'3 設計照査・施工体制・計画','4 施工体制・計画':'3 設計照査・施工体制・計画','5 施工':'4 施工','6 施工中':'5 施工中','7 完成':'6 完成'};
-const STATUS=['未着手','作成中','発注者待ち','社内確認','提出済','承認済','該当なし'];
-const STCLS={'未着手':'s1','作成中':'s2','発注者待ち':'s3','社内確認':'s3','提出済':'s4','承認済':'s5','該当なし':'s0'};
+const STATUS=['未着手','作成中','発注者待ち','メーカー待ち','社内確認','提出済','完了','該当なし'];
+const STCLS={'未着手':'s1','作成中':'s2','発注者待ち':'s3','メーカー待ち':'s3','社内確認':'s3','提出済':'s4','完了':'s5','該当なし':'s0'};
 
 /* 工種（工程表の初期行）。match: 現場アプリの工種・作業内容と照合する語 */
 const KOTEI_DEF=[
@@ -310,9 +310,10 @@ const KOTEI_DEF=[
 ];
 
 /* ==================== 状態 ==================== */
-const VER='v23';const KEY='dl-shorui-v1';
+const VER='v25';const KEY='dl-shorui-v1';
 let S={projects:[],cur:null,tab:'home',ksub:'all',wk0:null,dcat:'all',dst:'open'};
-function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=Object.assign(S,j);}catch(e){}
+const OLDST={'承認済':'完了'};function fixSt(S){for(const p of S.projects||[])for(const d of p.docs||[])if(OLDST[d.status])d.status=OLDST[d.status]}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=Object.assign(S,j);}catch(e){}fixSt(S);
   for(const p of S.projects)for(const d of p.docs){const t=TPL.find(x=>x.id===d.tid);if(t)d.cat=t.cat;else if(OLDCAT[d.cat])d.cat=OLDCAT[d.cat]}
   if(OLDCAT[S.dcat])S.dcat=OLDCAT[S.dcat]
   for(const p of S.projects)if(p.catNames)for(const k of Object.keys(p.catNames))if(OLDCAT[k]){if(!p.catNames[OLDCAT[k]])p.catNames[OLDCAT[k]]=p.catNames[k];delete p.catNames[k]}
@@ -376,7 +377,7 @@ function newProject(f){
 /* ==================== 期限判定 ==================== */
 function dueCls(d){
   if(d.status==='該当なし')return 'na';
-  if(d.status==='提出済'||d.status==='承認済')return 'done';
+  if(d.status==='提出済'||d.status==='完了')return 'done';
   if(!d.due)return '';
   const n=diff(d.due,today());
   return n<0?'late':n<=7?'soon':'ok';
@@ -404,9 +405,9 @@ function render(){
 
 /* ---- 期限（ホーム） ---- */
 function rHome(m,p){
-  const open=p.docs.filter(d=>d.due&&!['提出済','承認済','該当なし'].includes(d.status)).sort((a,b)=>a.due.localeCompare(b.due));
+  const open=p.docs.filter(d=>d.due&&!['提出済','完了','該当なし'].includes(d.status)).sort((a,b)=>a.due.localeCompare(b.due));
   const late=open.filter(d=>diff(d.due,today())<0),soon=open.filter(d=>{const n=diff(d.due,today());return n>=0&&n<=7});
-  const appl=p.docs.filter(d=>d.status!=='該当なし'),done=appl.filter(d=>['提出済','承認済'].includes(d.status));
+  const appl=p.docs.filter(d=>d.status!=='該当なし'),done=appl.filter(d=>['提出済','完了'].includes(d.status));
   const lane=open.slice(0,12).map(d=>{const n=diff(d.due,today());const c=n<0?'late':n<=7?'soon':'ok';
     return `<div class="tk ${c}" onclick="openDoc('${d.id}')"><div class="d">${n<0?'':''}${Math.abs(n)}<small>${n<0?'日超過':n===0?'日 今日':'日後'}</small></div><div class="t">${esc(d.name)}</div><div class="m">${fmt(d.due)}　${esc(d.status)}${reqPct(d)!==null?`　必要なもの ${reqPct(d)}%`:''}</div></div>`}).join('');
   m.innerHTML=`
@@ -417,13 +418,13 @@ function rHome(m,p){
       <div class="late"><b>${late.length}</b><span class="muted">期限超過</span></div>
       <div class="soon"><b>${soon.length}</b><span class="muted">7日以内</span></div>
       <div><b>${open.length}</b><span class="muted">未提出（期限あり）</span></div>
-      <div class="ok"><b>${done.length}<small>/${appl.length}</small></b><span class="muted">提出・承認済</span></div>
+      <div class="ok"><b>${done.length}<small>/${appl.length}</small></b><span class="muted">提出・完了</span></div>
     </div>
   </div>
   ${!p.contractDate?`<div class="card" style="border-left:5px solid var(--soon)"><h2>契約日が未確定</h2><div class="small">契約日＝契約保証がとれた日と、建設リサイクル法 説明書の承認日の遅い方（記載要領）。${p.awardDate?`落札決定 ${fmt(p.awardDate)}。契約保証の期限は翌日から休日除く7日＝${fmt(addBiz(p.awardDate,7))}（祝日は手で調整）。`:'工事情報に落札決定日を入れると契約前の書類に期限が付きます。'}<br>説明書承認 ${p.recycleOkDate?fmt(p.recycleOkDate):'未'}　契約保証 ${p.hoshoDate?fmt(p.hoshoDate):'未'}${contractHint(p)}</div><div class="muted small">契約日が決まると「契約」区分の期限（現場代理人通知・内訳書・工程表・建退共・コリンズ）が自動で付きます。</div></div>`:''}
   <div class="card">
     <h2>進み具合</h2>
-    ${CATS.map(c=>{const a=appl.filter(d=>d.cat===c),dn=a.filter(d=>['提出済','承認済'].includes(d.status));const pc=a.length?Math.round(dn.length/a.length*100):0;
+    ${CATS.map(c=>{const a=appl.filter(d=>d.cat===c),dn=a.filter(d=>['提出済','完了'].includes(d.status));const pc=a.length?Math.round(dn.length/a.length*100):0;
       return `<div class="row" style="margin:6px 0"><span style="width:110px" class="small">${esc(CL(c))}</span><div class="bar grow"><i class="${pc===100?'g':''}" style="width:${pc}%"></i></div><span class="small" style="width:62px;text-align:right">${dn.length}/${a.length}</span></div>`}).join('')}
   </div>
   <div class="card">
@@ -442,9 +443,9 @@ function rDocs(m,p){
   if(S.dview==='ass'){m.innerHTML=vw+assigneeCard(p);return}
   let list=assFilter(p.docs.slice());
   if(S.dcat!=='all')list=list.filter(d=>d.cat===S.dcat);
-  if(S.dst==='open')list=list.filter(d=>!['提出済','承認済','該当なし'].includes(d.status));
+  if(S.dst==='open')list=list.filter(d=>!['提出済','完了','該当なし'].includes(d.status));
   else if(S.dst==='late')list=list.filter(d=>dueCls(d)==='late'||dueCls(d)==='soon');
-  else if(S.dst==='done')list=list.filter(d=>['提出済','承認済'].includes(d.status));
+  else if(S.dst==='done')list=list.filter(d=>['提出済','完了'].includes(d.status));
   list.sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
   m.innerHTML=vw+`
   <div class="card">
@@ -465,7 +466,7 @@ function addCustomDoc(){
 
 /* ---- 担当別（人ごとに担当書類を区分） ---- */
 function assigneeCard(p){
-  const open=d=>!['提出済','承認済','該当なし'].includes(d.status);
+  const open=d=>!['提出済','完了','該当なし'].includes(d.status);
   const groups=[...members(p),''];
   const row=(d,mm)=>{const c=dueCls(d);const t=TPL.find(x=>x.id===d.tid)||{};return `<li class="${c}" onclick="openDoc('${d.id}')"><div class="lb"></div><div><div class="nm">${esc(d.name)}${t.cond?'<span class="tag">該当時</span>':''}${mm&&d.assignee!==mm&&d.sub===mm?`<span class="tag">副（担当 ${esc(d.assignee||'未割当')}）</span>`:''}</div><div class="cat">${esc(CL(d.cat))}${d.due?` ・ <span class="due ${c==='late'||c==='soon'?c:''}">期限 ${fmt(d.due)}</span>`:' ・ 都度'}</div></div><span class="st ${STCLS[d.status]}">${d.status}</span></li>`};
   const sec=groups.map(mm=>{const ds=p.docs.filter(d=>(mm?(d.assignee===mm||d.sub===mm):(!d.assignee&&!d.sub))&&d.status!=='該当なし').sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));if(!ds.length)return '';
@@ -527,7 +528,7 @@ function openDoc(id){
 }
 function closeSheet(){document.getElementById('sheet').classList.remove('on');document.getElementById('sheetBg').classList.remove('on')}
 function upd(id,k,v){const d=P().docs.find(x=>x.id===id);d[k]=v;touch(d);save();render()}
-function setSt(id,s){const d=P().docs.find(x=>x.id===id);d.status=s;touch(d);if(s==='提出済'&&!d.submitted)d.submitted=today();if(s==='承認済'&&!d.approved)d.approved=today();save();openDoc(id);render()}
+function setSt(id,s){const d=P().docs.find(x=>x.id===id);d.status=s;touch(d);if(s==='提出済'&&!d.submitted)d.submitted=today();if(s==='完了'&&!d.approved)d.approved=today();save();openDoc(id);render()}
 function addReq(id){const el=document.getElementById('reqNew');if(!el.value.trim())return;const dd=P().docs.find(x=>x.id===id);dd.req.push({t:el.value.trim(),done:false});touch(dd);save();openDoc(id);render()}
 function delReq(id,i){const dd=P().docs.find(x=>x.id===id);dd.req.splice(i,1);touch(dd);save();openDoc(id);render()}
 function delDoc(id){if(!confirm('この書類を一覧から削除しますか？'))return;const p=P();const d=p.docs.find(x=>x.id===id);if(d&&d.tid){p.removed=p.removed||[];p.removed.push(d.tid)}(p.del=p.del||[]).push(id);p.docs=p.docs.filter(x=>x.id!==id);save();closeSheet();render()}
@@ -576,7 +577,7 @@ function rKotei(m,p){
 function koteiProg(k,p){
   // 現場アプリから自動集計（match語で作業内容・工種を照合）
   if(p.imp&&k.match.length){const ws=p.imp.works.filter(w=>k.match.some(s=>(w.kubun+w.kind).includes(s)));if(ws.length)return {qty:ws.length,done:ws.filter(w=>w.closed).length,pct:Math.round(ws.filter(w=>w.closed).length/ws.length*100),auto:true,dates:ws.map(w=>w.plan).filter(Boolean).sort()}}
-  if(k.name.startsWith('完成書類')){const a=p.docs.filter(d=>d.cat==='6 完成'&&d.status!=='該当なし'),dn=a.filter(d=>['提出済','承認済'].includes(d.status));return {qty:a.length,done:dn.length,pct:a.length?Math.round(dn.length/a.length*100):0,auto:true}}
+  if(k.name.startsWith('完成書類')){const a=p.docs.filter(d=>d.cat==='6 完成'&&d.status!=='該当なし'),dn=a.filter(d=>['提出済','完了'].includes(d.status));return {qty:a.length,done:dn.length,pct:a.length?Math.round(dn.length/a.length*100):0,auto:true}}
   const q=+k.qty||0,d=+k.done||0;return {qty:q,done:d,pct:k.pct!==''?+k.pct:(q?Math.round(d/q*100):0),auto:false};
 }
 function ganttCard(p){
@@ -625,7 +626,7 @@ function weekCard(p,base,full){
   const items=d=>{const out=[];
     for(const x of p.week.filter(x=>x.d===d))out.push(`<div class="it ${x.hol?'hol':''}" onclick="event.stopPropagation();wdel('${x.id}')">${esc(x.t)}</div>`);
     if(p.imp)for(const w of p.imp.works.filter(w=>w.plan===d))out.push(`<div class="it imp">${esc(w.no)} ${esc(w.kubun||w.kind)}${w.closed?' ✔':''}</div>`);
-    for(const dc of p.docs.filter(x=>x.due===d&&!['提出済','承認済','該当なし'].includes(x.status)))out.push(`<div class="it doc" onclick="event.stopPropagation();openDoc('${dc.id}')">期限 ${esc(dc.name)}</div>`);
+    for(const dc of p.docs.filter(x=>x.due===d&&!['提出済','完了','該当なし'].includes(x.status)))out.push(`<div class="it doc" onclick="event.stopPropagation();openDoc('${dc.id}')">期限 ${esc(dc.name)}</div>`);
     return out.join('')};
   const t0=today();
   return `<div class="card"><div class="row" style="margin-bottom:8px"><h2 class="grow">週間工程 ${fmt(days[0])}〜${fmt(days[6])}</h2>${full?`<button class="btn s" onclick="wmove(-7)">‹ 前週</button><button class="btn s" onclick="S.wk0=null;save();render()">今週</button><button class="btn s" onclick="wmove(7)">翌週 ›</button>`:`<button class="btn s" onclick="S.tab='kotei';S.ksub='week';save();render()">週間工程へ</button>`}</div>
@@ -778,7 +779,7 @@ function mergeList(local,remote,del){const m=new Map(local.map(x=>[x.id,x]));let
   for(const id of del){if(m.has(id)){m.delete(id);ch=true}}
   return {list:[...m.values()],ch}}
 function mergeInto(S,R){
-  let ch=false;const delP=new Set([...(S.delProj||[]),...(R.delProj||[])]);S.delProj=[...delP];
+  fixSt(R);let ch=false;const delP=new Set([...(S.delProj||[]),...(R.delProj||[])]);S.delProj=[...delP];
   for(const rp of R.projects){if(delP.has(rp.id))continue;let lp=S.projects.find(p=>p.id===rp.id);
     if(!lp){S.projects.push(rp);ch=true;continue}
     const del=new Set([...(lp.del||[]),...(rp.del||[])]);lp.del=[...del];lp.removed=[...new Set([...(lp.removed||[]),...(rp.removed||[])])];
