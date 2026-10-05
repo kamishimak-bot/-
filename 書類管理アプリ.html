@@ -245,7 +245,7 @@ const TPL = [
  {id:'uchiwake',cat:'2 工事前準備',ass:'上島',name:'請負代金内訳書',rule:'C',n:14,form:'様式-2',src:'工事請負契約書第3条',kind:'提出',cond:'工期6か月以上かつ請負代金1億円以上',req:['内訳書（工事数量総括表と整合）','諸経費の内訳']},
  {id:'kotei',cat:'2 工事前準備',ass:'上島',sub:'亮和',name:'工事工程表',rule:'C',n:14,form:'様式-3',src:'工事請負契約書第3条',kind:'提出',req:['全体工程表（バーチャート）','主要工種の予定期間'],link:'kotei'},
  {id:'kentaikyo',cat:'2 工事前準備',ass:'武富',sub:'上島',name:'建退共掛金収納書',rule:'C',n:30,form:'様式-4',src:'共通仕様書1-1-1-40',kind:'提出',req:['掛金収納書（発注者提出用）','証紙購入の記録（受払簿）']},
- {id:'corins',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'登録内容確認書（コリンズ）',rule:'C',n:14,form:'－',src:'共通仕様書1-1-1-5',kind:'提示',note:'受注時は契約後10日以内（土日祝除く）。変更・完成時も',req:['コリンズ登録内容確認書','監督職員の確認']},
+ {id:'corins',cat:'1 契約関係',ass:'亮和',sub:'D',name:'登録内容確認書（コリンズ）',rule:'C',n:10,biz:true,form:'－',src:'共通仕様書1-1-1-5',kind:'提示',note:'受注時は契約後10日以内（土日祝除く）。変更・完成時も',req:['コリンズ登録内容確認書','監督職員の確認']},
  {id:'maebarai',cat:'2 工事前準備',ass:'上島',name:'請求書（前払金）',rule:'C',n:14,form:'様式-5',src:'工事請負契約書第34条',kind:'提出',cond:'前払金を請求する場合',req:['前払金保証証書','請求書']},
  // 施工計画
  {id:'keikaku',cat:'3 設計照査・施工体制・計画',ass:'上島',sub:'亮和',name:'施工計画書',rule:'S',n:-1,form:'－',src:'共通仕様書1-1-1-4',kind:'提出',req:['工事概要','計画工程表','現場組織表','指定機械・主要機械','主要資材','施工方法（主要工種）','施工管理計画（品質・出来形・写真）','安全管理（安全計画）','緊急時の体制及び対応','交通管理（規制図）','環境対策','現場作業環境の整備','再生資源利用（促進）計画書（コブリス）'],link:'keikaku'},
@@ -310,7 +310,7 @@ const KOTEI_DEF=[
 ];
 
 /* ==================== 状態 ==================== */
-const VER='v25';const KEY='dl-shorui-v1';
+const VER='v26';const KEY='dl-shorui-v1';
 let S={projects:[],cur:null,tab:'home',ksub:'all',wk0:null,dcat:'all',dst:'open'};
 const OLDST={'承認済':'完了'};function fixSt(S){for(const p of S.projects||[])for(const d of p.docs||[])if(OLDST[d.status])d.status=OLDST[d.status]}
 function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=Object.assign(S,j);}catch(e){}fixSt(S);
@@ -337,7 +337,7 @@ function addBiz(d,n){let x=d;let c=0;while(c<n){x=addDays(x,1);const g=new Date(
 function dueOf(t,p,ym){
   if(t.rule==='K'){const c=[p.recycleOkDate,p.hoshoDate].filter(Boolean).sort();if(c.length)return c[c.length-1];return p.awardDate?addBiz(p.awardDate,7):''}
   if(t.rule==='A')return p.awardDate?(t.biz?addBiz(p.awardDate,t.n):addDays(p.awardDate,t.n)):'';
-  if(t.rule==='C'){const base=p.contractDate||(t.strict?'':[p.recycleOkDate,p.hoshoDate].filter(Boolean).sort().pop()||'');return base?addDays(base,t.n):''}
+  if(t.rule==='C'){const base=p.contractDate||(t.strict?'':[p.recycleOkDate,p.hoshoDate].filter(Boolean).sort().pop()||'');return base?(t.biz?addBiz(base,t.n):addDays(base,t.n)):''}
   if(t.rule==='S')return p.startDate?addDays(p.startDate,t.n):'';
   if(t.rule==='E')return p.endDate?addDays(p.endDate,t.n):'';
   if(t.rule==='M'&&ym){const [y,m]=ym.split('-').map(Number);return monthEnd(y,m-1)}
@@ -740,7 +740,7 @@ function week3Card(p,base){
 }
 
 /* ==================== 共有フォルダ（事務所の共有サーバー）で自動同期 ==================== */
-const SH={handle:null,file:'shorui-kanri_共有データ.json',dirty:false,lastText:'',status:'未接続',at:'',timer:null,busy:false};
+const SH={handle:null,file:'shorui-kanri_共有データ.json',dirty:false,lastText:'',status:'未接続',at:'',timer:null,busy:false,remote:null};
 const idb={open:()=>new Promise((ok,ng)=>{const r=indexedDB.open('shorui-kanri',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>ok(r.result);r.onerror=()=>ng(r.error)}),
   get:async k=>{const db=await idb.open();return new Promise(ok=>{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>ok(q.result);q.onerror=()=>ok(null)})},
   set:async(k,v)=>{const db=await idb.open();return new Promise(ok=>{const t=db.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>ok()})}};
@@ -751,27 +751,31 @@ async function pickShare(){
 }
 async function restoreShare(){
   if(!canShare())return;const hd=await idb.get('dir');if(!hd)return;SH.handle=hd;
-  const q=await hd.queryPermission({mode:'readwrite'});if(q==='granted'){SH.status='接続';await syncShare(true);startShare()}else SH.status='再接続が必要';render();
+  const q=await hd.queryPermission({mode:'readwrite'});if(q==='granted'){SH.status='接続';await syncShare(true);startShare()}else{SH.status='再接続が必要';toast('共有フォルダの再接続が必要です（工事情報タブ）')}render();
 }
 async function reconnectShare(){const hd=SH.handle;if(!hd)return pickShare();const q=await hd.requestPermission({mode:'readwrite'});if(q==='granted'){SH.status='接続';await syncShare(true);startShare();render()}}
 function disconnectShare(){SH.handle=null;SH.status='未接続';idb.set('dir',null);clearInterval(SH.timer);render()}
 function startShare(){clearInterval(SH.timer);SH.timer=setInterval(()=>syncShare(false),5000)}
-async function readShare(){try{const fh=await SH.handle.getFileHandle(SH.file);const f=await fh.getFile();return await f.text()}catch(e){return ''}}
+async function readShare(){let fh;try{fh=await SH.handle.getFileHandle(SH.file)}catch(e){if(e.name==='NotFoundError')return null;throw e}const f=await fh.getFile();return await f.text()}
 async function writeShare(text){const fh=await SH.handle.getFileHandle(SH.file,{create:true});const w=await fh.createWritable();await w.write(text);await w.close()}
 async function syncShare(force){
   if(!SH.handle||SH.busy)return;SH.busy=true;
   try{
     const text=await readShare();
-    let changed=false;
-    if(text&&text!==SH.lastText){const R=JSON.parse(text);if(R&&R.projects){changed=mergeInto(S,R);SH.lastText=text}}
-    if(SH.dirty||force||(!text)){const out={projects:S.projects,delProj:S.delProj||[],savedAt:now(),savedBy:S.me||''};const t=JSON.stringify(out);if(t!==SH.lastText){await writeShare(t);SH.lastText=t}SH.dirty=false}
+    let changed=false,R=null;
+    if(text===''){SH.busy=false;return}
+    if(text!==null&&text!==SH.lastText){try{R=JSON.parse(text)}catch(e){SH.busy=false;return}
+      if(R&&R.projects){changed=mergeInto(S,R);SH.lastText=text;SH.remote={by:R.savedBy||'',at:R.savedAt||'',n:R.projects.length}}}
+    const mine=JSON.stringify({projects:S.projects,delProj:S.delProj||[]});
+    const theirs=R?JSON.stringify({projects:R.projects,delProj:R.delProj||[]}):null;
+    if(SH.dirty||force||text===null||(theirs!==null&&theirs!==mine)){const out={projects:S.projects,delProj:S.delProj||[],savedAt:now(),savedBy:S.me||''};const t=JSON.stringify(out);await writeShare(t);SH.lastText=t;SH.remote={by:out.savedBy,at:out.savedAt,n:out.projects.length};SH.dirty=false}
     SH.at=new Date().toLocaleTimeString('ja-JP');SH.status='接続';
     if(changed){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()}
     else{const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel()}
   }catch(e){SH.status='エラー：'+e.message;const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel()}
   SH.busy=false;
 }
-function shareLabel(){return SH.handle?`共有フォルダ ${SH.status}${SH.at?'　最終同期 '+SH.at:''}`:'共有フォルダ 未接続'}
+function shareLabel(){if(!SH.handle)return '共有フォルダ 未接続';let s=`共有フォルダ ${SH.status}${SH.at?'　最終同期 '+SH.at:''}`;if(SH.remote)s+=`　｜ 共有ファイル：工事${SH.remote.n}件（最終保存 ${SH.remote.by||'名前未設定'} ${SH.remote.at?new Date(SH.remote.at).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):''}）`;return s}
 /* マージ：id ごとに更新時刻の新しい方。削除は del リストで伝える */
 function newer(a,b){return (b&&b.u||'')>(a&&a.u||'')}
 function mergeList(local,remote,del){const m=new Map(local.map(x=>[x.id,x]));let ch=false;
