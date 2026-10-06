@@ -217,6 +217,7 @@ details summary{cursor:pointer;color:var(--blue);font-size:13px}
 <div class="sheet-bg" id="sheetBg" onclick="closeSheet()"></div>
 <div class="sheet" id="sheet"></div>
 <div class="toast" id="toast"></div>
+<input type="file" id="fileTokki" accept=".json,application/json" style="display:none" onchange="importTokki(this.files[0]);this.value=''">
 <input type="file" id="fileGenba" accept=".json,application/json" style="display:none" onchange="importGenba(this.files[0]);this.value=''">
 <input type="file" id="fileSched" accept=".xlsx,.xls" style="display:none" onchange="importSched(this.files[0]);this.value=''">
 <input type="file" id="fileApp" accept=".json,application/json" style="display:none" onchange="importApp(this.files[0]);this.value=''">
@@ -310,14 +311,14 @@ const KOTEI_DEF=[
 ];
 
 /* ==================== 状態 ==================== */
-const VER='v26';const KEY='dl-shorui-v1';
+const VER='v27';const KEY='dl-shorui-v1';
 let S={projects:[],cur:null,tab:'home',ksub:'all',wk0:null,dcat:'all',dst:'open'};
 const OLDST={'承認済':'完了'};function fixSt(S){for(const p of S.projects||[])for(const d of p.docs||[])if(OLDST[d.status])d.status=OLDST[d.status]}
 function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=Object.assign(S,j);}catch(e){}fixSt(S);
-  for(const p of S.projects)for(const d of p.docs){const t=TPL.find(x=>x.id===d.tid);if(t)d.cat=t.cat;else if(OLDCAT[d.cat])d.cat=OLDCAT[d.cat]}
+  for(const p of S.projects)for(const d of p.docs){const t=tplOf(d);if(t)d.cat=t.cat;else if(OLDCAT[d.cat])d.cat=OLDCAT[d.cat]}
   if(OLDCAT[S.dcat])S.dcat=OLDCAT[S.dcat]
   for(const p of S.projects)if(p.catNames)for(const k of Object.keys(p.catNames))if(OLDCAT[k]){if(!p.catNames[OLDCAT[k]])p.catNames[OLDCAT[k]]=p.catNames[k];delete p.catNames[k]}
-  for(const p of S.projects){if(!p.members||!p.members.length)p.members=MEMBERS.slice();p.members=p.members.map(x=>String(x).trim()).filter(Boolean);for(const d of p.docs){if(d.assignee)d.assignee=String(d.assignee).trim();const t=TPL.find(x=>x.id===d.tid);if(t&&t.ass&&!d.assignee)d.assignee=t.ass;if(d.sub===undefined)d.sub=(t&&t.sub)||''}p.docs=p.docs.filter(d=>d.tid!=='zenkin');addMissing(p,true)}}
+  for(const p of S.projects){if(!p.members||!p.members.length)p.members=MEMBERS.slice();p.members=p.members.map(x=>String(x).trim()).filter(Boolean);for(const d of p.docs){if(d.assignee)d.assignee=String(d.assignee).trim();const t=tplOf(d);if(t&&t.ass&&!d.assignee)d.assignee=t.ass;if(d.sub===undefined)d.sub=(t&&t.sub)||''}p.docs=p.docs.filter(d=>d.tid!=='zenkin');addMissing(p,true)}}
 const now=()=>new Date().toISOString();
 function touch(o){o.u=now();o.by=S.me||''}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){toast('保存できません（容量超過）')}if(SH.handle)SH.dirty=true}
@@ -349,6 +350,8 @@ function months(p){
   while(d<=e){out.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);d=new Date(d.getFullYear(),d.getMonth()+1,1)}
   return out;
 }
+/* 特記仕様書の上書きを含めた書類の定義（d.tk＝特記で追加・変更した項目） */
+function tplOf(d){const b=TPL.find(x=>x.id===d.tid)||{};if(!d.tk)return b;const k=Object.assign({},d.tk);delete k.note;delete k.req;const t=Object.assign({},b,k);t.src=[b.src,d.tk.src].filter(Boolean).join('／');return t}
 function mkDoc(t,p,ym){
   return {id:uid(),tid:t.id,name:t.name+(ym?`（${ym.replace('-','年')}月）`:''),cat:t.cat,ym:ym||'',due:dueOf(t,p,ym),dueAuto:true,status:'未着手',req:t.req.map(r=>({t:r,done:false})),memo:'',submitted:'',approved:'',assignee:t.ass||'',sub:t.sub||''};
 }
@@ -362,7 +365,7 @@ function buildDocs(p){
 }
 function recalc(p){
   // 自動期限の再計算＋毎月書類の増減
-  for(const d of p.docs){const t=TPL.find(x=>x.id===d.tid);if(t&&d.dueAuto)d.due=dueOf(t,p,d.ym)}
+  for(const d of p.docs){const t=tplOf(d);if(t&&t.rule&&d.dueAuto)d.due=dueOf(t,p,d.ym)}
   const ms=months(p);
   for(const t of TPL.filter(x=>x.rule==='M')){
     for(const ym of ms){if(!p.docs.some(d=>d.tid===t.id&&d.ym===ym))p.docs.push(mkDoc(t,p,ym))}
@@ -386,7 +389,7 @@ const MEMBERS=['上島','亮和','D','武富'];
 function members(p){return (p.members&&p.members.length)?p.members:MEMBERS}
 function assFilter(list){if(!S.dass||S.dass==='all')return list;if(S.dass==='none')return list.filter(d=>!d.assignee&&!d.sub);return list.filter(d=>d.assignee===S.dass||d.sub===S.dass)}
 function assChips(p){const ms=members(p);return ms.length?`<div class="filters"><span class="small muted" style="padding:5px 0">担当</span>${['all',...ms,'none'].map(a=>`<button class="chip ${(S.dass||'all')===a?'on':''}" onclick="S.dass='${esc(a)}';save();render()">${a==='all'?'全員':a==='none'?'未割当':esc(a)}</button>`).join('')}</div>`:''}
-function isProv(d,p){const t=TPL.find(x=>x.id===d.tid);return !!(t&&t.rule==='C'&&!t.strict&&!p.contractDate&&d.dueAuto&&d.due)}
+function isProv(d,p){const t=tplOf(d);return !!(t&&t.rule==='C'&&!t.strict&&!p.contractDate&&d.dueAuto&&d.due)}
 function reqPct(d){if(!d.req.length)return null;return Math.round(d.req.filter(r=>r.done).length/d.req.length*100)}
 
 /* ==================== 画面 ==================== */
@@ -452,12 +455,43 @@ function rDocs(m,p){
     <div class="filters">${['all','open','late','done','allst'].map(k=>`<button class="chip ${S.dst===k?'on':''}" onclick="S.dst='${k}';save();render()">${{all:'すべて',open:'未提出',late:'期限間近・超過',done:'提出済',allst:'該当なし含む'}[k]}</button>`).join('')}</div>
     <div class="filters">${['all',...CATS].map(c=>`<button class="chip ${S.dcat===c?'on':''}" onclick="S.dcat='${c}';save();render()">${c==='all'?'全区分':esc(CL(c))}</button>`).join('')}</div>
     ${assChips(p)}
-    <div class="row"><span class="muted small grow">${list.length}件</span><button class="btn s" onclick="addCustomDoc()">＋ 書類を追加</button><button class="btn s" onclick="exportCsv()">CSV</button></div>
+    <div class="row"><span class="muted small grow">${list.length}件</span><button class="btn s" onclick="addCustomDoc()">＋ 書類を追加</button><button class="btn s" onclick="document.getElementById('fileTokki').click()">特記仕様書を取り込む</button><button class="btn s" onclick="exportCsv()">CSV</button></div>
+    ${p.tokki?`<div class="muted small" style="margin-top:6px">特記仕様書：${esc(p.tokki.title||'')}（取込 ${new Date(p.tokki.at).toLocaleString('ja-JP')}、${p.tokki.n}件を追加・変更）<button class="btn s" style="margin-left:8px" onclick="clearTokki()">取込を解除</button></div>`:`<div class="muted small" style="margin-top:6px">特記仕様書のPDFをClaudeに渡して「書類管理アプリ用の特記JSONを作って」と頼むと取込ファイルができます。読むと、特記で追加・変更される書類が「特記」印付きで並びます。</div>`}
   </div>
   <div class="card" style="padding:4px 8px">
-    ${list.length?`<ul class="dl">${list.map(d=>{const c=dueCls(d);const t=TPL.find(x=>x.id===d.tid);const rp=reqPct(d);
-      return `<li class="${c}" onclick="openDoc('${d.id}')"><div class="lb"></div><div><div class="nm">${esc(d.name)}${t&&t.cond?'<span class="tag">該当時</span>':''}${t&&t.kind==='提示'?'<span class="tag">提示</span>':''}</div><div class="cat">${esc(CL(d.cat))}${d.due?` ・ <span class="due ${c==='late'||c==='soon'?c:''}">期限 ${fmt(d.due)}${isProv(d,p)?'<span class="tag">仮</span>':''}${c==='late'?`（${-diff(d.due,today())}日超過）`:''}</span>`:' ・ 都度'}${rp!==null?` ・ 必要なもの ${rp}%`:''}${d.assignee?` ・ 担当 ${esc(d.assignee)}`:''}</div></div><span class="st ${STCLS[d.status]}">${d.status}</span></li>`}).join('')}</ul>`:'<div class="empty">該当する書類はありません</div>'}
+    ${list.length?`<ul class="dl">${list.map(d=>{const c=dueCls(d);const t=tplOf(d);const rp=reqPct(d);
+      return `<li class="${c}" onclick="openDoc('${d.id}')"><div class="lb"></div><div><div class="nm">${esc(d.name)}${t&&t.cond?'<span class="tag">該当時</span>':''}${t&&t.kind==='提示'?'<span class="tag">提示</span>':''}${d.tk?'<span class="tag">特記</span>':''}</div><div class="cat">${esc(CL(d.cat))}${d.due?` ・ <span class="due ${c==='late'||c==='soon'?c:''}">期限 ${fmt(d.due)}${isProv(d,p)?'<span class="tag">仮</span>':''}${c==='late'?`（${-diff(d.due,today())}日超過）`:''}</span>`:' ・ 都度'}${rp!==null?` ・ 必要なもの ${rp}%`:''}${d.assignee?` ・ 担当 ${esc(d.assignee)}`:''}</div></div><span class="st ${STCLS[d.status]}">${d.status}</span></li>`}).join('')}</ul>`:'<div class="empty">該当する書類はありません</div>'}
   </div>`;
+}
+/* ---- 特記仕様書の取込（format dl-shorui-tokki） ---- */
+async function importTokki(file){
+  if(!file)return;const p=P();if(!p){toast('先に工事を選んでください');return}
+  let j;try{j=JSON.parse(await file.text())}catch(e){toast('JSONが読めません');return}
+  if(!j||j.format!=='dl-shorui-tokki'||!Array.isArray(j.items)){toast('書類管理アプリ用の特記JSONではありません');return}
+  let n=0;
+  for(const it of j.items){
+    const tk={};for(const k of ['key','name','cat','rule','n','biz','strict','form','kind','cond','note','src','ass'])if(it[k]!==undefined)tk[k]=it[k];
+    const reqs=(it.req||[]).map(r=>({t:r,done:false,tk:true}));
+    if(it.tid){
+      const ds=p.docs.filter(d=>d.tid===it.tid);if(!ds.length)continue;
+      for(const d of ds){d.tk=tk;if(it.cat)d.cat=it.cat;if(it.name&&!d.ym)d.name=it.name;for(const r of reqs)if(!d.req.some(x=>x.t===r.t))d.req.push(Object.assign({},r));if(it.ass&&!d.assignee)d.assignee=it.ass;touch(d);n++}
+    }else{
+      if(!it.key||!it.name)continue;
+      let d=p.docs.find(x=>x.tkey===it.key);
+      if(d){d.name=it.name;d.cat=it.cat||d.cat;d.tk=tk;for(const r of reqs)if(!d.req.some(x=>x.t===r.t))d.req.push(Object.assign({},r))}
+      else{d={id:uid(),tid:'',tkey:it.key,name:it.name,cat:CATS.includes(it.cat)?it.cat:'5 施工中',ym:'',due:'',dueAuto:!!(it.rule&&it.rule!=='X'),status:'未着手',req:reqs,memo:'',submitted:'',approved:'',assignee:it.ass||'',tk};p.docs.push(d)}
+      touch(d);n++;
+    }
+  }
+  p.tokki={at:now(),title:j.title||file.name,specs:j.specs||[],n};p.pu=now();p.pby=S.me||'';
+  recalc(p);save();render();toast(`特記仕様書から ${n} 件を追加・変更しました`);
+}
+function clearTokki(){
+  const p=P();if(!p||!p.tokki)return;if(!confirm('特記仕様書で追加した書類を削除し、変更した項目を元に戻しますか？'))return;
+  p.del=p.del||[];
+  p.docs=p.docs.filter(d=>{if(d.tkey){p.del.push(d.id);return false}return true});
+  for(const d of p.docs){if(d.tk){delete d.tk;d.req=d.req.filter(r=>!r.tk);const t=TPL.find(x=>x.id===d.tid);if(t)d.cat=t.cat;touch(d)}}
+  p.tokki=null;p.pu=now();p.pby=S.me||'';recalc(p);save();render();toast('特記の取込を解除しました');
 }
 function addCustomDoc(){
   const name=prompt('書類名');if(!name)return;const p=P();
@@ -468,7 +502,7 @@ function addCustomDoc(){
 function assigneeCard(p){
   const open=d=>!['提出済','完了','該当なし'].includes(d.status);
   const groups=[...members(p),''];
-  const row=(d,mm)=>{const c=dueCls(d);const t=TPL.find(x=>x.id===d.tid)||{};return `<li class="${c}" onclick="openDoc('${d.id}')"><div class="lb"></div><div><div class="nm">${esc(d.name)}${t.cond?'<span class="tag">該当時</span>':''}${mm&&d.assignee!==mm&&d.sub===mm?`<span class="tag">副（担当 ${esc(d.assignee||'未割当')}）</span>`:''}</div><div class="cat">${esc(CL(d.cat))}${d.due?` ・ <span class="due ${c==='late'||c==='soon'?c:''}">期限 ${fmt(d.due)}</span>`:' ・ 都度'}</div></div><span class="st ${STCLS[d.status]}">${d.status}</span></li>`};
+  const row=(d,mm)=>{const c=dueCls(d);const t=tplOf(d)||{};return `<li class="${c}" onclick="openDoc('${d.id}')"><div class="lb"></div><div><div class="nm">${esc(d.name)}${t.cond?'<span class="tag">該当時</span>':''}${mm&&d.assignee!==mm&&d.sub===mm?`<span class="tag">副（担当 ${esc(d.assignee||'未割当')}）</span>`:''}</div><div class="cat">${esc(CL(d.cat))}${d.due?` ・ <span class="due ${c==='late'||c==='soon'?c:''}">期限 ${fmt(d.due)}</span>`:' ・ 都度'}</div></div><span class="st ${STCLS[d.status]}">${d.status}</span></li>`};
   const sec=groups.map(mm=>{const ds=p.docs.filter(d=>(mm?(d.assignee===mm||d.sub===mm):(!d.assignee&&!d.sub))&&d.status!=='該当なし').sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));if(!ds.length)return '';
     const o=ds.filter(open),late=o.filter(d=>dueCls(d)==='late').length;const showAll=S.assAll===mm;
     return `<div class="card" style="padding:8px 8px 4px"><div class="row" style="padding:4px 8px"><h2 class="grow">${mm?esc(mm):'<span class="muted">未割当</span>'}</h2><span class="small muted">未提出 ${o.length}${late?` <span class="due late">超過 ${late}</span>`:''}　提出済 ${ds.length-o.length}</span><button class="btn s" onclick="S.assAll=${showAll?'null':`'${esc(mm)}'`};save();render()">${showAll?'未提出のみ':'提出済も表示'}</button></div><ul class="dl">${(showAll?ds:o).map(d=>row(d,mm)).join('')||'<li class="empty">未提出の書類はありません</li>'}</ul></div>`}).join('');
@@ -489,9 +523,9 @@ function timelineCard(p){
     const ym=it.at.slice(0,7);if(ym!==curM){curM=ym;out+=`<div class="mh">${+ym.slice(0,4)}年${+ym.slice(5)}月</div>`}
     if(it.k==='m')out+=`<div class="ms">◆ ${it.n}　${fmt(it.at)}</div>`;
     else if(it.k==='t')out+=`<div class="ms today">▶ 今日 ${fmt(it.at)}</div>`;
-    else{const d=it.d,c=dueCls(d),t=TPL.find(x=>x.id===d.tid)||{};out+=`<div class="ev ${c}" onclick="openDoc('${d.id}')"><span class="dt">${fmt(d.due)}${isProv(d,p)?'<span class="tag">仮</span>':''}</span><span><span class="nm">${esc(d.name)}</span>${t.cond?'<span class="tag">該当時</span>':''}${t.kind==='提示'?'<span class="tag">提示</span>':''}<span class="cat" style="margin-left:6px">${esc(CL(d.cat))}</span>${d.assignee?`<span class="tag">${esc(d.assignee)}</span>`:''}</span><span class="st ${STCLS[d.status]}">${d.status}</span></div>`}
+    else{const d=it.d,c=dueCls(d),t=tplOf(d)||{};out+=`<div class="ev ${c}" onclick="openDoc('${d.id}')"><span class="dt">${fmt(d.due)}${isProv(d,p)?'<span class="tag">仮</span>':''}</span><span><span class="nm">${esc(d.name)}</span>${t.cond?'<span class="tag">該当時</span>':''}${t.kind==='提示'?'<span class="tag">提示</span>':''}<span class="cat" style="margin-left:6px">${esc(CL(d.cat))}</span>${d.assignee?`<span class="tag">${esc(d.assignee)}</span>`:''}</span><span class="st ${STCLS[d.status]}">${d.status}</span></div>`}
   }
-  const und=undated.length?`<div class="mh" style="margin-top:20px">都度（施工中に発生したとき）</div>${undated.map(d=>{const t=TPL.find(x=>x.id===d.tid)||{};return `<div class="ev ${dueCls(d)}" onclick="openDoc('${d.id}')"><span class="dt">${t.kind==='発注者待ち'?'発注者待ち':'都度'}</span><span><span class="nm">${esc(d.name)}</span>${t.cond?'<span class="tag">該当時</span>':''}${t.kind==='提示'?'<span class="tag">提示</span>':''}<span class="cat" style="margin-left:6px">${esc(CL(d.cat))}</span>${t.note||t.cond?`<div class="muted small" style="white-space:normal;line-height:1.35">${esc((t.cond?'該当時：'+t.cond:t.note.split('。')[0]))}</div>`:''}</span><span class="st ${STCLS[d.status]}">${d.status}</span></div>`}).join('')}`:'';
+  const und=undated.length?`<div class="mh" style="margin-top:20px">都度（施工中に発生したとき）</div>${undated.map(d=>{const t=tplOf(d)||{};return `<div class="ev ${dueCls(d)}" onclick="openDoc('${d.id}')"><span class="dt">${t.kind==='発注者待ち'?'発注者待ち':'都度'}</span><span><span class="nm">${esc(d.name)}</span>${t.cond?'<span class="tag">該当時</span>':''}${t.kind==='提示'?'<span class="tag">提示</span>':''}<span class="cat" style="margin-left:6px">${esc(CL(d.cat))}</span>${t.note||t.cond?`<div class="muted small" style="white-space:normal;line-height:1.35">${esc((t.cond?'該当時：'+t.cond:t.note.split('。')[0]))}</div>`:''}</span><span class="st ${STCLS[d.status]}">${d.status}</span></div>`}).join('')}`:'';
   const missing=[['落札決定日',p.awardDate],['契約日',p.contractDate],['着工日',p.startDate],['工期末',p.endDate]].filter(x=>!x[1]).map(x=>x[0]);
   return `<div class="card"><div class="row"><h2 class="grow">必要書類の時系列</h2><label class="small"><input type="checkbox" ${hideNa?'checked':''} onchange="S.tlHideNa=this.checked;save();render()"> 該当なしを隠す</label><button class="btn s" onclick="window.print()">印刷</button></div>
   ${missing.length?`<div class="muted small">${missing.join('・')}が未設定のため、その基準の書類は「都度」に出ています（工事情報で設定）</div>`:''}
@@ -500,13 +534,14 @@ function timelineCard(p){
 }
 /* ---- 書類詳細シート ---- */
 function openDoc(id){
-  const p=P();const d=p.docs.find(x=>x.id===id);if(!d)return;const t=TPL.find(x=>x.id===d.tid)||{};
+  const p=P();const d=p.docs.find(x=>x.id===id);if(!d)return;const t=tplOf(d)||{};
   const lk=t.link?linkInfo(t.link,p):null;
   const sh=document.getElementById('sheet');
   sh.innerHTML=`
   <div class="top"><div><h2>${esc(d.name)}</h2><div class="muted small">${esc(CL(d.cat))}${t.form?`　${esc(t.form)}`:''}${t.kind?`　${esc(t.kind)}`:''}</div></div><button class="btn s" onclick="closeSheet()">閉じる</button></div>
   ${t.cond?`<div class="link none">該当する場合のみ：${esc(t.cond)}</div>`:''}
   ${t.note?`<div class="muted small" style="margin:6px 0">${esc(t.note)}</div>`:''}
+  ${d.tk&&d.tk.note?`<div class="link" style="margin:6px 0"><b>特記仕様書</b>：${esc(d.tk.note)}</div>`:''}
   <h3 style="margin-top:12px">状態</h3>
   <div class="stbtns">${STATUS.map(s=>`<button class="${d.status===s?'on':''}" onclick="setSt('${d.id}','${s}')">${s}</button>`).join('')}</div>
   <div class="grid2">
@@ -787,7 +822,7 @@ function mergeInto(S,R){
   for(const rp of R.projects){if(delP.has(rp.id))continue;let lp=S.projects.find(p=>p.id===rp.id);
     if(!lp){S.projects.push(rp);ch=true;continue}
     const del=new Set([...(lp.del||[]),...(rp.del||[])]);lp.del=[...del];lp.removed=[...new Set([...(lp.removed||[]),...(rp.removed||[])])];
-    if((rp.pu||'')>(lp.pu||'')){for(const k of ['name','client','awardDate','recycleOkDate','hoshoDate','contractDate','startDate','endDate','agent','engineer','members','catNames','pu','pby'])lp[k]=rp[k];ch=true}
+    if((rp.pu||'')>(lp.pu||'')){for(const k of ['name','client','awardDate','recycleOkDate','hoshoDate','contractDate','startDate','endDate','agent','engineer','members','catNames','tokki','pu','pby'])lp[k]=rp[k];ch=true}
     let r=mergeList(lp.docs,rp.docs||[],del);lp.docs=r.list;ch=ch||r.ch;
     r=mergeList(lp.kotei,rp.kotei||[],del);lp.kotei=r.list;ch=ch||r.ch;
     r=mergeList(lp.week,rp.week||[],del);lp.week=r.list;ch=ch||r.ch;
