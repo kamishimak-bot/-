@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="書類管理">
-<title>道路照明 書類管理アプリ v23</title>
+<title>道路照明 書類管理アプリ</title>
 <style>
 :root{
   --bg:#EEF1F4; --paper:#FFFFFF; --ink:#1B2733; --muted:#66737F; --line:#D5DCE3;
@@ -204,6 +204,7 @@ details summary{cursor:pointer;color:var(--blue);font-size:13px}
     <h1>書類管理 <small id="ver" style="font-size:11px;color:var(--muted);font-weight:400"></small></h1>
     <select id="projSel" onchange="selProj(this.value)"></select>
     <button class="btn s" onclick="openProjForm()">＋ 工事</button>
+    <button class="btn s" id="shChip" onclick="go('set')" title="共有の状態（工事情報タブで操作）">共有 未接続</button>
   </div>
   <nav class="tabs" id="tabs">
     <button data-t="home" onclick="go('home')">期限</button>
@@ -240,7 +241,7 @@ const TPL = [
  {id:'hojosha',cat:'3 設計照査・施工体制・計画',ass:'上島',sub:'亮和',name:'専任補助者の配置の申出書',rule:'S',n:0,form:'－',src:'工事請負契約書記載要領',kind:'提出',cond:'専任補助者の配置を希望する場合（工期の始期まで）',req:['申出書','担当課での確認']},
  // 契約関係（着手前）
  {id:'asp',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'情報共有システム（ASP：Asper／CALS等）利用申込',rule:'C',n:7,form:'－',src:'工事施工中における受発注者間の情報共有システム活用ガイドライン（国交省）／特記仕様書',kind:'提出',note:'契約後速やかに。施工計画書以降の提出書類はこのシステムで受け渡すため、着手前に利用開始しておく',req:['利用するシステムの確認（特記仕様書・監督職員と協議：Asper／CALS等）','ASP事業者への利用申込書','利用者登録（受注者側：現場代理人・主任技術者・担当者、発注者側：監督職員）','ID・パスワードの受領','利用開始の連絡（監督職員）','利用料の支払い']},
- {id:'cobris',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'再生資源利用計画書・促進計画書（コブリス）',rule:'C',n:14,form:'－',src:'共通仕様書1-1-1-18／建設副産物情報交換システム（COBRIS）',kind:'提出',note:'コブリスに工事を登録して計画書を作成。施工計画書に添付',req:['COBRIS 工事登録','再生資源利用計画書（資材搬入）','再生資源利用促進計画書（副産物搬出）','施工計画書へ添付']},
+ {id:'cobris',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'再生資源利用計画書・促進計画書（コブリス）',rule:'C',n:14,form:'－',src:'共通仕様書1-1-1-18／建設副産物情報交換システム（COBRIS）',kind:'提出',note:'コブリスに工事を登録して計画書を作成。施工計画書に添付',req:['COBRIS 工事登録','再生資源利用計画書・促進計画書の作成（COBRISから出力）','施工計画書へ添付']},
  {id:'douro',cat:'2 工事前準備',ass:'亮和',sub:'D',name:'道路使用許可申請書（警察署）',rule:'C',n:14,form:'－',src:'道路交通法第77条／共通仕様書1-1-1-35',kind:'提出',note:'着工前に許可を受ける。規制図は施工計画書の交通管理と同じもの',req:['道路使用許可申請書','規制図・保安施設配置図','工程表（作業期間）','手数料','許可証の携行（施工時）'],link:'douro'},
  {id:'agent',cat:'2 工事前準備',ass:'上島',sub:'亮和',name:'現場代理人等通知書',rule:'C',n:7,form:'様式-1',src:'工事請負契約書第10条',kind:'提出',req:['現場代理人・主任（監理）技術者の経歴書','資格者証の写し','雇用関係を示す書類（健康保険証等）','専任・兼任の確認']},
  {id:'uchiwake',cat:'2 工事前準備',ass:'上島',name:'請負代金内訳書',rule:'C',n:14,form:'様式-2',src:'工事請負契約書第3条',kind:'提出',cond:'工期6か月以上かつ請負代金1億円以上',req:['内訳書（工事数量総括表と整合）','諸経費の内訳']},
@@ -311,10 +312,12 @@ const KOTEI_DEF=[
 ];
 
 /* ==================== 状態 ==================== */
-const VER='v27';const KEY='dl-shorui-v1';
+const VER='v29';const KEY='dl-shorui-v1';
 let S={projects:[],cur:null,tab:'home',ksub:'all',wk0:null,dcat:'all',dst:'open'};
-const OLDST={'承認済':'完了'};function fixSt(S){for(const p of S.projects||[])for(const d of p.docs||[])if(OLDST[d.status])d.status=OLDST[d.status]}
-function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=Object.assign(S,j);}catch(e){}fixSt(S);
+const OLDST={'承認済':'完了'};const DROP_NAMES=['再生資源利用計画書（資材搬入）','再生資源利用促進計画書（副産物搬出）'];
+function fixDup(S){for(const p of S.projects||[]){p.del=p.del||[];p.docs=(p.docs||[]).filter(d=>{if(d.tid!=='cobris'&&DROP_NAMES.includes(d.name)){p.del.push(d.id);return false}return true});for(const d of p.docs)if(d.tid==='cobris'&&d.req)d.req=d.req.filter(r=>!DROP_NAMES.includes(r.t))}}
+function fixSt(S){for(const p of S.projects||[])for(const d of p.docs||[])if(OLDST[d.status])d.status=OLDST[d.status]}
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j)S=Object.assign(S,j);}catch(e){}fixSt(S);fixDup(S);
   for(const p of S.projects)for(const d of p.docs){const t=tplOf(d);if(t)d.cat=t.cat;else if(OLDCAT[d.cat])d.cat=OLDCAT[d.cat]}
   if(OLDCAT[S.dcat])S.dcat=OLDCAT[S.dcat]
   for(const p of S.projects)if(p.catNames)for(const k of Object.keys(p.catNames))if(OLDCAT[k]){if(!p.catNames[OLDCAT[k]])p.catNames[OLDCAT[k]]=p.catNames[k];delete p.catNames[k]}
@@ -399,6 +402,7 @@ function render(){
   sel.innerHTML=S.projects.map(p=>`<option value="${p.id}" ${p.id===S.cur?'selected':''}>${esc(p.name)}</option>`).join('')||'<option>工事が未登録</option>';
   const p=P();
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.tab));
+  shChip();
   const late=p?p.docs.filter(d=>dueCls(d)==='late').length:0;
   document.querySelector('#tabs [data-t=home]').innerHTML='期限'+(late?`<span class="n">${late}</span>`:'');
   const m=document.getElementById('main');
@@ -806,10 +810,11 @@ async function syncShare(force){
     if(SH.dirty||force||text===null||(theirs!==null&&theirs!==mine)){const out={projects:S.projects,delProj:S.delProj||[],savedAt:now(),savedBy:S.me||''};const t=JSON.stringify(out);await writeShare(t);SH.lastText=t;SH.remote={by:out.savedBy,at:out.savedAt,n:out.projects.length};SH.dirty=false}
     SH.at=new Date().toLocaleTimeString('ja-JP');SH.status='接続';
     if(changed){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()}
-    else{const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel()}
-  }catch(e){SH.status='エラー：'+e.message;const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel()}
+    else{const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel()}shChip();
+  }catch(e){SH.status='エラー：'+e.message;const el=document.getElementById('shStatus');if(el)el.textContent=shareLabel();shChip()}
   SH.busy=false;
 }
+function shChip(){const el=document.getElementById('shChip');if(!el)return;const st=SH.handle?SH.status:'未接続';const bad=st!=='接続';el.textContent='共有 '+(st.startsWith('エラー')?'エラー':st)+(st==='接続'&&SH.remote?`（${SH.remote.by||'名前未設定'}）`:'');el.style.background=bad?'#fde8e8':'';el.style.color=bad?'#b42318':'';el.style.borderColor=bad?'#f0b4b4':''}
 function shareLabel(){if(!SH.handle)return '共有フォルダ 未接続';let s=`共有フォルダ ${SH.status}${SH.at?'　最終同期 '+SH.at:''}`;if(SH.remote)s+=`　｜ 共有ファイル：工事${SH.remote.n}件（最終保存 ${SH.remote.by||'名前未設定'} ${SH.remote.at?new Date(SH.remote.at).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):''}）`;return s}
 /* マージ：id ごとに更新時刻の新しい方。削除は del リストで伝える */
 function newer(a,b){return (b&&b.u||'')>(a&&a.u||'')}
@@ -818,7 +823,7 @@ function mergeList(local,remote,del){const m=new Map(local.map(x=>[x.id,x]));let
   for(const id of del){if(m.has(id)){m.delete(id);ch=true}}
   return {list:[...m.values()],ch}}
 function mergeInto(S,R){
-  fixSt(R);let ch=false;const delP=new Set([...(S.delProj||[]),...(R.delProj||[])]);S.delProj=[...delP];
+  fixSt(R);fixDup(R);let ch=false;const delP=new Set([...(S.delProj||[]),...(R.delProj||[])]);S.delProj=[...delP];
   for(const rp of R.projects){if(delP.has(rp.id))continue;let lp=S.projects.find(p=>p.id===rp.id);
     if(!lp){S.projects.push(rp);ch=true;continue}
     const del=new Set([...(lp.del||[]),...(rp.del||[])]);lp.del=[...del];lp.removed=[...new Set([...(lp.removed||[]),...(rp.removed||[])])];
@@ -944,7 +949,7 @@ function submitProj(){const g=id=>document.getElementById(id).value;if(!g('pf_na
   newProject({name:g('pf_name').trim(),awardDate:g('pf_aw'),client:g('pf_client'),contractDate:g('pf_c'),startDate:g('pf_s'),endDate:g('pf_e'),agent:g('pf_a')});closeSheet();S.tab='home';render();toast('標準書類一式を登録しました')}
 function selProj(id){S.cur=id;save();render()}
 
-document.getElementById('ver').textContent=VER;load();if(S.cur&&!P())S.cur=S.projects[0]?.id||null;render();restoreShare();
+document.getElementById('ver').textContent=VER;document.title='道路照明 書類管理アプリ '+VER;load();if(S.cur&&!P())S.cur=S.projects[0]?.id||null;render();restoreShare();
 </script>
 </body>
 </html>
