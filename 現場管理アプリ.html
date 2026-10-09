@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v111：台帳と重複する現調項目は台帳の値を先に入れておく：電気系統の「電力柱番号または電気番号」←電力引込柱名称、「電源供給元」←引込方式が架空なら電力柱、既設ポール・基礎の「基礎形式」←基礎形式（建替で既設基礎流用の新設側も）。空欄のときだけ入れ「台帳から」と表示。現調でこれらを直すと台帳にも反映し変更履歴に残す。v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -689,7 +689,8 @@ function elecHtml(j){
   let h='';
   ELEC_ITEMS.forEach(([id,label,t,opts])=>{
     if(!elecShown(E,id)) return;
-    h+='<div class="item"><div class="q"><div class="txt">'+label+'</div></div>';
+    const LL=pole().ledger; const tag = id==='denchu' ? fromLedgerTag(E,'denchu',LL.inPole) : id==='source' ? fromLedgerTag(E,'source','電力柱') : '';
+    h+='<div class="item"><div class="q"><div class="txt">'+label+tag+'</div></div>';
     if(t==='tri') h+='<div class="seg">'+['ok','warn','na'].map(v=>'<button data-elt="'+id+'" data-v="'+v+'" aria-pressed="'+(E[id]===v)+'">'+TRI[v]+'</button>').join('')+'</div>';
     else if(t==='yn'){ h+='<div class="seg">'+['有','無','該当なし'].map(v=>'<button data-elt="'+id+'" data-v="'+v+'" aria-pressed="'+(E[id]===v)+'">'+v+'</button>').join('')+'</div>'; }
     else if(t==='sel') h+='<select data-el="'+id+'"><option value="">—</option>'+opts.map(o=>'<option'+(E[id]===o?' selected':'')+'>'+o+'</option>').join('')+'</select>'+(E[id]==='その他'?'<input type="text" data-el="'+id+'Other" value="'+esc(E[id+'Other']||'')+'" placeholder="内容を入力" style="margin-top:6px">':'');
@@ -931,7 +932,7 @@ function expoleHtml(j){
   const E=expoleOf(j); let h='';
   EXPOLE.forEach(g=>{ const G=E[g.id]=E[g.id]||{};
     h+='<div class="item" style="background:var(--surface)"><div class="q"><div class="txt" style="font-weight:700">'+g.name+'</div></div></div>';
-    (g.fields||[]).forEach(([k,label,t,opts])=>{ if(g.id==='kiso' && k==='kisoSize' && G.kisoType==='円筒基礎'){ h+=kisoFieldsHtml(k=>k==='std'?'data-exstd="1"':'data-exf="kiso.'+k+'"', G, pole().ledger.poleType); return; } h+='<div class="item"><div class="q"><div class="txt">'+label+'</div></div>'+(t==='sel'?'<select data-exf="'+g.id+'.'+k+'"><option value="">—</option>'+opts.map(o=>'<option'+(G[k]===o?' selected':'')+'>'+o+'</option>').join('')+'</select>':'<input type="'+(t==='num'?'number':'text')+'" '+(t==='num'?'inputmode="decimal" step="any" ':'')+'data-exf="'+g.id+'.'+k+'" value="'+esc(G[k]||'')+'">')+'</div>'; });
+    (g.fields||[]).forEach(([k,label,t,opts])=>{ if(g.id==='kiso' && k==='kisoSize' && G.kisoType==='円筒基礎'){ h+=kisoFieldsHtml(k=>k==='std'?'data-exstd="1"':'data-exf="kiso.'+k+'"', G, pole().ledger.poleType); return; } h+='<div class="item"><div class="q"><div class="txt">'+label+(k==='kisoType'?fromLedgerTag(G,'kisoType',pole().ledger.kisoType):'')+'</div></div>'+(t==='sel'?'<select data-exf="'+g.id+'.'+k+'"><option value="">—</option>'+opts.map(o=>'<option'+(G[k]===o?' selected':'')+'>'+o+'</option>').join('')+'</select>':'<input type="'+(t==='num'?'number':'text')+'" '+(t==='num'?'inputmode="decimal" step="any" ':'')+'data-exf="'+g.id+'.'+k+'" value="'+esc(G[k]||'')+'">')+'</div>'; });
     if(g.rows){ G.pipes=G.pipes||[]; G.cables=G.cables||[]; h+='<div class="item"><div class="q"><div class="txt">配管の本数及びサイズ</div></div>'+pipeRowsHtml(G.pipes,'data-addxpipe','data-delxpipe','data-xpipe','data-xi')+'</div><div class="item"><div class="q"><div class="txt">ケーブルの本数及びサイズ</div></div>'+cableRowsHtml(G.cables,'data-addxcable','data-delxcable','data-xcable','data-xi')+'</div>'; }
     g.items.forEach(([k,label])=>{ const good = (g.id==='pole'&&k==='tag') ? '有' : '無';
       h+='<div class="item"><div class="q"><div class="txt">'+label+'</div></div><div class="seg">'+['有','無'].map(v=>'<button data-ex="'+g.id+'.'+k+'" data-v="'+(v===good?'ok':'warn')+'" data-l="'+v+'" aria-pressed="'+(G[k]===v)+'">'+v+'</button>').join('')+'</div>'
@@ -2056,7 +2057,20 @@ function attachListHtml(p){
     ? '<button class="picbtn" data-openatt="'+a.id+'" style="min-height:64px;max-width:100%;flex-direction:column;align-items:flex-start;gap:2px"><span style="font-weight:700">'+(a.spec?'仕様書 '+esc(a.model||''):'PDF')+'</span><span style="font-size:12px;font-weight:400">'+esc(a.name)+'</span></button>'
     : '<img data-att="'+a.id+'" src="'+(TH[a.id]||'')+'" alt="'+esc(a.name)+'">').join('')+'</div>';
 }
+/* 台帳と重複する現調項目は台帳の値を先に入れておく（空欄のときだけ） */
+function prefillSurveyFromLedger(pp,j){
+  if(!pp||!j) return false; const L=pp.ledger; let ch=false;
+  const E=elecOf(j);
+  if(!E.denchu && L.inPole){ E.denchu=L.inPole; E.denchuSrc='台帳'; ch=true; }
+  if(!E.source && /架空/.test(lv(L,'hikikomi')||'')){ E.source='電力柱'; E.sourceSrc='台帳'; ch=true; }
+  const X=expoleOf(j); X.kiso=X.kiso||{};
+  if(!X.kiso.kisoType && L.kisoType){ X.kiso.kisoType=L.kisoType; X.kiso.kisoTypeSrc='台帳'; ch=true; }
+  const N=j.survey.newpole; if(N && N.reuse==='既設基礎を流用' && !N.kisoType && L.kisoType){ N.kisoType=L.kisoType; N.kisoTypeSrc='台帳'; ch=true; }
+  return ch;
+}
+function fromLedgerTag(obj,key,cur){ return (obj[key+'Src']==='台帳' && obj[key]===cur && cur) ? '　<span style="font-size:12px;color:var(--ok)">台帳から</span>' : ''; }
 function tabSurvey(p){
+  if(prefillSurveyFromLedger(pole(),p)) touch();
   let h=quickLedger(pole());
   h+='<div class="pad" style="padding-bottom:4px"><div class="inherit" style="margin:0;display:flex;align-items:center;gap:12px"><div style="flex:1"><b>作業内容：'+(p.work?esc(p.work):'未設定')+'</b><div style="font-size:13px">'+(SURVEY_BY_WORK[p.work]? '必要な項目だけを表示：'+surveySecs(p).map(s=>s.name).join('・') : (p.work?'「'+esc(p.work)+'」は現調項目の定義がありません。作業情報で該当する作業内容を選ぶと項目が出ます':'作業情報で作業内容を選ぶと項目が出ます'))+'</div></div><button class="btn pri" id="jobInfo2" style="flex:0 0 auto;min-height:44px;padding:0 16px">作業情報</button></div></div>';
   surveySecs(p).forEach(sec=>{
@@ -2608,8 +2622,8 @@ function onEdit(e){
   if(d.mmaker){ if(t.value==='__new'){ const nm=prompt('業者名'); if(nm){ SITE.makersExtra=SITE.makersExtra||[]; if(!SITE.makersExtra.includes(nm)) SITE.makersExtra.push(nm); SITE.matMaker=SITE.matMaker||{}; SITE.matMaker[d.mmaker]=nm; } touch(true); return; } SITE.matMaker=SITE.matMaker||{}; SITE.matMaker[d.mmaker]=t.value; touch(); return; }
   if(d.extra){ const x=j.survey.extraItems[+d.xi]; x[d.extra]=t.value; touch(); if(e.type==='change'){ const st=document.querySelector('[data-sec="materials"] .st'); if(st) st.textContent=jobMaterials(pole(),j).length+'品目'; } return; }
   if(d.shosamemo){ (j.survey.shosa||(j.survey.shosa={})).memo=t.value; touch(); return; }
-  if(d.el){ elecOf(j)[d.el]=t.value; if(d.el==='apChange') j.apReplace = t.value==='取替する' ? 1 : ''; touch(); if(e.type==='change' && (t.tagName==='SELECT'||d.el==='cap'||d.el==='load'||d.el==='volt')) render(); return; }
-  if(d.exf){ const [g,k]=d.exf.split('.'); const E=expoleOf(j); E[g]=E[g]||{}; E[g][k]=t.value; touch(); if(e.type==='change' && (k==='kisoType'||k==='kisoDia'||k==='kisoDepth')) render(); return; }
+  if(d.el){ elecOf(j)[d.el]=t.value; if(d.el==='apChange') j.apReplace = t.value==='取替する' ? 1 : ''; if(d.el==='denchu' && e.type==='change' && t.value.trim()) ledgerSet(p,'inPole',t.value.trim(),survName(j,true)); touch(); if(e.type==='change' && (t.tagName==='SELECT'||d.el==='cap'||d.el==='load'||d.el==='volt')) render(); return; }
+  if(d.exf){ const [g,k]=d.exf.split('.'); const E=expoleOf(j); E[g]=E[g]||{}; E[g][k]=t.value; if(g==='kiso' && k==='kisoType' && e.type==='change' && t.value) ledgerSet(p,'kisoType',t.value,survName(j,true)); touch(); if(e.type==='change' && (k==='kisoType'||k==='kisoDia'||k==='kisoDepth')) render(); return; }
   if(d.xpipe){ const r=expoleOf(j).pole.pipes[+d.xi]; r[d.xpipe]=t.value; if(d.xpipe==='type'){ r.size=''; r.sizeOther=''; } touch(); if(e.type==='change' && (d.xpipe==='type'||d.xpipe==='size')) render(); return; }
   if(d.xcable){ const r=expoleOf(j).pole.cables[+d.xi]; r[d.xcable]=t.value; if(d.xcable==='type'){ r.size=''; r.sizeOther=''; r.core=''; } touch(); if(e.type==='change' && (d.xcable==='type'||d.xcable==='size')) render(); return; }
   if(d.exo){ const E=expoleOf(j); E[d.exo]=E[d.exo]||{}; E[d.exo].other=t.value; touch(); return; }
@@ -2915,7 +2929,7 @@ function setLedgerVal(p,key,val){
   else L[key]=val;
 }
 /* ---- 台帳をExcelから取り込み（SheetJS をオンラインで読み込む） ---- */
-const APP_VER='v110';
+const APP_VER='v111';
 let xlsxP=null;
 function loadXlsx(){ if(window.XLSX) return Promise.resolve(window.XLSX); if(xlsxP) return xlsxP;
   xlsxP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=()=>res(window.XLSX); s.onerror=()=>{ xlsxP=null; rej(new Error('offline')); }; document.head.appendChild(s); });
