@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -1281,7 +1281,7 @@ function blankJob(kind,work){ return {id:uid('j'),kind:kind||'',work:work||'',wo
   closed:0,secNa:{},ledgerOk:0,survey:{},kyogi:{rows:[],docNo:'',tachiai:''},seko:{},meas:{ins:'',earth:'',torque:'',lux:'',volt:'',volt0:'',amp:'',plumb:''},pics:[],memo:'',
   insp:{start:0,end:0,names:'',items:{},breaker:{trip:'',ins:'',v1:'',v1val:'',cableBreak:'',upTrip:'',upIns:'',v2:'',damage:''},ps:{kind:'',v1:'',v1val:'',v2:'',v2val:'',model:'',stock:'',damage:''},ap:{hood:'',v1:'',v1val:'',v2:'',v2val:'',damage:''},bunden:{timer:'',timerMemo:'',fuse:'',fuseMemo:'',mag:'',magMemo:''},cause:'',causeOther:'',result:'',resultOther:'',report:'',reportHow:'',reportHowOther:'',reportWhen:'',reportDone:''}}; }
 function blankPole(){ return {id:uid('p'),no:'',route:'',routeOther:'',line:'',kp:'',addr:'',jobs:[],history:[],
-  ledger:{setchi:'',gaibu:'',shomeiKubun:'',lanes:'',sumikiri:'',kisoType:'',hikikomi:'',hikikomiOther:'',kansei:'',poleType:'',height:'',heightOther:'',arm:'',armLen:'',armLenOther:'',togu:'KSH-2',toguOther:'',lamp:'',lampModel:'',lampModelOther:'',watt:'',newTogu:'',maker:'',makerOther:'',angle:'',mapUrl:'',sonota:'',kubunMichi:'',inPole:'',poleMaker:'',hoshuYm:'',hoshuNaiyo:'',koujiMei:'',shucchosho:'',keiyaku1:'',keiyaku2:'',eigyosho:''},
+  ledger:{setchi:'',gaibu:'',shomeiKubun:'',lanes:'',sumikiri:'',kisoType:'',hikikomi:'',hikikomiOther:'',kansei:'',poleType:'',height:'',heightOther:'',arm:'',armLen:'',armLenOther:'',togu:'KSH-2',toguOther:'',lamp:'',lampModel:'',lampModelOther:'',watt:'',newTogu:'',maker:'',makerOther:'',angle:'',mapUrl:'',sonota:'',kubunMichi:'',inPole:'',poleMaker:'',hoshuYm:'',hoshuNaiyo:'',koujiMei:'',shucchosho:'',keiyaku:'',eigyosho:''},
   attach:[],
   memo:''}; }
 let SITE = null;
@@ -1302,10 +1302,11 @@ function migratePole(p){
   }
   delete q.survey; delete q.kyogi; delete q.seko; delete q.meas; delete q.pics; delete q.ledger.kubun;
   if(memoToFields(q)) q._memoMoved=true;
+  if(!q.ledger.keiyaku && (q.ledger.keiyaku1||q.ledger.keiyaku2)) q.ledger.keiyaku=[q.ledger.keiyaku1,q.ledger.keiyaku2].filter(Boolean).join(' '); delete q.ledger.keiyaku1; delete q.ledger.keiyaku2;
   q.upd=p.upd||0; q.jobs.forEach(j=>{ j.upd=j.upd||0; });
   return q;
 }
-const MEMO_FIELDS={'設置区分':'kubunMichi','電力引込柱名称':'inPole','照明ポール型式製造者':'poleMaker','ポール製造者':'poleMaker','補修年月':'hoshuYm','補修内容':'hoshuNaiyo','工事名':'koujiMei','前回工事名':'koujiMei','出張所':'shucchosho','電力契約種別':'keiyaku1','電力支払営業所名':'eigyosho'};
+const MEMO_FIELDS={'設置区分':'kubunMichi','電力引込柱名称':'inPole','照明ポール型式製造者':'poleMaker','ポール製造者':'poleMaker','補修年月':'hoshuYm','補修内容':'hoshuNaiyo','工事名':'koujiMei','前回工事名':'koujiMei','出張所':'shucchosho','電力契約種別':'keiyaku','電力支払営業所名':'eigyosho'};
 /* v106：Excel取込で「メモに追記」していた【列名】値 の行を、台帳の専用項目へ移す */
 function memoToFields(p){
   if(!p.memo || !/【[^】]+】/.test(p.memo)) return false;
@@ -1983,30 +1984,31 @@ function ledgerFieldsHtml(p){
   const L=p.ledger;
   return ''
     + fld('管理番号','no',p.no,{ph:'例）L-12'})
-    + '<div class="row2"><div>'+fld('路線','route',p.route,{sel:ROUTES.concat(['その他'])})+'</div><div>'+fld('上下線','line',p.line,{sel:LINES})+'</div></div>'
+    + '<div class="row2"><div>'+fld('路線','route',p.route,{sel:ROUTES.concat(['その他'])})+'</div><div>'+fld('出張所','shucchosho',L.shucchosho,{ph:'例）嘉手納国道'})+'</div></div>'
     + (p.route==='その他' ? fld('路線名（その他）','routeOther',p.routeOther,{ph:'路線名を入力'}) : '')
-    + '<div class="row2"><div>'+fld('距離標（KP）','kp',p.kp,{num:true,ph:'例）12.35'})+'</div><div>'+fld('設置区分','setchi',L.setchi,{sel:SETCHI})+'</div></div>'
-    + fld('外部条件','gaibu',L.gaibu,{sel:GAIBU})
     + fld('住所・場所','addr',p.addr,{ph:'例）○○交差点 南側'})
     + '<label class="lb">Googleマップのリンク</label><div class="sub" style="margin-top:0"><input type="url" inputmode="url" data-ledger="mapUrl" value="'+esc(L.mapUrl)+'" placeholder="共有リンクを貼り付け（空欄なら住所で検索）"><button class="btn sm" id="openMap" style="flex:0 0 auto"'+(mapUrl(p)?'':' disabled')+'>地図</button></div>'
-    + '<label class="lb">既設の更新年月日</label><input type="date" data-ledger="kansei" value="'+esc(L.kansei)+'">'
+    + fld('距離標（KP）','kp',p.kp,{num:true,ph:'例）12.35'})
+    + '<label class="lb">既設の更新年月日（完成年月）</label><input type="date" data-ledger="kansei" value="'+esc(L.kansei)+'">'
+    + fld('設置区分（台帳）','kubunMichi',L.kubunMichi,{ph:'例）道路交差点照明'})
+    + '<div class="row2"><div>'+fld('上下線（設置箇所）','line',p.line,{sel:LINES})+'</div><div>'+fld('設置区分','setchi',L.setchi,{sel:SETCHI})+'</div></div>'
+    + fld('外部条件','gaibu',L.gaibu,{sel:GAIBU})
     + '<h3 style="font-size:14px;margin:18px 0 0;color:var(--ink2)">既設設備</h3>'
+    + fld('基礎形式','kisoType',L.kisoType,{sel:KISO})
     + fld('ポール型式','poleType',L.poleType,{ph:'例）IA10B-S（開口部蓋の銘板）'})
     + '<div class="row2"><div>'+selOther('ポール高さ','height',L.height,L.heightOther,HEIGHTS,'例）8m')+'</div><div>'+selOther('アーム長','armLen',L.armLen,L.armLenOther,ARMLENS,'例）2.5m')+'</div></div>'
     + '<div class="note" style="padding:4px 0 0">ポール型式を入れると高さ・アーム長を型式記号から推定します（IA10B→10m、10-21B→2.1m）</div>'
-    + '<div class="row2"><div>'+fld('アーム','arm',L.arm,{sel:ARM})+'</div><div>'+fld('基礎形式','kisoType',L.kisoType,{sel:KISO})+'</div></div>'
-    + selOther('引込方式','hikikomi',L.hikikomi,L.hikikomiOther,HIKIKOMI,'引込方式を入力')
+    + fld('アーム','arm',L.arm,{sel:ARM})
     + '<div class="row2"><div>'+selOther('灯具型式','togu',L.togu,L.toguOther,TOGU,'型式を入力')+'</div><div>'+fld('ランプ種別','lamp',L.lamp,{sel:LAMP})+'</div></div>'
     + lampModelField(L)
-    + fld('電力申請番号','watt',L.watt,{ph:'電力会社の申請・契約番号'})
-    + '<h3 style="font-size:14px;margin:18px 0 0;color:var(--ink2)">台帳の補足（附属物台帳・MICHI）</h3>'
-    + '<div class="row2"><div>'+fld('出張所','shucchosho',L.shucchosho,{ph:'例）嘉手納国道'})+'</div><div>'+fld('設置区分（台帳）','kubunMichi',L.kubunMichi,{ph:'例）道路交差点照明'})+'</div></div>'
-    + '<div class="row2"><div>'+fld('電力契約種別1','keiyaku1',L.keiyaku1,{ph:'例）5'})+'</div><div>'+fld('電力契約種別2','keiyaku2',L.keiyaku2,{ph:'例）公衆街路灯Ａ'})+'</div></div>'
+    + selOther('引込方式','hikikomi',L.hikikomi,L.hikikomiOther,HIKIKOMI,'引込方式を入力')
+    + fld('電力契約種別','keiyaku',L.keiyaku,{ph:'例）公衆街路灯Ａ'})
+    + fld('電力申請番号（契約番号）','watt',L.watt,{ph:'電力会社の申請・契約番号'})
     + '<div class="row2"><div>'+fld('電力引込柱名称','inPole',L.inPole,{ph:'例）宜野湾８４'})+'</div><div>'+fld('電力支払営業所名','eigyosho',L.eigyosho,{ph:'例）浦添支店'})+'</div></div>'
     + fld('照明ポール型式製造者','poleMaker',L.poleMaker,{ph:'例）丸一鋼管株式会社'})
     + '<div class="row2"><div><label class="lb">補修年月</label><input type="month" data-ledger="hoshuYm" value="'+esc(L.hoshuYm)+'"></div><div>'+fld('補修内容','hoshuNaiyo',L.hoshuNaiyo,{ph:'例）灯具の取替え'})+'</div></div>'
-    + fld('前回工事名','koujiMei',L.koujiMei,{ph:'例）令和6・7年度南部国道管内照明更新外工事'})
-    + fld('その他（自由記入）','sonota',L.sonota,{ph:'現地で判明した変更点・気づき'});
+    + fld('その他・備考（自由記入）','sonota',L.sonota,{ph:'現地で判明した変更点・気づき'})
+    + fld('前回工事名','koujiMei',L.koujiMei,{ph:'例）令和6・7年度南部国道管内照明更新外工事'});
 }
 function tabLedger(p){
   const L=p.ledger; const lj=latestJob(p);
@@ -2855,7 +2857,7 @@ $('#libInput').addEventListener('change', e=>{ const files=Array.from(e.target.f
 $('#libJsonInput').addEventListener('change', e=>{ const f=e.target.files[0]; if(f) importLib(f); });
 $('#ledgerCsvInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(f) await importLedgerCsv(f); });
 $('#ledgerXlsInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(f) await importLedgerXls(f); });
-const LEDGER_COLS=[['no','管理番号'],['route','路線'],['line','上下線'],['kp','距離標'],['addr','住所・場所'],['setchi','設置区分'],['gaibu','外部条件'],['shomeiKubun','照明区分'],['lanes','車線数'],['kansei','既設の更新年月日'],['poleType','ポール型式'],['height','ポール高さ'],['armLen','アーム長'],['arm','アーム'],['kisoType','基礎形式'],['hikikomi','引込方式'],['togu','灯具型式'],['lamp','ランプ種別'],['lampModel','形式'],['watt','電力申請番号'],['shucchosho','出張所'],['kubunMichi','設置区分（台帳）'],['keiyaku1','電力契約種別1'],['keiyaku2','電力契約種別2'],['inPole','電力引込柱名称'],['eigyosho','電力支払営業所名'],['poleMaker','照明ポール型式製造者'],['hoshuYm','補修年月'],['hoshuNaiyo','補修内容'],['koujiMei','前回工事名'],['newTogu','新設灯具'],['maker','メーカー'],['angle','設計取付角度'],['mapUrl','地図リンク'],['sonota','その他'],['memo','メモ']];
+const LEDGER_COLS=[['no','管理番号'],['route','路線'],['shucchosho','出張所'],['addr','住所・場所'],['kp','距離標'],['kansei','既設の更新年月日'],['kubunMichi','設置区分（台帳）'],['line','上下線'],['setchi','設置区分'],['gaibu','外部条件'],['kisoType','基礎形式'],['poleType','ポール型式'],['height','ポール高さ'],['armLen','アーム長'],['arm','アーム'],['togu','灯具型式'],['lamp','ランプ種別'],['lampModel','形式'],['hikikomi','引込方式'],['keiyaku','電力契約種別'],['watt','電力申請番号'],['inPole','電力引込柱名称'],['eigyosho','電力支払営業所名'],['poleMaker','照明ポール型式製造者'],['hoshuYm','補修年月'],['hoshuNaiyo','補修内容'],['sonota','その他'],['koujiMei','前回工事名'],['shomeiKubun','照明区分'],['lanes','車線数'],['newTogu','新設灯具'],['maker','メーカー'],['angle','設計取付角度'],['mapUrl','地図リンク'],['memo','メモ']];
 const LEDGER_LABEL=Object.fromEntries(LEDGER_COLS.concat([['sonota','その他'],['routeOther','路線'],['heightOther','ポール高さ'],['armLenOther','アーム長'],['hikikomiOther','引込方式'],['makerOther','メーカー'],['toguOther','灯具型式'],['lampModelOther','形式'],['sumikiri','設置位置']]));
 function ledgerDisplay(p,key){
   const base=key.replace(/Other$/,''); const L=p.ledger;
@@ -2913,7 +2915,7 @@ function setLedgerVal(p,key,val){
   else L[key]=val;
 }
 /* ---- 台帳をExcelから取り込み（SheetJS をオンラインで読み込む） ---- */
-const APP_VER='v108';
+const APP_VER='v110';
 let xlsxP=null;
 function loadXlsx(){ if(window.XLSX) return Promise.resolve(window.XLSX); if(xlsxP) return xlsxP;
   xlsxP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=()=>res(window.XLSX); s.onerror=()=>{ xlsxP=null; rej(new Error('offline')); }; document.head.appendChild(s); });
@@ -2935,8 +2937,8 @@ function xlsDate(v){
   return '';
 }
 const XLS_TARGETS=LEDGER_COLS.concat([['kpKm','距離標 km部（百米標）'],['kpM','距離標 m部（kmに足す）'],['memo+','メモに追記（列名：値）'],['','（取り込まない）']]);
-const XLS_ALIAS={no:['管理番号','管理no','灯柱番号','照明柱番号','柱番号','照明番号'],route:['路線','路線名','国道','路線番号'],line:['上下線','上下','設置箇所','上り下り','車線区分'],kp:['距離標','kp','距離標kp','キロ程','測点','sta'],kpKm:['百米標km','百米標','キロ程km'],kpM:['距離m','距離'],addr:['住所・場所','住所場所','住所','場所','名称','地名','所在地','設置場所','位置'],setchi:['設置区分','設置位置区分'],gaibu:['外部条件'],shomeiKubun:['照明区分','連続局部別','照明種別'],lanes:['車線数'],kansei:['既設の更新年月日','更新年月日','完成年月','完成年月日','設置年月','設置年月日','竣工年月'],poleType:['ポール型式','照明ポール型式','ポール形式','柱型式','支柱型式'],height:['ポール高さ','ポール高','高さ','柱高'],armLen:['アーム長'],arm:['アーム','アーム形式'],kisoType:['基礎形式','基礎'],hikikomi:['引込方式','引込'],togu:['灯具型式','灯具形式','器具型式','器具形式'],lamp:['ランプ種別','光源種別','光源種別1','光源種別１','ランプ'],lampModel:['形式','ランプ形式','光源型式','光源型式1','光源型式１','ランプ型式'],watt:['電力申請番号','電力契約番号','契約番号','申請番号'],newTogu:['新設灯具','新設器具','led灯具'],maker:['メーカー','灯具製造者','製造者','製造者灯具','灯具メーカー'],angle:['設計取付角度','取付角度','角度'],mapUrl:['地図リンク','地図','googleマップ','map'],sonota:['その他','備考'],memo:['メモ'],kubunMichi:['設置区分台帳','設置区分michi'],inPole:['電力引込柱名称','引込柱名称','引込柱'],poleMaker:['ポール製造者','照明ポール型式製造者','照明ポール製造者','ポールメーカー'],hoshuYm:['補修年月','補修年月日','修繕年月'],hoshuNaiyo:['補修内容','修繕内容'],koujiMei:['前回工事名','工事名','工事名称'],shucchosho:['出張所'],keiyaku1:['電力契約種別1','電力契約種別','契約種別1','契約種別'],keiyaku2:['電力契約種別2','契約種別2'],eigyosho:['電力支払営業所名','支払営業所名','営業所名','電力営業所']};
-const XLS_MICHI={'管理番号':'no','出張所':'shucchosho','電力契約種別':'keiyaku1','電力支払営業所名':'eigyosho','路線名':'route','名称':'addr','百米標km':'kpKm','距離m':'kpM','完成年月':'kansei','連続局部別':'shomeiKubun','設置区分':'kubunMichi','設置箇所':'line','基礎形式':'kisoType','照明ポール型式':'poleType','灯具型式':'togu','光源種別1':'lamp','光源型式1':'lampModel','引込方式':'hikikomi','電力契約番号':'watt','電力引込柱名称':'inPole','灯具製造者':'maker','照明ポール型式製造者':'poleMaker','補修年月':'hoshuYm','補修内容':'hoshuNaiyo','工事名':'koujiMei','備考':'sonota'};
+const XLS_ALIAS={no:['管理番号','管理no','灯柱番号','照明柱番号','柱番号','照明番号'],route:['路線','路線名','国道','路線番号'],line:['上下線','上下','設置箇所','上り下り','車線区分'],kp:['距離標','kp','距離標kp','キロ程','測点','sta'],kpKm:['百米標km','百米標','キロ程km'],kpM:['距離m','距離'],addr:['住所・場所','住所場所','住所','場所','名称','地名','所在地','設置場所','位置'],setchi:['設置区分','設置位置区分'],gaibu:['外部条件'],shomeiKubun:['照明区分','連続局部別','照明種別'],lanes:['車線数'],kansei:['既設の更新年月日','更新年月日','完成年月','完成年月日','設置年月','設置年月日','竣工年月'],poleType:['ポール型式','照明ポール型式','ポール形式','柱型式','支柱型式'],height:['ポール高さ','ポール高','高さ','柱高'],armLen:['アーム長'],arm:['アーム','アーム形式'],kisoType:['基礎形式','基礎'],hikikomi:['引込方式','引込'],togu:['灯具型式','灯具形式','器具型式','器具形式'],lamp:['ランプ種別','光源種別','光源種別1','光源種別１','ランプ'],lampModel:['形式','ランプ形式','光源型式','光源型式1','光源型式１','ランプ型式'],watt:['電力申請番号','電力契約番号','契約番号','申請番号'],newTogu:['新設灯具','新設器具','led灯具'],maker:['メーカー','灯具製造者','製造者','製造者灯具','灯具メーカー'],angle:['設計取付角度','取付角度','角度'],mapUrl:['地図リンク','地図','googleマップ','map'],sonota:['その他','備考'],memo:['メモ'],kubunMichi:['設置区分台帳','設置区分michi'],inPole:['電力引込柱名称','引込柱名称','引込柱'],poleMaker:['ポール製造者','照明ポール型式製造者','照明ポール製造者','ポールメーカー'],hoshuYm:['補修年月','補修年月日','修繕年月'],hoshuNaiyo:['補修内容','修繕内容'],koujiMei:['前回工事名','工事名','工事名称'],shucchosho:['出張所'],keiyaku:['電力契約種別','契約種別','電力契約種別1','電力契約種別2'],eigyosho:['電力支払営業所名','支払営業所名','営業所名','電力営業所']};
+const XLS_MICHI={'管理番号':'no','出張所':'shucchosho','電力契約種別':'keiyaku','電力支払営業所名':'eigyosho','路線名':'route','名称':'addr','百米標km':'kpKm','距離m':'kpM','完成年月':'kansei','連続局部別':'shomeiKubun','設置区分':'kubunMichi','設置箇所':'line','基礎形式':'kisoType','照明ポール型式':'poleType','灯具型式':'togu','光源種別1':'lamp','光源型式1':'lampModel','引込方式':'hikikomi','電力契約番号':'watt','電力引込柱名称':'inPole','灯具製造者':'maker','照明ポール型式製造者':'poleMaker','補修年月':'hoshuYm','補修内容':'hoshuNaiyo','工事名':'koujiMei','備考':'sonota'};
 let XLS=null;
 function xlsGuessMap(head){
   const nh=head.map(xlsNormHead); const michi = nh.includes('百米標km') || nh.includes('照明ポール型式');
@@ -2946,8 +2948,7 @@ function xlsGuessMap(head){
     if(tgt===null){ for(const [k,list] of Object.entries(XLS_ALIAS)){ if(list.map(xlsNormHead).includes(h)){ tgt=k; break; } } }
     if(tgt===null){ for(const [k,list] of Object.entries(XLS_ALIAS)){ if(list.some(a=>a.length>=3 && h.includes(xlsNormHead(a)))){ tgt=k; break; } } }
     if(!tgt) return '';
-    if(tgt==='keiyaku1' && used.has('keiyaku1')) tgt='keiyaku2';
-    if(tgt!=='memo+'){ if(used.has(tgt)) return ''; used.add(tgt); }
+    if(tgt!=='memo+' && tgt!=='keiyaku'){ if(used.has(tgt)) return ''; used.add(tgt); }
     return tgt; });
 }
 async function importLedgerXls(file){
@@ -3023,7 +3024,8 @@ function xlsApplyNow(){
   data.forEach(r=>{ const no=xlsNo(r[noI]); if(!no){ skipped++; return; }
     let p=SITE.poles.find(x=>x.no===no)||SITE.poles.find(x=>toHalf(x.no)===toHalf(no)); const isNew=!p;
     if(!p){ p=blankPole(); p.no=no; SITE.poles.push(p); added++; } else updated++;
-    const ctx={}; XLS.map.forEach((k,i)=>{ if(!k||k==='no') return; if(xlsSet(p,k,r[i],XLS.head[i],ctx,isNew)) changed++; });
+    const ctx={}; const multi={}; XLS.map.forEach((k,i)=>{ if(k && k!=='no' && k!=='memo+' && XLS.map.filter(x=>x===k).length>1){ const v=r[i]; const s=String(v==null?'':v).trim(); if(s && !/^[?？*＊\-－]+$/.test(s)) (multi[k]=multi[k]||[]).push(s); } });
+    const done=new Set(); XLS.map.forEach((k,i)=>{ if(!k||k==='no') return; if(multi[k]){ if(done.has(k)) return; done.add(k); if(xlsSet(p,k,multi[k].filter((v,j,a)=>a.indexOf(v)===j).join(' '),XLS.head[i],ctx,isNew)) changed++; return; } if(xlsSet(p,k,r[i],XLS.head[i],ctx,isNew)) changed++; });
     if(ctx.km!=null||ctx.m!=null){ const kp=Math.round(((ctx.km||0)+(ctx.m||0)/1000)*1000)/1000; if(kp>0 && xlsSet(p,'kp',String(kp),'',{},isNew)) changed++; }
     if(p.ledger.poleType){ const inf=inferFromPoleType(p.ledger.poleType); if(inf.height && !p.ledger.height){ if(inf.height.startsWith('その他:')){ p.ledger.height='その他'; p.ledger.heightOther=inf.height.slice(4); } else p.ledger.height=inf.height; } if(inf.armLen && !p.ledger.armLen) p.ledger.armLen=inf.armLen; }
     p.upd=Date.now(); memoToFields(p); syncSpecAttach(p);
@@ -3057,7 +3059,7 @@ function exportHistoryCsv(){
 function exportLedgerTemplate(){
   const rows=[LEDGER_COLS.map(c=>c[1])];
   sortedPoles().forEach(p=>rows.push(LEDGER_COLS.map(([k])=>{ if(['no','kp','addr','memo','route','line'].includes(k)) return k==='route'?routeText(p):(p[k]||''); if(['height','armLen','hikikomi','maker','togu'].includes(k)) return lv(p.ledger,k); if(k==='lampModel') return lampModelText(p.ledger); return p.ledger[k]||''; })));
-  if(rows.length===1) rows.push(['L-1','国道58号','上り線','12.35','○○交差点 南側','路側','A','連続照明','2','','IA10B-S','10m','','片側','円筒基礎','単独型（架空引込）','KSH-2','高圧ナトリウムランプ','NHT220LS','','','','','','（この例の行は削除して使う）']);
+  if(rows.length===1) rows.push(LEDGER_COLS.map(([k])=>({no:'L-1',route:'国道58号',shucchosho:'嘉手納国道',addr:'○○交差点 南側',kp:'12.35',kansei:'',kubunMichi:'道路照明',line:'上り線',setchi:'路側',gaibu:'A',kisoType:'円筒基礎',poleType:'IA10B-S',height:'10m',arm:'片側',togu:'KSH-2',lamp:'高圧ナトリウムランプ',lampModel:'NHT220LS',hikikomi:'単独型（架空引込）',shomeiKubun:'連続照明',lanes:'2',memo:'（この例の行は削除して使う）'})[k]||''));
   dl((SITE.name||'現場')+'_台帳_'+stamp()+'.csv', '\uFEFF'+rows.map(r=>r.map(v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"').join(',')).join('\r\n'), 'text/csv;charset=utf-8');
   toast('台帳CSVを保存しました');
 }
@@ -3538,29 +3540,30 @@ function prLedgerRows(p){
   let h='';
   h+=prRow('管理番号',p.no,U,k('no'));
   h+=prRow('路線',routeText(p),U,[k('route'),k('routeOther')]);
-  h+=prRow('上下線',p.line,U,k('line'));
+  h+=prRow('出張所',L.shucchosho,U,k('shucchosho'));
+  h+=prRow('住所・場所',p.addr,U,k('addr'));
   h+=prRow('距離標（KP）',p.kp,U,k('kp'));
+  h+=prRow('既設の更新年月日',L.kansei,U,k('kansei'));
+  h+=prRow('設置区分（台帳）',L.kubunMichi,U,k('kubunMichi'));
+  h+=prRow('上下線',p.line,U,k('line'));
   h+=prRow('設置区分',L.setchi,U,k('setchi'));
   h+=prRow('外部条件',L.gaibu,U,k('gaibu'));
-  h+=prRow('住所・場所',p.addr,U,k('addr'));
-  h+=prRow('既設の更新年月日',L.kansei,U,k('kansei'));
+  h+=prRow('基礎形式',L.kisoType,U,k('kisoType'));
   h+=prRow('ポール型式',L.poleType,U,k('poleType'));
   h+=prRow('ポール高さ',lv(L,'height'),U,[k('height'),k('heightOther')]);
   h+=prRow('アーム長',lv(L,'armLen'),U,[k('armLen'),k('armLenOther')]);
   h+=prRow('アーム',L.arm,U,k('arm'));
-  h+=prRow('基礎形式',L.kisoType,U,k('kisoType'));
-  h+=prRow('引込方式',lv(L,'hikikomi'),U,[k('hikikomi'),k('hikikomiOther')]);
   h+=prRow('灯具型式',lv(L,'togu'),U,[k('togu'),k('toguOther')]);
   h+=prRow('ランプ種別',L.lamp,U,k('lamp'));
   h+=prRow('ランプ形式',lampModelText(L),U,[k('lampModel'),k('lampModelOther')]);
+  h+=prRow('引込方式',lv(L,'hikikomi'),U,[k('hikikomi'),k('hikikomiOther')]);
+  h+=prRow('電力契約種別',L.keiyaku,U,k('keiyaku'));
   h+=prRow('電力申請番号',L.watt,U,k('watt'));
-  h+=prRow('出張所',L.shucchosho,U,k('shucchosho'));
-  h+=prRow('設置区分（台帳）',L.kubunMichi,U,k('kubunMichi'));
-  h+=prRow('電力契約種別',[L.keiyaku1,L.keiyaku2].filter(Boolean).join('　'),U,[k('keiyaku1'),k('keiyaku2')]);
   h+=prRow('電力引込柱名称',L.inPole,U,k('inPole'));
   h+=prRow('電力支払営業所名',L.eigyosho,U,k('eigyosho'));
   h+=prRow('照明ポール型式製造者',L.poleMaker,U,k('poleMaker'));
   h+=prRow('補修年月・内容',[L.hoshuYm,L.hoshuNaiyo].filter(Boolean).join('　'),U,[k('hoshuYm'),k('hoshuNaiyo')]);
+  h+=prRow('その他・備考',L.sonota,U,k('sonota'));
   h+=prRow('前回工事名',L.koujiMei,U,k('koujiMei'));
   h+=prRow('照明区分（設計）',L.shomeiKubun,U,k('shomeiKubun'));
   h+=prRow('車線数',L.lanes,U,k('lanes'));
@@ -3568,7 +3571,6 @@ function prLedgerRows(p){
   h+=prRow('新設灯具（設計）',L.newTogu,U,k('newTogu'));
   h+=prRow('メーカー',lv(L,'maker'),U,[k('maker'),k('makerOther')]);
   h+=prRow('設計取付角度（°）',L.angle,U,k('angle'));
-  h+=prRow('その他',L.sonota,U,k('sonota'));
   h+=prRow('メモ',p.memo,U,k('memo'));
   const A=p.attach||[]; if(A.length) h+=prRow('添付',A.map(a=>a.type==='pdf'?(a.spec?'仕様書 '+(a.model||''):'PDF '+a.name):'写真 '+a.name).join('、'));
   (p.history||[]).forEach(x=>{ h+=prRow('変更履歴 '+(x.label||''),(x.from||'空欄')+' → '+(x.to||'空欄'),null,null,(x.src||'')+(x.jobLabel?' '+x.jobLabel:'')+(x.at?' '+fmtDT(x.at):'')); });
