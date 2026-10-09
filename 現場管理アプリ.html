@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -416,6 +416,7 @@ label.lb.unk-l{display:flex;align-items:center;gap:8px}
 <input type="file" id="libInput" accept="image/*,application/pdf" multiple hidden>
 <input type="file" id="libJsonInput" accept=".json,application/json" hidden>
 <input type="file" id="ledgerCsvInput" accept=".csv,text/csv" hidden>
+<input type="file" id="ledgerXlsInput" accept=".xlsx,.xlsm,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
 <input type="file" id="jsonInput" accept=".json,application/json" hidden>
 <input type="file" id="figPdfInput" accept="application/pdf" hidden>
 
@@ -2443,7 +2444,9 @@ document.addEventListener('click', async e=>{
   if(b && b.id==='libSave'){ saveLibFiles(); return; }
   if(d && d.openlib){ openLibItem(d.openlib); return; }
   if(d && d.dellib){ if(!confirm('この資料をライブラリから削除します。')) return; libSave(libCat, libGet(libCat).filter(s=>s.id!==d.dellib)); await picDel(d.dellib); openLib(libCat); return; }
-  if(b && b.id==='mLedgerCsv'){ openSheet('<h2>台帳を一括登録</h2><div class="note" style="padding:0 0 10px">既設台帳やMICHIデータ、設計図の一覧をCSVにして取り込むと、管理番号が先にできます。列名は「台帳CSVを書き出し」で出るファイルと同じにしてください。管理番号が同じ行は上書き、無い行は追加します。</div><div class="row2"><button class="btn pri" id="ledgerCsvPick">CSVを取り込み</button><button class="btn" id="ledgerCsvTpl">台帳CSVを書き出し（雛形）</button></div>'); return; }
+  if(b && b.id==='mLedgerCsv'){ openSheet('<h2>台帳を一括登録</h2><div class="note" style="padding:0 0 10px">既設台帳やMICHIデータ（附属物台帳）、設計図の一覧から管理番号を先に作ります。<b>Excel（.xlsx）はそのまま</b>取り込めます：列ごとの取り込み先を確認してから反映します（MICHIの列名は自動で当てはめ、一度直した対応はこの端末に記憶）。管理番号が同じ行は空欄だけ埋めるか上書きかを選べます。</div><button class="btn pri" id="ledgerXlsPick" style="width:100%">Excel（.xlsx）を取り込み</button><div class="row2" style="margin-top:8px"><button class="btn" id="ledgerCsvPick">CSVを取り込み</button><button class="btn" id="ledgerCsvTpl">台帳CSVを書き出し（雛形）</button></div><div class="note" style="padding:8px 0 0">CSVは「台帳CSVを書き出し」と同じ列名のものを取り込みます（管理番号が同じ行は上書き）</div>'); return; }
+  if(b && b.id==='ledgerXlsPick'){ $('#ledgerXlsInput').value=''; $('#ledgerXlsInput').click(); return; }
+  if(b && b.id==='xlsApply'){ xlsApplyNow(); return; }
   if(b && b.id==='ledgerCsvPick'){ $('#ledgerCsvInput').value=''; $('#ledgerCsvInput').click(); return; }
   if(b && b.id==='ledgerCsvTpl'){ exportLedgerTemplate(); return; }
   if(b && b.id==='mHist'){ exportHistoryCsv(); return; }
@@ -2832,6 +2835,7 @@ $('#specLibInput').addEventListener('change', e=>{ const f=e.target.files[0]; if
 $('#libInput').addEventListener('change', e=>{ const files=Array.from(e.target.files||[]); if(files.length) openLibMeta(files); });
 $('#libJsonInput').addEventListener('change', e=>{ const f=e.target.files[0]; if(f) importLib(f); });
 $('#ledgerCsvInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(f) await importLedgerCsv(f); });
+$('#ledgerXlsInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(f) await importLedgerXls(f); });
 const LEDGER_COLS=[['no','管理番号'],['route','路線'],['line','上下線'],['kp','距離標'],['addr','住所・場所'],['setchi','設置区分'],['gaibu','外部条件'],['shomeiKubun','照明区分'],['lanes','車線数'],['kansei','既設の更新年月日'],['poleType','ポール型式'],['height','ポール高さ'],['armLen','アーム長'],['arm','アーム'],['kisoType','基礎形式'],['hikikomi','引込方式'],['togu','灯具型式'],['lamp','ランプ種別'],['lampModel','形式'],['watt','電力申請番号'],['newTogu','新設灯具'],['maker','メーカー'],['angle','設計取付角度'],['mapUrl','地図リンク'],['sonota','その他'],['memo','メモ']];
 const LEDGER_LABEL=Object.fromEntries(LEDGER_COLS.concat([['sonota','その他'],['routeOther','路線'],['heightOther','ポール高さ'],['armLenOther','アーム長'],['hikikomiOther','引込方式'],['makerOther','メーカー'],['toguOther','灯具型式'],['lampModelOther','形式'],['sumikiri','設置位置']]));
 function ledgerDisplay(p,key){
@@ -2865,20 +2869,145 @@ function parseCsv(text){
   if(cur!==''||row.length){ row.push(cur); rows.push(row); }
   return rows.filter(r=>r.some(v=>String(v).trim()!==''));
 }
+function normName(s){ return String(s||'').replace(/株式会社|㈱|\(株\)|（株）|有限会社|㈲|\s|　/g,'').toLowerCase(); }
 function setLedgerVal(p,key,val){
   val=String(val||'').trim(); if(!val) return;
-  const L=p.ledger; const other=(k,opts)=>{ if(opts.includes(val)) L[k]=val; else { L[k]='その他'; L[k+'Other']=val; } };
-  if(['no','kp','addr','memo'].includes(key)) p[key]=val;
-  else if(key==='route'){ if(ROUTES.includes(val)) p.route=val; else { p.route='その他'; p.routeOther=val; } }
+  const L=p.ledger; const other=(k,opts)=>{ if(opts.includes(val)) { L[k]=val; L[k+'Other']=''; } else { L[k]='その他'; L[k+'Other']=val; } };
+  if(['no','kp','addr','memo'].includes(key)){ if(key==='kp'){ const n=parseFloat(toHalf(val).replace(/[^\d.]/g,'')); p.kp=isNaN(n)?val:String(n); } else p[key]=val; }
+  else if(key==='route'){ const r=toHalf(val).match(/^R\s*(\d+)$/i)||toHalf(val).match(/国道\s*(\d+)/)||toHalf(val).match(/^(\d+)\s*号?$/); const n=r?'国道'+parseInt(r[1],10)+'号':null;
+    if(ROUTES.includes(val)) { p.route=val; p.routeOther=''; } else if(n && ROUTES.includes(n)) { p.route=n; p.routeOther=''; } else if(n) { p.route='その他'; p.routeOther=n; } else { p.route='その他'; p.routeOther=val; } }
   else if(key==='line'){ const m=LINES.find(x=>val.includes(x.replace('線',''))); if(m) p.line=m; }
-  else if(key==='height'){ const v=val.replace(/[^\d.]/g,''); other('height',HEIGHTS.concat().map(x=>x)); if(HEIGHTS.includes(v+'m')) { L.height=v+'m'; L.heightOther=''; } }
-  else if(key==='armLen'){ const v=parseFloat(val); if(!isNaN(v) && ARMLENS.includes(v.toFixed(1)+'m')) L.armLen=v.toFixed(1)+'m'; else other('armLen',ARMLENS); }
-  else if(key==='hikikomi') other('hikikomi',HIKIKOMI);
-  else if(key==='maker') other('maker',MAKERS);
+  else if(key==='height'){ const v=toHalf(val).replace(/[^\d.]/g,''); other('height',HEIGHTS.concat().map(x=>x)); if(HEIGHTS.includes(v+'m')) { L.height=v+'m'; L.heightOther=''; } else if(v){ L.height='その他'; L.heightOther=v+'m'; } }
+  else if(key==='armLen'){ const v=parseFloat(toHalf(val)); if(!isNaN(v) && ARMLENS.includes(v.toFixed(1)+'m')) { L.armLen=v.toFixed(1)+'m'; L.armLenOther=''; } else other('armLen',ARMLENS); }
+  else if(key==='hikikomi'){ if(HIKIKOMI.includes(val)) { L.hikikomi=val; L.hikikomiOther=''; } else if(/架空/.test(val)) { L.hikikomi=HIKIKOMI[0]; L.hikikomiOther=''; } else if(/地中/.test(val)) { L.hikikomi=HIKIKOMI[1]; L.hikikomiOther=''; } else other('hikikomi',HIKIKOMI); }
+  else if(key==='maker'){ const m=MAKERS.find(x=>normName(x)===normName(val)) || MAKERS.find(x=>normName(val)&&(normName(x).includes(normName(val))||normName(val).includes(normName(x)))); if(m){ L.maker=m; L.makerOther=''; } else other('maker',MAKERS); }
   else if(key==='togu') other('togu',TOGU);
-  else if(key==='lampModel'){ const all=[].concat(...Object.values(LAMP_MODELS)); if(all.includes(val)) L.lampModel=val; else { L.lampModel='その他'; L.lampModelOther=val; } if(!L.lamp){ if(/^KCE/.test(val)) L.lamp='LED'; else if(/^NH/.test(val)) L.lamp='高圧ナトリウムランプ'; } }
-  else if(key==='lamp'){ if(/Na|ナトリウム/.test(val)) L.lamp='高圧ナトリウムランプ'; else if(LAMP.includes(val)) L.lamp=val; else L.lamp='その他'; }
+  else if(key==='lampModel'){ const all=[].concat(...Object.values(LAMP_MODELS)); if(all.includes(val)) { L.lampModel=val; L.lampModelOther=''; } else { L.lampModel='その他'; L.lampModelOther=val; } if(!L.lamp){ if(/^KCE/i.test(val)) L.lamp='LED'; else if(/^NH/i.test(val)) L.lamp='高圧ナトリウムランプ'; } }
+  else if(key==='lamp'){ if(/Na|ナトリウム/i.test(val)) L.lamp='高圧ナトリウムランプ'; else if(/LED/i.test(val)) L.lamp='LED'; else if(/水銀/.test(val)) L.lamp='水銀'; else if(/蛍光/.test(val)) L.lamp='蛍光'; else if(LAMP.includes(val)) L.lamp=val; else L.lamp='その他'; }
+  else if(key==='kisoType'){ if(KISO.includes(val)) L.kisoType=val; else if(/埋込/.test(val)) L.kisoType='直接埋込'; else if(/橋梁/.test(val)) L.kisoType='橋梁基礎'; else if(/変形/.test(val)) L.kisoType='変形基礎'; else if(/ベースプレート|円筒|アンカー/.test(val)) L.kisoType='円筒基礎'; }
+  else if(key==='shomeiKubun'){ if(SHOMEI.includes(val)) L.shomeiKubun=val; else if(/連続/.test(val)) L.shomeiKubun='連続照明'; else if(/横断/.test(val)) L.shomeiKubun='横断歩道'; else if(/十字/.test(val)) L.shomeiKubun='交差点（十字路）'; else if(/[TＴ]字/.test(val)) L.shomeiKubun='交差点（T字路）'; else if(/[YＹ]字/.test(val)) L.shomeiKubun='交差点（Y字路）'; }
+  else if(key==='setchi'){ if(SETCHI.includes(val)) L.setchi=val; else if(/歩道/.test(val)) L.setchi='歩道'; else if(/中央/.test(val)) L.setchi='中央分離帯'; else if(/路側|路肩/.test(val)) L.setchi='路側'; }
+  else if(key==='gaibu'){ const v=toHalf(val).toUpperCase(); if(GAIBU.includes(v)) L.gaibu=v; }
+  else if(key==='lanes'){ const v=toHalf(val).replace(/[^\d]/g,''); if(v) L.lanes=v; }
+  else if(key==='arm'){ if(ARM.includes(val)) L.arm=val; else if(/両/.test(val)) L.arm='両側'; else if(/片/.test(val)) L.arm='片側'; else if(/ストレート|直/.test(val)) L.arm='ストレート'; }
   else L[key]=val;
+}
+/* ---- 台帳をExcelから取り込み（SheetJS をオンラインで読み込む） ---- */
+let xlsxP=null;
+function loadXlsx(){ if(window.XLSX) return Promise.resolve(window.XLSX); if(xlsxP) return xlsxP;
+  xlsxP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=()=>res(window.XLSX); s.onerror=()=>{ xlsxP=null; rej(new Error('offline')); }; document.head.appendChild(s); });
+  return xlsxP; }
+function toHalf(s){ return String(s==null?'':s).replace(/[０-９Ａ-Ｚａ-ｚ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[－‐‑‒–—―]/g,'-').replace(/．/g,'.').replace(/，/g,',').replace(/　/g,' ').trim(); }
+function xlsNormHead(s){ return toHalf(s).replace(/[\s（）()\[\]【】「」・､、:：]/g,'').toLowerCase(); }
+function xlsDate(v){
+  if(v==null||v==='') return '';
+  if(v instanceof Date) return isNaN(v)?'':v.toISOString().slice(0,10);
+  if(typeof v==='number'){ const s=String(Math.round(v));
+    if(v>=190001&&v<=210012) return s.slice(0,4)+'-'+s.slice(4,6)+'-01';
+    if(v>=19000101&&v<=21001231) return s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8);
+    if(v>0&&v<100000) return new Date(Date.UTC(1899,11,30)+Math.round(v)*86400000).toISOString().slice(0,10);
+    return ''; }
+  const s=toHalf(v); const era={'令和':2018,'平成':1988,'昭和':1925,'R':2018,'H':1988,'S':1925};
+  let m=s.match(/^(令和|平成|昭和|[RHS])\s*(\d+|元)\s*[.年\/-]\s*(\d{1,2})(?:\s*[.月\/-]\s*(\d{1,2}))?/i); if(m){ const y=era[m[1].toUpperCase()]+(m[2]==='元'?1:parseInt(m[2],10)); return y+'-'+m[3].padStart(2,'0')+'-'+String(m[4]||1).padStart(2,'0'); }
+  m=s.match(/^(\d{4})\s*[.年\/-]\s*(\d{1,2})(?:\s*[.月\/-]\s*(\d{1,2}))?/); if(m) return m[1]+'-'+m[2].padStart(2,'0')+'-'+String(m[3]||1).padStart(2,'0');
+  m=s.match(/^(\d{4})(\d{2})(\d{2})?$/); if(m) return m[1]+'-'+m[2]+'-'+(m[3]||'01');
+  return '';
+}
+const XLS_TARGETS=LEDGER_COLS.concat([['kpKm','距離標 km部（百米標）'],['kpM','距離標 m部（kmに足す）'],['memo+','メモに追記（列名：値）'],['','（取り込まない）']]);
+const XLS_ALIAS={no:['管理番号','管理no','灯柱番号','照明柱番号','柱番号','照明番号'],route:['路線','路線名','国道','路線番号'],line:['上下線','上下','設置箇所','上り下り','車線区分'],kp:['距離標','kp','距離標kp','キロ程','測点','sta'],kpKm:['百米標km','百米標','キロ程km'],kpM:['距離m','距離'],addr:['住所・場所','住所場所','住所','場所','名称','地名','所在地','設置場所','位置'],setchi:['設置区分','設置位置区分'],gaibu:['外部条件'],shomeiKubun:['照明区分','連続局部別','照明種別'],lanes:['車線数'],kansei:['既設の更新年月日','更新年月日','完成年月','完成年月日','設置年月','設置年月日','竣工年月'],poleType:['ポール型式','照明ポール型式','ポール形式','柱型式','支柱型式'],height:['ポール高さ','ポール高','高さ','柱高'],armLen:['アーム長'],arm:['アーム','アーム形式'],kisoType:['基礎形式','基礎'],hikikomi:['引込方式','引込'],togu:['灯具型式','灯具形式','器具型式','器具形式'],lamp:['ランプ種別','光源種別','光源種別1','光源種別１','ランプ'],lampModel:['形式','ランプ形式','光源型式','光源型式1','光源型式１','ランプ型式'],watt:['電力申請番号','電力契約番号','契約番号','申請番号'],newTogu:['新設灯具','新設器具','led灯具'],maker:['メーカー','灯具製造者','製造者','製造者灯具','灯具メーカー'],angle:['設計取付角度','取付角度','角度'],mapUrl:['地図リンク','地図','googleマップ','map'],sonota:['その他','備考'],memo:['メモ']};
+const XLS_MICHI={'管理番号':'no','路線名':'route','名称':'addr','百米標km':'kpKm','距離m':'kpM','完成年月':'kansei','連続局部別':'shomeiKubun','設置区分':'memo+','設置箇所':'line','基礎形式':'kisoType','照明ポール型式':'poleType','灯具型式':'togu','光源種別1':'lamp','光源型式1':'lampModel','引込方式':'hikikomi','電力契約番号':'watt','電力引込柱名称':'memo+','灯具製造者':'maker','照明ポール型式製造者':'memo+','補修年月':'memo+','補修内容':'memo+','工事名':'memo+','備考':'sonota'};
+let XLS=null;
+function xlsGuessMap(head){
+  const nh=head.map(xlsNormHead); const michi = nh.includes('百米標km') || nh.includes('照明ポール型式');
+  const used=new Set(); return nh.map(h=>{ if(!h) return '';
+    let tgt=null;
+    if(michi && XLS_MICHI[h]!==undefined) tgt=XLS_MICHI[h];
+    if(tgt===null){ for(const [k,list] of Object.entries(XLS_ALIAS)){ if(list.map(xlsNormHead).includes(h)){ tgt=k; break; } } }
+    if(tgt===null){ for(const [k,list] of Object.entries(XLS_ALIAS)){ if(list.some(a=>a.length>=3 && h.includes(xlsNormHead(a)))){ tgt=k; break; } } }
+    if(!tgt) return '';
+    if(tgt!=='memo+'){ if(used.has(tgt)) return ''; used.add(tgt); }
+    return tgt; });
+}
+async function importLedgerXls(file){
+  toast('読み込み中…'); let X;
+  try{ X=await loadXlsx(); }catch(e){ toast('Excel読み込み用の部品を取得できません。オンラインで開いてください'); return; }
+  try{ const buf=await file.arrayBuffer(); const wb=X.read(buf,{type:'array',cellDates:false});
+    const sheets=wb.SheetNames.filter(n=>xlsRows(X,wb,n).length>1);
+    if(!sheets.length) throw new Error('データのあるシートがありません');
+    XLS={X,wb,name:file.name,sheets,mode:'fill',half:true}; xlsPickSheet(sheets[0]);
+  }catch(e){ toast('取り込めませんでした：'+e.message); }
+}
+function xlsRows(X,wb,name){ const rows=X.utils.sheet_to_json(wb.Sheets[name],{header:1,raw:true,defval:''}); return rows.filter(r=>r.some(v=>String(v==null?'':v).trim()!=='')); }
+function xlsPickSheet(name){ XLS.sheet=name; XLS.rows=xlsRows(XLS.X,XLS.wb,name); XLS.headRow=xlsGuessHead(XLS.rows); xlsSetHead(); xlsRender(); }
+function xlsGuessHead(rows){ const n=Math.min(rows.length,20);
+  for(let i=0;i<n;i++){ if(rows[i].some(v=>/管理番号|管理no/i.test(toHalf(v)))) return i; }
+  let best=0,bn=-1; for(let i=0;i<n;i++){ const c=rows[i].filter(v=>typeof v==='string'&&v.trim()).length; if(c>bn){ bn=c; best=i; } } return best; }
+function xlsSetHead(){ const h=XLS.rows[XLS.headRow]||[]; XLS.head=h.map(v=>String(v==null?'':v).trim()); XLS.sig=XLS.head.map(xlsNormHead).join('|');
+  let saved=null; try{ saved=JSON.parse(Store.get('dl:xlsmap:'+XLS.sig)||'null'); }catch(e){}
+  XLS.saved = Array.isArray(saved) && saved.length===XLS.head.length; XLS.map = XLS.saved ? saved : xlsGuessMap(XLS.head); }
+function xlsNo(v){ let s=String(v==null?'':v).trim(); if(XLS.half) s=toHalf(s); return s; }
+function xlsPreviewText(){
+  const noI=XLS.map.indexOf('no'); const data=XLS.rows.slice(XLS.headRow+1);
+  if(noI<0) return '<b style="color:var(--warn)">「管理番号」の取り込み先が選ばれていません</b>';
+  let nw=0, up=0, bl=0; const seen=new Set();
+  data.forEach(r=>{ const no=xlsNo(r[noI]); if(!no){ bl++; return; } if(seen.has(no)) return; seen.add(no); if(SITE.poles.some(p=>p.no===no||toHalf(p.no)===toHalf(no))) up++; else nw++; });
+  return '取り込むと：新規 <b>'+nw+'件</b>、既存の更新 <b>'+up+'件</b>'+(bl?'、管理番号が空の行 '+bl+'行（飛ばします）':'')+'<br><span class="sm" style="color:var(--ink2)">既存の管理番号は'+(XLS.mode==='fill'?'空欄の項目だけ埋めます':'Excelの値で上書きし、変わった項目は台帳の変更履歴に「Excel取込」として残ります')+'</span>';
+}
+function xlsRender(){
+  const data=XLS.rows.slice(XLS.headRow+1); const ex=data[0]||[];
+  let h='<h2>Excelから台帳を取り込み</h2><div class="note" style="padding:0 0 8px">'+esc(XLS.name)+'　データ '+data.length+'行</div>';
+  if(XLS.sheets.length>1) h+='<label class="lb">シート</label><select data-xls="sheet">'+XLS.sheets.map(n=>'<option'+(n===XLS.sheet?' selected':'')+'>'+esc(n)+'</option>').join('')+'</select>';
+  h+='<label class="lb">見出しの行</label><select data-xls="head">'+XLS.rows.slice(0,20).map((r,i)=>'<option value="'+i+'"'+(i===XLS.headRow?' selected':'')+'>'+(i+1)+'行目：'+esc(r.filter(v=>String(v).trim()!=='').slice(0,4).join('／')).slice(0,48)+'</option>').join('')+'</select>';
+  h+='<div class="note" style="padding:10px 0 4px">列ごとの取り込み先'+(XLS.saved?'（前回の設定を復元しました）':'（列名から自動で判定しました）')+'。違っていれば直してください。「灯具型式」にKCE〜などの器具形式が入っている場合は「形式」に、KSH-2は「灯具型式」に自動で振り分けます</div>';
+  h+='<div style="overflow-x:auto"><table class="qt"><thead><tr><th>Excelの列</th><th>例（1行目）</th><th>取り込み先</th></tr></thead><tbody>'
+    + XLS.head.map((hd,i)=>{ const e=String(ex[i]==null?'':ex[i]); if(!hd && !e) return ''; return '<tr><td style="white-space:nowrap">'+esc(hd||('列'+(i+1)))+'</td><td class="sm" style="color:var(--ink2);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(e.slice(0,24))+'</td><td><select data-xls="col" data-i="'+i+'" style="min-width:150px">'+XLS_TARGETS.map(([k,l])=>'<option value="'+k+'"'+((XLS.map[i]||'')===k?' selected':'')+'>'+esc(l)+'</option>').join('')+'</select></td></tr>'; }).join('')
+    + '</tbody></table></div>';
+  h+='<label class="lb">既にある管理番号の扱い</label><select data-xls="mode"><option value="fill"'+(XLS.mode==='fill'?' selected':'')+'>空欄だけ埋める（入力済みの項目は残す）</option><option value="over"'+(XLS.mode==='over'?' selected':'')+'>Excelの値で上書き（変更は台帳の変更履歴に残す）</option></select>';
+  h+='<label class="lb" style="display:flex;align-items:center;gap:8px;margin-top:10px"><input type="checkbox" data-xls="half"'+(XLS.half?' checked':'')+' style="width:20px;height:20px">全角の数字・英字・ハイフンを半角に直す（管理番号・型式など）</label>';
+  h+='<div class="judge" id="xlsPrev" style="display:block;margin-top:10px">'+xlsPreviewText()+'</div>';
+  h+='<button class="btn pri" id="xlsApply" style="width:100%;margin-top:14px">取り込む</button>';
+  openSheet(h);
+}
+document.addEventListener('change', e=>{ const t=e.target; if(!t.dataset || !t.dataset.xls || !XLS) return;
+  const k=t.dataset.xls;
+  if(k==='sheet'){ xlsPickSheet(t.value); return; }
+  if(k==='head'){ XLS.headRow=parseInt(t.value,10)||0; xlsSetHead(); xlsRender(); return; }
+  if(k==='col'){ XLS.map[parseInt(t.dataset.i,10)]=t.value; }
+  if(k==='mode') XLS.mode=t.value;
+  if(k==='half') XLS.half=t.checked;
+  const pv=$('#xlsPrev'); if(pv) pv.innerHTML=xlsPreviewText();
+});
+function xlsSet(p,key,v,hdr,ctx,isNew){
+  let val = v instanceof Date ? xlsDate(v) : (typeof v==='number' ? (Number.isInteger(v)?String(v):String(Math.round(v*1000)/1000)) : String(v==null?'':v).trim());
+  if(!val || /^[?？*＊\-－—ー]+$/.test(val)) return false;
+  if(key==='kpKm'){ const n=parseFloat(toHalf(val)); if(!isNaN(n)) ctx.km=n; return false; }
+  if(key==='kpM'){ const n=parseFloat(toHalf(val)); if(!isNaN(n)) ctx.m=n; return false; }
+  if(key==='memo+'){ if(/年月|日付|年度/.test(hdr||'') && !/年度/.test(hdr||'')){ const d=xlsDate(v); if(d) val=(typeof v==='number' && v<210013) ? d.slice(0,7) : d; } const line='【'+(hdr||'Excel')+'】'+val; if((p.memo||'').includes(line)) return false; p.memo=(p.memo?p.memo+'\n':'')+line; return true; }
+  if(key==='kansei'){ val=xlsDate(v); if(!val) return false; }
+  if(XLS.half && ['no','poleType','togu','lampModel','watt','kp','lanes','gaibu','angle','height','armLen','newTogu'].includes(key)) val=toHalf(val);
+  if(key==='togu' && !TOGU.includes(val) && /^(KCE|NHT?|KA)\d/i.test(val)) key='lampModel';
+  if(key==='lampModel' && /^KS[HC]-?\d/i.test(val)) key='togu';
+  const cur=ledgerDisplay(p,key)||'';
+  if(XLS.mode==='fill' && cur) return false;
+  setLedgerVal(p,key,val); const to=ledgerDisplay(p,key)||''; if(to===cur) return false;
+  if(!isNew){ p.history=p.history||[]; p.history.push({at:Date.now(),src:'Excel取込',jobId:null,jobLabel:'',field:key,label:LEDGER_LABEL[key]||key,from:cur,to}); }
+  return true;
+}
+function xlsApplyNow(){
+  if(!XLS||!SITE) return; const noI=XLS.map.indexOf('no'); if(noI<0){ toast('「管理番号」の取り込み先を選んでください'); return; }
+  const data=XLS.rows.slice(XLS.headRow+1); let added=0, updated=0, changed=0, skipped=0;
+  data.forEach(r=>{ const no=xlsNo(r[noI]); if(!no){ skipped++; return; }
+    let p=SITE.poles.find(x=>x.no===no)||SITE.poles.find(x=>toHalf(x.no)===toHalf(no)); const isNew=!p;
+    if(!p){ p=blankPole(); p.no=no; SITE.poles.push(p); added++; } else updated++;
+    const ctx={}; XLS.map.forEach((k,i)=>{ if(!k||k==='no') return; if(xlsSet(p,k,r[i],XLS.head[i],ctx,isNew)) changed++; });
+    if(ctx.km!=null||ctx.m!=null){ const kp=Math.round(((ctx.km||0)+(ctx.m||0)/1000)*1000)/1000; if(kp>0 && xlsSet(p,'kp',String(kp),'',{},isNew)) changed++; }
+    if(p.ledger.poleType){ const inf=inferFromPoleType(p.ledger.poleType); if(inf.height && !p.ledger.height){ if(inf.height.startsWith('その他:')){ p.ledger.height='その他'; p.ledger.heightOther=inf.height.slice(4); } else p.ledger.height=inf.height; } if(inf.armLen && !p.ledger.armLen) p.ledger.armLen=inf.armLen; }
+    p.upd=Date.now(); syncSpecAttach(p);
+  });
+  Store.set('dl:xlsmap:'+XLS.sig, JSON.stringify(XLS.map));
+  touch(); $('#sheet').classList.remove('open'); V.screen='poles'; render();
+  toast('新規 '+added+'件、更新 '+updated+'件（'+changed+'項目を反映）'+(skipped?'、管理番号なし '+skipped+'行は飛ばしました':''));
+  XLS=null;
 }
 async function importLedgerCsv(file){
   try{
