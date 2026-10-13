@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v112：管理番号一覧に「並び」チップを追加：路線→上下線→KP（既定）／上下線→KP／KP／管理番号／住所、昇順・降順の切替。並びは端末に記憶し、前後の管理番号への移動・CSV・印刷も同じ順。一覧の行に上下線を表示。v111：台帳と重複する現調項目は台帳の値を先に入れておく：電気系統の「電力柱番号または電気番号」←電力引込柱名称、「電源供給元」←引込方式が架空なら電力柱、既設ポール・基礎の「基礎形式」←基礎形式（建替で既設基礎流用の新設側も）。空欄のときだけ入れ「台帳から」と表示。現調でこれらを直すと台帳にも反映し変更履歴に残す。v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v113：①建替（照明柱更新）で既設灯具がLEDのときは灯具を流用する前提に（既定は自動：既設ランプ種別がLEDで新設灯具が未選択なら流用。作業情報「既設灯具の扱い」で流用／取替を指定可）。流用時は灯具の資材・LED形式の選択・完了時の灯具の台帳反映を省き、図・印刷では灯具を取替扱いにしない。施工タブに流用の案内。②現調「規制方式」に「一車線規制」を追加。v112：管理番号一覧に「並び」チップを追加：路線→上下線→KP（既定）／上下線→KP／KP／管理番号／住所、昇順・降順の切替。並びは端末に記憶し、前後の管理番号への移動・CSV・印刷も同じ順。一覧の行に上下線を表示。v111：台帳と重複する現調項目は台帳の値を先に入れておく：電気系統の「電力柱番号または電気番号」←電力引込柱名称、「電源供給元」←引込方式が架空なら電力柱、既設ポール・基礎の「基礎形式」←基礎形式（建替で既設基礎流用の新設側も）。空欄のときだけ入れ「台帳から」と表示。現調でこれらを直すと台帳にも反映し変更履歴に残す。v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -507,7 +507,7 @@ const SURVEY = [
   {id:'elec', name:'電気系統', special:'elec', items:[]},
   {id:'cond', name:'作業条件', items:[
     {id:'kakuu', t:'架空線との離隔、樹木・看板等の支障物', type:'tri', hint:'支障物件を発見したら速やかに監督職員へ報告（特記 第13章第25条）'},
-    {id:'kisei', t:'規制方式', type:'sel', opts:['規制不要','片側交互','全面','歩道規制'], inherit:true, hint:'GW・旧盆・年末年始・年度末・イベント期間は車線規制不可（路上工事抑制、特記 第13章第32条）'},
+    {id:'kisei', t:'規制方式', type:'sel', opts:['規制不要','一車線規制','片側交互','全面','歩道規制'], inherit:true, hint:'GW・旧盆・年末年始・年度末・イベント期間は車線規制不可（路上工事抑制、特記 第13章第32条）'},
     {id:'kiseitime', t:'規制可能時間帯・交通量のピーク', type:'txt', ph:'例）9:00〜16:00（標準は昼間8〜17時）', inherit:true},
     {id:'hokosha', t:'歩行者通行帯1.5m以上を確保できるか', type:'tri', hint:'特記 第16章 4.安全対策'},
     {id:'shasha', t:'重機・高所作業車の設置可否（路肩幅・勾配・軟弱）', type:'sel4', opts:[['lane','車線規制内'],['walk','歩道規制内'],['warn','要協議'],['na','該当なし']]},
@@ -744,7 +744,7 @@ function shosaProgress(j){ const S=j.survey.shosa||{}; return {total:1, done:S.v
 function jobMaterials(p,j){
   const M=[]; const L=p.ledger; const w=j.work||''; const S=j.survey||{};
   const add=(cat,name,spec,unit,qty,note)=>{ if(qty==null||isNaN(qty)||qty<=0) return; M.push({cat,name,spec:spec||'',unit,qty:Math.round(qty*100)/100,note:note||''}); };
-  if(/LED灯具取替|建替|新設/.test(w)){ add('灯具', L.newTogu? 'LED灯具 '+L.newTogu : 'LED灯具（形式未定）', lv(L,'maker'), '台', 1, L.newTogu?'':'台帳の新設灯具を入れると形式が入ります'); }
+  if(/LED灯具取替|建替|新設/.test(w) && !toguReused(j,p)){ add('灯具', L.newTogu? 'LED灯具 '+L.newTogu : 'LED灯具（形式未定）', lv(L,'maker'), '台', 1, L.newTogu?'':'台帳の新設灯具を入れると形式が入ります'); }
   const N=S.newpole||{};
   if(/建替|新設/.test(w)){
     add('ポール', N.poleType? 'ポール '+N.poleType : 'ポール（型式未定）', '', '本', 1);
@@ -2151,6 +2151,7 @@ function tabSeko(p){
   const inh=inheritText(p);
   let h='';
   if(!p.work) h+='<div class="note" style="padding:12px 14px 0;color:var(--warn);font-weight:600">作業情報で作業内容を選ぶと工程が絞られます（未設定は全工程を表示）</div>';
+  if(toguReused(p,pole())) h+='<div class="inherit" style="margin-bottom:0"><b>既設LED灯具を流用</b>：既設灯具撤去の工程で取り外し、灯具取付の工程で新しい照明柱に再取付します（新灯具の手配は不要）</div>';
   if(inh.length){
     h+='<div class="inherit"><b>現調から引き継いだ条件</b>'+inh.map(x=>'・'+esc(x.t)+'：<span'+(x.hot?' class="x"':'')+'>'+esc(x.v)+'</span>').join('<br>')+'</div>';
   }else{
@@ -2315,10 +2316,12 @@ function addSecNa(h,j,kind){
   wrap('breakerEval','breaker',{lines:[],action:''}); wrap('psEval','ps',{lines:[],action:''}); wrap('apEval','ap',{lines:[],action:''}); wrap('bundenEval','bunden',{lines:[],action:''});
 })();
 /* ---- LED灯具の選定：応急点検・現調でLED灯具取替に派生するとき、その場で型式を決める（台帳の新設灯具・メーカーに保存） ---- */
+/* 建替のときの既設灯具の扱い：既設がLEDなら流用が既定（作業情報で切替） */
+function toguReused(j,p){ p=p||pole(); if(!j||!p||!/建替/.test(j.work||'')) return false; if(j.toguReuse) return j.toguReuse==='reuse'; return p.ledger.lamp==='LED' && !p.ledger.newTogu; }
 function ledPickNeeded(j,p){
   if(!j) return false;
   if(j.kind==='応急点検工') return resultText(j)==='LED灯具取替' || p.jobs.some(x=>x.parent===j.id && /LED灯具取替/.test(x.work||''));
-  return /LED灯具取替|建替|新設/.test(j.work||'');
+  return /LED灯具取替|建替|新設/.test(j.work||'') && !toguReused(j,p);
 }
 function ledPickHtml(p,j){
   const L=p.ledger; const s=suggestNewTogu(p);
@@ -2347,7 +2350,7 @@ function applyJobToLedger(p,j){
   const L=p.ledger; const work=j.work||''; const src='完了反映（'+jobLabel(j)+'）'; const changed=[];
   if(j.kind==='応急点検工') return changed;
   const d=new Date(j.closed||Date.now()); const ymd=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-  if(/LED灯具取替|建替|新設/.test(work) && L.newTogu){
+  if(/LED灯具取替|建替|新設/.test(work) && L.newTogu && !toguReused(j,p)){
     const m=L.newTogu;
     if(ledgerSetLV(p,'togu',m,TOGU,src)) changed.push('灯具型式');
     if(ledgerSet(p,'lamp','LED',src)) changed.push('ランプ種別');
@@ -2700,6 +2703,7 @@ function openJobInfo(){
           + '<label class="lb">作業内容</label><select data-jobf="work"><option value="">—</option>'+WORK.map(o=>'<option'+(j.work===o?' selected':'')+'>'+o+'</option>').join('')+'</select>'
           + (j.work==='その他' ? '<input type="text" data-jobf="workOther" value="'+esc(j.workOther||'')+'" placeholder="作業内容を入力" style="margin-top:6px">' : ''))
     + '<div class="note" style="padding:4px 0 0">作業内容で施工タブの工程が絞られます（特記 第1章第5条：照明設置・建替・灯具交換）</div>'
+    + (/建替/.test(j.work||'') ? '<label class="lb">既設灯具の扱い（建替のとき）</label><select data-jobf="toguReuse"><option value=""'+(!j.toguReuse?' selected':'')+'>自動（既設がLEDなら流用）</option><option value="reuse"'+(j.toguReuse==='reuse'?' selected':'')+'>既設LED灯具を流用（照明柱のみ更新）</option><option value="new"'+(j.toguReuse==='new'?' selected':'')+'>新しいLED灯具に取替</option></select><div class="note" style="padding:4px 0 0">いまの判定：<b>'+(toguReused(j,pole())?'既設灯具を流用':'灯具を取替')+'</b>（既設ランプ種別：'+esc(pole().ledger.lamp||'未入力')+'）。流用のときは灯具の資材・LED形式の選択・完了時の台帳反映を省き、図では灯具を黒のままにします</div>' : '')
     + (j.kind==='応急点検工' ? '' : '<label class="lb">自動点滅器の取替</label><select data-jobf="apReplace"><option value=""'+(!j.apReplace?' selected':'')+'>なし</option><option value="1"'+(j.apReplace?' selected':'')+'>あり（動作確認の項目を表示）</option></select><div class="note" style="padding:4px 0 0">現調の電気系統「自動点滅器の取替」を選ぶと自動で切り替わります</div>')
     + '<label class="lb">作業日</label><input type="date" data-jobf="date" value="'+esc(j.date)+'">'
     + '<label class="lb">メモ</label><textarea data-jobf="memo">'+esc(j.memo)+'</textarea>'
@@ -2940,7 +2944,7 @@ function setLedgerVal(p,key,val){
   else L[key]=val;
 }
 /* ---- 台帳をExcelから取り込み（SheetJS をオンラインで読み込む） ---- */
-const APP_VER='v112';
+const APP_VER='v113';
 let xlsxP=null;
 function loadXlsx(){ if(window.XLSX) return Promise.resolve(window.XLSX); if(xlsxP) return xlsxP;
   xlsxP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=()=>res(window.XLSX); s.onerror=()=>{ xlsxP=null; rej(new Error('offline')); }; document.head.appendChild(s); });
@@ -3375,7 +3379,8 @@ function figPlan(p,j){
   const out=[]; const add=(part,models,label,change,note)=>out.push({part,models,label,change,note});
   const newKiso=/新設/.test(work)||(/建替/.test(work)&&N.reuse==='基礎を新設');
   const togu=lv(L,'togu')+(lampModelText(L)?'／'+lampModelText(L):'');
-  if(/LED灯具取替|建替|新設/.test(work)){ add('togu',[L.newTogu,lv(L,'togu')],'灯具 '+(L.newTogu||'（形式未定）')+(lv(L,'maker')?'（'+lv(L,'maker')+'）':''),/新設/.test(work)?'新設':'取替','既設 '+togu); }
+  if(toguReused(j,p)) add('togu',[lv(L,'togu'),lampModelText(L)],'灯具 '+togu,'','既設LED灯具を流用（新ポールに再取付）');
+  else if(/LED灯具取替|建替|新設/.test(work)){ add('togu',[L.newTogu,lv(L,'togu')],'灯具 '+(L.newTogu||'（形式未定）')+(lv(L,'maker')?'（'+lv(L,'maker')+'）':''),/新設/.test(work)?'新設':'取替','既設 '+togu); }
   else if(/撤去/.test(work)) add('togu',[lv(L,'togu'),lampModelText(L)],'灯具 '+togu,'撤去','');
   else add('togu',[lv(L,'togu'),lampModelText(L),L.newTogu],'灯具 '+togu,'','');
   const poleT=(/建替|新設/.test(work)&&N.poleType)?N.poleType:(L.poleType||'');
@@ -3893,7 +3898,7 @@ function prPoleSvg(p,j){
   const arm=L.arm||'片側'; const both=arm==='両側', straight=arm==='ストレート';
   const W=300,H=470; const gy=360; const px=both||straight?150:120; const scale=Math.min(26,260/hm); const top=gy-hm*scale; const ax=Math.max(40,Math.min(110,armLen*40));
   const hot='#D0021B', ink='#0F2438', grey='#6E7C87';
-  const hiLamp=/LED灯具取替|建替|新設|撤去/.test(work); const hiPole=/建替|新設|撤去/.test(work); const newKiso=/新設/.test(work)||(/建替/.test(work)&&N.reuse==='基礎を新設'); const hiKiso=newKiso||/撤去/.test(work); const hiCable=/配管配線|新設/.test(work);
+  const hiLamp=/LED灯具取替|建替|新設|撤去/.test(work) && !toguReused(j,p); const hiPole=/建替|新設|撤去/.test(work); const newKiso=/新設/.test(work)||(/建替/.test(work)&&N.reuse==='基礎を新設'); const hiKiso=newKiso||/撤去/.test(work); const hiCable=/配管配線|新設/.test(work);
   const kisoType=N.kisoType||EX.kisoType||L.kisoType||''; const kisoDim = (newKiso&&N.kisoType==='円筒基礎')?(N.kisoDia||'φ500')+'×'+(N.kisoDepth||'?')+'mm' : (newKiso&&N.kisoSize)?N.kisoSize : (EX.kisoType==='円筒基礎'&&(EX.kisoDia||EX.kisoDepth))?(EX.kisoDia||'φ500')+'×'+(EX.kisoDepth||'?')+'mm' : (EX.kisoSize||'');
   const kh=Math.max(40,Math.min(70,(parseFloat(String(kisoDim).match(/×(\d+)/)?String(kisoDim).match(/×(\d+)/)[1]:'1500')||1500)/30)); const kw=kisoType==='直接埋込'?14:kisoType==='橋梁基礎'?70:44;
   const poleType=(newKiso||/新設|建替/.test(work))&&N.poleType?N.poleType+'（新設）':(L.poleType||'');
