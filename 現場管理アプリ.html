@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v118：現調「既設ポール・基礎」の基礎に「試掘確認」（不要（基礎を確認できる）／要試掘／試掘済（形式・寸法を確認））を追加。要試掘は要協議として数え、写真添付欄を表示。要試掘・試掘済のときは施工「着手前」に「試掘：既設基礎の形式・寸法を確認」の工程を表示し、施工タブ先頭にも案内。v117：規制可能時間帯の「Bのときはメモに」の案内を削除。v116：現調の作業条件「規制可能時間帯」を選択式（A：いつでもOK／B：渋滞箇所（時間帯に制限）／C：夜間作業、詳細はメモ）、「周辺施設」を選択式（学校／病院／商業施設／該当なし）に変更。以前の自由記入の値は選択肢に残して表示。周辺施設も未入力数に数える。v115：PCで写真をドラッグ＆ドロップで添付できるように：「写真を添付」ボタンやその写真欄に落とすとその項目の写真、写真タブの「写真を追加」付近に落とすと選択中のタグ、台帳の「添付」ボタンに落とすと台帳添付（画像・PDF）。作業画面のそれ以外の場所に落とすと写真タブのタグ（既定はその他）で追加。落とす先を緑の枠と案内で表示。v114：PCのChrome／Edgeで受信フォルダを監視しているときは、「現場データを書き出し」「事務所へ送る」のファイルをその受信フォルダに直接保存する（ダウンロードではなく）。自分で置いたファイルは再取り込みしない。受信フォルダの指定は読み書き許可で行う（初回の書き出し時に許可を求めることがある）。監視していない端末・iPadはこれまでどおりダウンロード／共有シート。v113：①建替（照明柱更新）で既設灯具がLEDのときは灯具を流用する前提に（既定は自動：既設ランプ種別がLEDで新設灯具が未選択なら流用。作業情報「既設灯具の扱い」で流用／取替を指定可）。流用時は灯具の資材・LED形式の選択・完了時の灯具の台帳反映を省き、図・印刷では灯具を取替扱いにしない。施工タブに流用の案内。②現調「規制方式」に「一車線規制」を追加。v112：管理番号一覧に「並び」チップを追加：路線→上下線→KP（既定）／上下線→KP／KP／管理番号／住所、昇順・降順の切替。並びは端末に記憶し、前後の管理番号への移動・CSV・印刷も同じ順。一覧の行に上下線を表示。v111：台帳と重複する現調項目は台帳の値を先に入れておく：電気系統の「電力柱番号または電気番号」←電力引込柱名称、「電源供給元」←引込方式が架空なら電力柱、既設ポール・基礎の「基礎形式」←基礎形式（建替で既設基礎流用の新設側も）。空欄のときだけ入れ「台帳から」と表示。現調でこれらを直すと台帳にも反映し変更履歴に残す。v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v120：コピーを現調以外にも拡張。作業画面の上部に「コピー」を置き、コピーするものを選べる：現調／協議／施工（チェック・日付・備考、日時はコピー時刻に）／測定値／点検（応急点検）／台帳の既設設備（変更履歴に「○○からコピー」）。他の管理番号から取り込む・他へ配るの両方で同じ選択。v119：現調タブに「コピー」を追加。①他の管理番号から取り込む（入力のある現調を一覧から選んでこの管理番号へコピー）②この現調を他へ配る（複数の管理番号を選んでコピー、同じ工種の未完了作業が無ければ新規作成）。写真・協議・メモはコピーせず、電気番号・基礎形式はコピー先の台帳の値、建柱位置の路線・上下線・KPは空に。コピー元を現調タブに表示。v118：現調「既設ポール・基礎」の基礎に「試掘確認」（不要（基礎を確認できる）／要試掘／試掘済（形式・寸法を確認））を追加。要試掘は要協議として数え、写真添付欄を表示。要試掘・試掘済のときは施工「着手前」に「試掘：既設基礎の形式・寸法を確認」の工程を表示し、施工タブ先頭にも案内。v117：規制可能時間帯の「Bのときはメモに」の案内を削除。v116：現調の作業条件「規制可能時間帯」を選択式（A：いつでもOK／B：渋滞箇所（時間帯に制限）／C：夜間作業、詳細はメモ）、「周辺施設」を選択式（学校／病院／商業施設／該当なし）に変更。以前の自由記入の値は選択肢に残して表示。周辺施設も未入力数に数える。v115：PCで写真をドラッグ＆ドロップで添付できるように：「写真を添付」ボタンやその写真欄に落とすとその項目の写真、写真タブの「写真を追加」付近に落とすと選択中のタグ、台帳の「添付」ボタンに落とすと台帳添付（画像・PDF）。作業画面のそれ以外の場所に落とすと写真タブのタグ（既定はその他）で追加。落とす先を緑の枠と案内で表示。v114：PCのChrome／Edgeで受信フォルダを監視しているときは、「現場データを書き出し」「事務所へ送る」のファイルをその受信フォルダに直接保存する（ダウンロードではなく）。自分で置いたファイルは再取り込みしない。受信フォルダの指定は読み書き許可で行う（初回の書き出し時に許可を求めることがある）。監視していない端末・iPadはこれまでどおりダウンロード／共有シート。v113：①建替（照明柱更新）で既設灯具がLEDのときは灯具を流用する前提に（既定は自動：既設ランプ種別がLEDで新設灯具が未選択なら流用。作業情報「既設灯具の扱い」で流用／取替を指定可）。流用時は灯具の資材・LED形式の選択・完了時の灯具の台帳反映を省き、図・印刷では灯具を取替扱いにしない。施工タブに流用の案内。②現調「規制方式」に「一車線規制」を追加。v112：管理番号一覧に「並び」チップを追加：路線→上下線→KP（既定）／上下線→KP／KP／管理番号／住所、昇順・降順の切替。並びは端末に記憶し、前後の管理番号への移動・CSV・印刷も同じ順。一覧の行に上下線を表示。v111：台帳と重複する現調項目は台帳の値を先に入れておく：電気系統の「電力柱番号または電気番号」←電力引込柱名称、「電源供給元」←引込方式が架空なら電力柱、既設ポール・基礎の「基礎形式」←基礎形式（建替で既設基礎流用の新設側も）。空欄のときだけ入れ「台帳から」と表示。現調でこれらを直すと台帳にも反映し変更履歴に残す。v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -1367,6 +1367,54 @@ function kyogiOpen(p){
 }
 /* 応急点検から派生した作業は、現調の項目を「応急点検」の名前で扱う（現調データは点検時のもの） */
 function fromInsp(j){ if(!j||!j.parent) return false; for(const p of (SITE.poles||[])){ const par=p.jobs.find(x=>x.id===j.parent); if(par) return par.kind==='応急点検工'; } return false; }
+/* ---- 作業のコピー（違う部分だけ直す）：現調・協議・施工・測定値・点検・台帳の既設設備 ---- */
+const COPY_PARTS=[['survey','現調（現場調査の入力）'],['kyogi','協議（打合せ事項）'],['seko','施工（チェック・日付・備考）'],['meas','測定値（絶縁・接地など）'],['insp','点検（応急点検の入力）'],['ledger','台帳の既設設備（ポール・灯具・基礎・引込など）']];
+const LEDGER_COPY_KEYS=['setchi','gaibu','shomeiKubun','lanes','sumikiri','kisoType','hikikomi','hikikomiOther','poleType','height','heightOther','arm','armLen','armLenOther','togu','toguOther','lamp','lampModel','lampModelOther','newTogu','maker','makerOther','angle','kubunMichi','keiyaku','eigyosho','poleMaker','shucchosho'];
+function copyPartsFor(kind){ return COPY_PARTS.filter(([k])=> kind==='応急点検工' ? (k==='insp'||k==='ledger') : (k!=='insp')); }
+function copyDefaults(src){ const d={}; if(src.kind==='応急点検工'){ d.insp=true; } else { d.survey=surveyProgress(src).done>0; d.seko=sekoProgress(src).done>0; d.kyogi=false; d.meas=false; } d.ledger=false; return d; }
+function clone(o){ return JSON.parse(JSON.stringify(o||{})); }
+function copyJob(src, dst, dstPole, srcPole, parts){
+  const L=dstPole.ledger;
+  if(parts.survey){
+    dst.survey=clone(src.survey); dst.secNa=clone(src.secNa);
+    if(!dst.work){ dst.work=src.work; dst.workOther=src.workOther; }
+    if(src.toguReuse!==undefined) dst.toguReuse=src.toguReuse; if(src.apReplace!==undefined) dst.apReplace=src.apReplace;
+    const E=dst.survey.elec; if(E){ E.denchu=L.inPole||''; E.denchuSrc=L.inPole?'台帳':''; }
+    const X=dst.survey.expole; if(X && L.kisoType && X.kiso){ X.kiso.kisoType=L.kisoType; X.kiso.kisoTypeSrc='台帳'; }
+    const N=dst.survey.newpole; if(N && N.kenchu){ ['route','line','kp'].forEach(k=>{ if(k in N.kenchu) N.kenchu[k]=''; }); }
+  }
+  if(parts.kyogi){ dst.kyogi=clone(src.kyogi); if(dst.kyogi.rows) dst.kyogi.rows.forEach(r=>{ if(r.at) r.at=Date.now(); }); }
+  if(parts.seko){ dst.seko=clone(src.seko); const now=Date.now(); Object.values(dst.seko).forEach(c=>{ if(c&&typeof c==='object'){ if(c.v&&c.at) c.at=now; if(c.placedAt) c.placedAt=now; if(c.sub) Object.values(c.sub).forEach(s=>{ if(s&&s.at) s.at=now; }); if(c.rows&&!Array.isArray(c.rows)) Object.values(c.rows).forEach(r=>{ if(r&&r.at) r.at=now; }); } }); if(!dst.work){ dst.work=src.work; dst.workOther=src.workOther; } }
+  if(parts.meas){ dst.meas=clone(src.meas); }
+  if(parts.insp){ const st=dst.insp&&dst.insp.start, en=dst.insp&&dst.insp.end; dst.insp=clone(src.insp); dst.insp.start=st||0; dst.insp.end=en||0; }
+  if(parts.ledger){ const SL=srcPole.ledger; const before=clone(L); LEDGER_COPY_KEYS.forEach(k=>{ if(SL[k]!==undefined && SL[k]!=='') L[k]=SL[k]; }); const ch=[]; LEDGER_COPY_KEYS.forEach(k=>{ if(before[k]!==L[k]) ch.push(k); }); if(ch.length){ dstPole.history=dstPole.history||[]; ch.forEach(k=>{ if(/Other$/.test(k)) return; dstPole.history.push({at:Date.now(),src:srcPole.no+'からコピー',jobId:null,jobLabel:'',field:k,label:LEDGER_LABEL[k]||k,from:ledgerDisplay({ledger:before,route:dstPole.route,line:dstPole.line,kp:dstPole.kp,addr:dstPole.addr,no:dstPole.no,memo:dstPole.memo},k)||'',to:ledgerDisplay(dstPole,k)||''}); }); } syncSpecAttach(dstPole); }
+  dst.copiedFrom={no:srcPole.no, jobId:src.id, at:Date.now(), parts:Object.keys(parts).filter(k=>parts[k])};
+}
+function copyPartsText(parts){ return COPY_PARTS.filter(([k])=>parts&&parts.includes?parts.includes(k):parts&&parts[k]).map(([k,l])=>l.replace(/（.*$/,'')).join('・'); }
+function jobHasInput(j){ return j.kind==='応急点検工' ? inspProgress(j).done>0 : (surveyProgress(j).done>0||sekoProgress(j).done>0||(j.kyogi&&j.kyogi.rows&&j.kyogi.rows.length>0)); }
+function copyCandidates(cur,kind){ return sortedPoles().filter(p=>p.id!==cur.id).flatMap(p=>p.jobs.filter(j=>j.kind===kind && jobHasInput(j)).map(j=>({p,j}))); }
+function copyPartsHtml(kind,defs){ return '<div style="margin:6px 0 10px">'+copyPartsFor(kind).map(([k,l])=>'<label class="lb" style="display:flex;align-items:center;gap:10px;padding:6px 0;margin:0;font-weight:500"><input type="checkbox" data-scpart="'+k+'"'+(defs[k]?' checked':'')+' style="width:22px;height:22px;flex:0 0 auto">'+l+'</label>').join('')+'</div>'; }
+function readCopyParts(){ const o={}; document.querySelectorAll('[data-scpart]').forEach(c=>{ o[c.dataset.scpart]=c.checked; }); return o; }
+function openSurveyCopy(mode){
+  const cur=pole(), j=job(); if(!cur||!j) return;
+  let h='<h2>作業のコピー</h2><div class="row2" style="margin-bottom:10px"><button class="btn'+(mode==='from'?' pri':'')+'" id="scFromMode">他の管理番号から取り込む</button><button class="btn'+(mode==='to'?' pri':'')+'" id="scToMode">この作業を他へ配る</button></div>';
+  if(mode==='from'){
+    const list=copyCandidates(cur,j.kind);
+    h+='<div class="note" style="padding:0 0 4px">コピーするもの（写真はコピーしません。電気番号・基礎形式はこの管理番号の台帳の値、建柱位置の路線・上下線・KPは空にします）</div>'+copyPartsHtml(j.kind,copyDefaults(j.kind==='応急点検工'?{kind:j.kind}:j));
+    h+='<div class="note" style="padding:0 0 8px">コピー元の管理番号を選ぶと、この管理番号（'+esc(cur.no)+'）に入ります。</div>';
+    if(!list.length) h+='<div class="note">コピー元になる作業（入力のある同じ工種の作業）がまだありません</div>';
+    list.forEach(({p,j:sj})=>{ let st=''; if(sj.kind==='応急点検工'){ const ip=inspProgress(sj); st='点検 '+ip.done+'/'+ip.total; } else { const sp=surveyProgress(sj), kp=sekoProgress(sj); st='現調 '+sp.done+'/'+sp.total+'　施工 '+kp.done+'/'+kp.total+(sj.kyogi&&sj.kyogi.rows&&sj.kyogi.rows.length?'　協議 '+sj.kyogi.rows.length+'件':''); }
+      h+='<button class="btn" data-scfrom="'+sj.id+'" style="width:100%;text-align:left;margin-bottom:8px;min-height:52px"><b>'+esc(p.no)+'</b>　<span class="sm">'+esc(staText(p)||'')+(p.line?'　'+esc(p.line):'')+'</span><br><span class="sm" style="color:var(--ink2)">'+esc(sj.work||sj.kind)+'　'+st+'</span></button>'; });
+  } else {
+    h+='<div class="note" style="padding:0 0 4px">この管理番号（'+esc(cur.no)+'、'+esc(j.work||j.kind)+'）からコピーするもの</div>'+copyPartsHtml(j.kind,copyDefaults(j));
+    h+='<div class="note" style="padding:0 0 8px">コピー先に同じ工種の未完了の作業が無ければ作ります。コピー先に入力があれば、選んだ部分は置き換わります。</div>';
+    h+='<button class="btn sm" id="scAll" style="margin-bottom:8px">全て選択</button>';
+    sortedPoles().filter(p=>p.id!==cur.id).forEach(p=>{ const has=p.jobs.find(x=>!x.closed && x.kind===j.kind);
+      h+='<label class="lb" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);margin:0"><input type="checkbox" data-scto="'+p.id+'" style="width:22px;height:22px;flex:0 0 auto"><span style="flex:1"><b>'+esc(p.no)+'</b>　<span class="sm">'+esc(staText(p)||'')+(p.line?'　'+esc(p.line):'')+'</span><br><span class="sm" style="color:var(--ink2)">'+(has?esc(has.work||has.kind)+(jobHasInput(has)?'　入力あり':'　未入力'):'作業なし（新しく作る）')+'</span></span></label>'; });
+    h+='<button class="btn pri" id="scApply" style="width:100%;margin-top:14px">選んだ管理番号へコピー</button>';
+  }
+  openSheet(h);
+}
 function survName(j,long){ return fromInsp(j) ? '応急点検' : (long?'現場調査':'現調'); }
 function status(j){
   if(j.closed) return 'done';
@@ -1761,7 +1809,7 @@ function renderJob(main,bar){
   let h='<div class="pole-head"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="stt" style="background:'+s.c+'">'+s.t+'</span>';
   if(j.kind==='応急点検工'){ const ip=inspProgress(j); h+='<span class="meta">点検 '+ip.done+'/'+ip.total+'　写真 '+j.pics.length+'枚'+(j.insp.start?'　'+elapsed(j):'')+'</span>'; }
   else { const sp=surveyProgress(j), kp=sekoProgress(j); h+='<span class="meta">現調 '+sp.done+'/'+sp.total+'　施工 '+kp.done+'/'+kp.total+'　写真 '+j.pics.length+'枚</span>'; }
-  h+='</div></div>';
+  h+='<button class="btn sm" id="surveyCopy" style="margin-left:auto;flex:0 0 auto;min-height:36px;padding:0 12px">コピー</button></div></div>';
   const tabs = j.kind==='応急点検工' ? [['insp','点検'],['pics','写真']] : [['survey','①'+survName(j)],['kyogi','②協議'],['seko','③施工'],['pics','写真']];
   if(!tabs.some(t=>t[0]===V.tab)) V.tab=tabs[0][0];
   h+=guideHtml('job');
@@ -2087,7 +2135,9 @@ function fromLedgerTag(obj,key,cur){ return (obj[key+'Src']==='台帳' && obj[ke
 function tabSurvey(p){
   if(prefillSurveyFromLedger(pole(),p)) touch();
   let h=quickLedger(pole());
-  h+='<div class="pad" style="padding-bottom:4px"><div class="inherit" style="margin:0;display:flex;align-items:center;gap:12px"><div style="flex:1"><b>作業内容：'+(p.work?esc(p.work):'未設定')+'</b><div style="font-size:13px">'+(SURVEY_BY_WORK[p.work]? '必要な項目だけを表示：'+surveySecs(p).map(s=>s.name).join('・') : (p.work?'「'+esc(p.work)+'」は現調項目の定義がありません。作業情報で該当する作業内容を選ぶと項目が出ます':'作業情報で作業内容を選ぶと項目が出ます'))+'</div></div><button class="btn pri" id="jobInfo2" style="flex:0 0 auto;min-height:44px;padding:0 16px">作業情報</button></div></div>';
+  h+='<div class="pad" style="padding-bottom:4px"><div class="inherit" style="margin:0;display:flex;align-items:center;gap:12px"><div style="flex:1"><b>作業内容：'+(p.work?esc(p.work):'未設定')+'</b><div style="font-size:13px">'+(SURVEY_BY_WORK[p.work]? '必要な項目だけを表示：'+surveySecs(p).map(s=>s.name).join('・') : (p.work?'「'+esc(p.work)+'」は現調項目の定義がありません。作業情報で該当する作業内容を選ぶと項目が出ます':'作業情報で作業内容を選ぶと項目が出ます'))+'</div></div><button class="btn pri" id="jobInfo2" style="flex:0 0 auto;min-height:44px;padding:0 16px">作業情報</button></div>'
+    + (p.copiedFrom ? '<div class="note" style="padding:6px 0 0">'+esc(p.copiedFrom.no)+' から '+esc(copyPartsText(p.copiedFrom.parts||['survey']))+' をコピーしました（'+new Date(p.copiedFrom.at).toLocaleDateString('ja-JP')+'）。違う部分だけ直してください</div>' : '')
+    + '</div>';
   surveySecs(p).forEach(sec=>{
     if(sec.special==='shosa'){ const sp=shosaProgress(p); h+='<section class="sec open" data-sec="shosa"><button class="sec-hd'+(sp.done&&!sp.warn?' done':'')+'" data-toggle><span class="nm">'+sec.name+'</span><span class="st">'+(sp.warn?'<b>要協議</b>':sp.done?'無し':'')+'</span><span class="caret"></span></button><div class="sec-body">'+shosaHtml(p)+'</div></section>'; return; }
     if(sec.special==='elec'){ const ep=elecProgress(p); h+='<section class="sec open" data-sec="elec"><button class="sec-hd'+(ep.total&&ep.done>=ep.total&&!ep.warn?' done':'')+'" data-toggle><span class="nm">'+sec.name+'</span><span class="st">'+(ep.warn?'<b>要協議 '+ep.warn+'</b> / ':'')+ep.done+'/'+ep.total+'</span><span class="caret"></span></button><div class="sec-body">'+elecHtml(p)+'</div></section>'; return; }
@@ -2482,6 +2532,17 @@ document.addEventListener('click', async e=>{
   if(d && d.bk){ const B=job().insp.breaker; B[d.bk]=(B[d.bk]===d.v)?'':d.v; touch(true); return; }
   if(d && d.iv){ const I=job().insp; const c=I.items[d.iv]=I.items[d.iv]||{v:'',memo:''}; c.v=(c.v===d.v)?'':d.v; touch(true); return; }
   if(b && (b.id==='jobInfo'||b.id==='jobInfo2')){ openJobInfo(); return; }
+  if(b && b.id==='surveyCopy'){ openSurveyCopy('from'); return; }
+  if(b && b.id==='scFromMode'){ openSurveyCopy('from'); return; }
+  if(b && b.id==='scToMode'){ openSurveyCopy('to'); return; }
+  if(d && d.scfrom){ const src=allJobs().find(x=>x.j.id===d.scfrom); const dst=job(); if(!src||!dst) return; const parts=readCopyParts(); if(!Object.values(parts).some(Boolean)){ toast('コピーするものを選んでください'); return; }
+    if(jobHasInput(dst) && !confirm('いまの入力のうち「'+copyPartsText(parts)+'」は '+src.p.no+' の内容で置き換わります（写真は残ります）。よろしいですか？')) return;
+    copyJob(src.j, dst, pole(), src.p, parts); touch(true); $('#sheet').classList.remove('open'); render(); toast(src.p.no+' から '+copyPartsText(parts)+' をコピーしました。違う部分だけ直してください'); return; }
+  if(b && b.id==='scAll'){ document.querySelectorAll('[data-scto]').forEach(c=>c.checked=true); return; }
+  if(b && b.id==='scApply'){ const src=job(); const ids=Array.from(document.querySelectorAll('[data-scto]:checked')).map(c=>c.dataset.scto); if(!ids.length){ toast('コピー先を選んでください'); return; }
+    const parts=readCopyParts(); if(!Object.values(parts).some(Boolean)){ toast('コピーするものを選んでください'); return; }
+    let n=0; ids.forEach(id=>{ const tp=SITE.poles.find(x=>x.id===id); if(!tp) return; let tj=tp.jobs.find(x=>!x.closed && x.kind===src.kind && (x.work===src.work || !x.work)); if(!tj){ tj=blankJob(src.kind, src.work); tp.jobs.push(tj); } copyJob(src, tj, tp, pole(), parts); tp.upd=Date.now(); n++; });
+    touch(true); $('#sheet').classList.remove('open'); render(); toast(n+'件の管理番号に '+copyPartsText(parts)+' をコピーしました'); return; }
   if(b && b.id==='specAdd'){ $('#specInput').value=''; $('#specInput').click(); return; }
   if(b && b.id==='specImport'){ $('#specLibInput').value=''; $('#specLibInput').click(); return; }
   if(b && b.id==='specExport'){ exportSpecLib(); return; }
@@ -2951,7 +3012,7 @@ function setLedgerVal(p,key,val){
   else L[key]=val;
 }
 /* ---- 台帳をExcelから取り込み（SheetJS をオンラインで読み込む） ---- */
-const APP_VER='v118';
+const APP_VER='v120';
 let xlsxP=null;
 function loadXlsx(){ if(window.XLSX) return Promise.resolve(window.XLSX); if(xlsxP) return xlsxP;
   xlsxP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; s.onload=()=>res(window.XLSX); s.onerror=()=>{ xlsxP=null; rej(new Error('offline')); }; document.head.appendChild(s); });
