@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>道路照明 現場アプリ</title>
-<!-- v153：印刷で1枚目の高さを固定していたため、内容が多いと下の枠線や行が切れていたのを修正（高さを固定せず、入り切らない分は次のページへ）。表の行は途中で切らない。v152：印刷の写真の下の日付を表示しない（区分・項目名のみ）。v151：印刷の用紙余白を上下8mm・左右5mmに（横の枠線が切れていたため）。v150：印刷1枚目の全景写真の下（左の枠内）に、台帳に添付した他の写真（銘板など）を2列で並べる。台帳ページの添付写真グリッドは重複するためやめ、ファイル名の一覧のみ。v149：印刷の台帳ページの下に、台帳の添付写真（全景・銘板など）を中サイズで掲載。v148：作業の末尾の「写真（全部）」ページを削除。写真は1枚目の全景と、現調の各区分の下（項目に添付したもの）だけ。v147：現調タブの最後に「報告事項」を追加（textarea）。現場全体・選んで印刷のとき先頭に「現場調査結果報告 一覧表」（No.・工種・管理番号・上下線・距離標・地名・進捗状況・報告事項、工種ごとの区切りと基数集計）を付ける。報告事項が空なら要協議の項目名を灰色で仮表示。v146：現調の各区分の下の写真を中くらい（幅48mm・高さ36mm、1行に3〜4枚）に。v145：印刷に写真を掲載：現調の各区分の下にその区分の項目に添付した写真（小）、作業の末尾に「写真」として全写真（区分ごと、項目名・日時つき）。1枚目の全景写真の読み込みを図より先に行い、失敗しても他に影響しないように。v144：印刷1枚目の写真・図の下の「赤＝取替・新設・建替・撤去：」の文言を削除（取替内容の行だけ残す）。v143：印刷に「選んで印刷」を追加：管理番号にチェックを付けてまとめて印刷（全て選択／全て外す／要協議がある番号／作業中の番号の一括選択）。v142：ジョイントユニットは「無」を選んだときも取替する／しないを選べるように（無・取替する＝新設として資材・図に計上）。v141：規制可能時間帯の「A：いつでもOK」を「A：常時可」に（既存データも自動で置換）。印刷1枚目：写真の登録はあるが画像がこの端末に無い場合は、その旨を表示（写真は端末ごとに保存されるため、撮った端末で印刷するか写真込で共有）。v140：現調 電気系統の「無」を選んでも色が付かず選べないように見えていたのを修正（選択時は濃色で表示）。v139：取り込み失敗「null is not an object (evaluating SITE.settings)」を修正：現場を開いていない状態（iPad）で別現場を取り込むと、一覧用の状態判定が現場の規定値を参照して落ちていた。v138：写真の縮小（サムネイル）で canvas が使えないときに落ちないように。画面に出ないエラーも連携ログに記録（行番号つき）。v137：取り込み時に null の項目（古い端末や他アプリ経由のファイル）が既定値を上書きして失敗していたのを修正（null は除いて既定値を使う）。v136：現場データ（JSON）の取り込みを堅牢に：ファイル読み込みの代替手段、写真1枚の失敗や管理番号1本の変換失敗で全体を止めない、失敗時は原因を画面に表示し連携ログに残す。v135：①現調 電気系統の「〜の有無」は 有／無 の2択（該当なしは無に統一）。②自動点滅器の下に「ジョイントユニットの有無」「ジョイントユニットの取替」を追加（取替するなら施工 端末処理・結線に工程、資材に1個、図・印刷にも）。③台帳の既設の更新年月日・補修年月に「ー データなし」ボタン（「-」が入り未入力にならない）。④アーム長の選択肢を 0／0.8／1.8／2.1／2.3m に、ポール型式 10-8B 等の「-8」は0.8mと推定、アームが「ストレート」なら アーム長は 0m に自動設定。v134：メモ・備考・自由記入の欄（台帳のその他・備考とメモ、作業のメモ、既設ポール・基礎の各「その他（自由記入）」、新設ポールのその他・建柱位置の補足、設計照査の補足）は空のままだと未入力に数えられるため、最初から「-」を入れておく（開いたときに空なら自動で「-」。書くときは消して記入）。v133：写真の削除をしやすく：各サムネイル（現調・施工・点検の写真欄、写真タブ、台帳の添付）の右上に「×」を表示し、押すと確認のうえ削除。写真を開いた画面の「削除」も常に表示。削除した写真が1枚目の全景に選ばれていたら自動に戻す。v132：印刷1枚目を見本の体裁に合わせる：要点欄を写真・チェック表の上に横いっぱいで配置、チェック表・見出し・要点の文字を大きく（9〜11pt）、印を大きく。v131：印刷1枚目：下部の「備考・協議事項・引き継ぎ」欄を削除。要点欄は見出し行（要協議n件・協議済・未協議）と、要協議1件1行（▲ 項目名　区分、協議済は緑✔）の2列リストに整形。全景写真は台帳の添付が無ければ作業の写真（現調の一般写真を優先）を自動で使う。v130：印刷1枚目：内容が「該当なし／該当しない」の行は「記録」ではなく「該当なし」の列に印。v129：印刷1枚目：要協議は項目ごとに1行（例：既設ポール・基礎の行の下に「▲ 腐食あり」「▲ 内部水没あり」「▲ 要試掘」）にし、▲の数と見出しの「要協議 n件＝表の▲」を一致させる。要試掘も要協議の1件として数え、協議タブで協議済にできる。v128：印刷1枚目の①〜③見出しの「良／不良／要協議／該当なし」の判定表示を削除（v125で追加したもの）。v127：印刷1枚目の「照明の図」を全景写真に。台帳に添付した最初の写真を自動で使い、台帳タブの「印刷1枚目の写真（全景）」で台帳添付・作業の写真から選び直せる（写真を使わない＝照明の図も可）。赤の変更内容（取替・建替等）の説明は写真の下にそのまま。v126：印刷1枚目のチェック表を「良／要協議／該当なし／記録」の4列に戻し、全ての行に印を付ける（情報だけの項目は「記録」✔、要協議で協議済は「✔済」で緑の行、該当なしは灰の行）。v125：印刷1枚目：要点欄の未入力数を削除。①現場調査・②施工・③品質管理の見出しに総合判定「良／不良／要協議／該当なし」の4マークを表示（現調：未協議の要協議があれば要協議、異常・要試掘があれば不良、全て入力で良、項目なしは該当なし。施工：全て完了で良、全て該当なしなら該当なし。品質管理：不良の測定があれば不良、測定が良なら良）。v124：印刷：台帳ページの変更履歴を出さない。全項目一覧は区分（作業条件・電気系統…）の見出しだけ太字にし、項目名は通常の太さに。v123：協議タブに現調の要協議項目を全て一覧（作業条件・電気・既設・新設・配管）し、項目ごとに「協議済」を付けられるように（日時を記録）。1枚目のチェック表は要協議の項目だけを抜粋し、列を「要協議／協議済」に（協議済は緑✔）。要点欄にも協議済の件数。要協議が全て協議済なら協議の「未決」扱いにしない。v122：印刷・PDFの見やすさ改善。1枚目：「この柱の要点」（要協議・異常・要試掘・未入力の件数と項目名）を追加、チェック表は良／要協議の判定がある項目だけ（情報だけの行・該当なしは出さない）、既設ポール・基礎の異常は項目名を列挙、要協議の行は薄赤。台帳ページ：地図リンクは「あり」、変更履歴は初回登録を省略し件数のみ、URLは「リンク」。全項目一覧：区分を現場の動線順（作業条件→電気系統→既設ポール・基礎→新設ポール・基礎→配管・配線）、要協議・異常「有」・要試掘は赤太字＋薄赤の行、良は緑、該当なしは灰。v121：写真を「どの項目で添付したか」に紐づけて表示（これまでは同じ区分〈現調／点検／工程〉の写真が全ての項目に出ていた）。異常・要協議・試掘・品番・補修の写真はその項目だけに表示。項目に紐づかない写真は各タブ末尾の「写真を追加」欄と写真タブに表示。以前の写真は項目に紐づかない扱い。v120：コピーを現調以外にも拡張。作業画面の上部に「コピー」を置き、コピーするものを選べる：現調／協議／施工（チェック・日付・備考、日時はコピー時刻に）／測定値／点検（応急点検）／台帳の既設設備（変更履歴に「○○からコピー」）。他の管理番号から取り込む・他へ配るの両方で同じ選択。v119：現調タブに「コピー」を追加。①他の管理番号から取り込む（入力のある現調を一覧から選んでこの管理番号へコピー）②この現調を他へ配る（複数の管理番号を選んでコピー、同じ工種の未完了作業が無ければ新規作成）。写真・協議・メモはコピーせず、電気番号・基礎形式はコピー先の台帳の値、建柱位置の路線・上下線・KPは空に。コピー元を現調タブに表示。v118：現調「既設ポール・基礎」の基礎に「試掘確認」（不要（基礎を確認できる）／要試掘／試掘済（形式・寸法を確認））を追加。要試掘は要協議として数え、写真添付欄を表示。要試掘・試掘済のときは施工「着手前」に「試掘：既設基礎の形式・寸法を確認」の工程を表示し、施工タブ先頭にも案内。v117：規制可能時間帯の「Bのときはメモに」の案内を削除。v116：現調の作業条件「規制可能時間帯」を選択式（A：いつでもOK／B：渋滞箇所（時間帯に制限）／C：夜間作業、詳細はメモ）、「周辺施設」を選択式（学校／病院／商業施設／該当なし）に変更。以前の自由記入の値は選択肢に残して表示。周辺施設も未入力数に数える。v115：PCで写真をドラッグ＆ドロップで添付できるように：「写真を添付」ボタンやその写真欄に落とすとその項目の写真、写真タブの「写真を追加」付近に落とすと選択中のタグ、台帳の「添付」ボタンに落とすと台帳添付（画像・PDF）。作業画面のそれ以外の場所に落とすと写真タブのタグ（既定はその他）で追加。落とす先を緑の枠と案内で表示。v114：PCのChrome／Edgeで受信フォルダを監視しているときは、「現場データを書き出し」「事務所へ送る」のファイルをその受信フォルダに直接保存する（ダウンロードではなく）。自分で置いたファイルは再取り込みしない。受信フォルダの指定は読み書き許可で行う（初回の書き出し時に許可を求めることがある）。監視していない端末・iPadはこれまでどおりダウンロード／共有シート。v113：①建替（照明柱更新）で既設灯具がLEDのときは灯具を流用する前提に（既定は自動：既設ランプ種別がLEDで新設灯具が未選択なら流用。作業情報「既設灯具の扱い」で流用／取替を指定可）。流用時は灯具の資材・LED形式の選択・完了時の灯具の台帳反映を省き、図・印刷では灯具を取替扱いにしない。施工タブに流用の案内。②現調「規制方式」に「一車線規制」を追加。v112：管理番号一覧に「並び」チップを追加：路線→上下線→KP（既定）／上下線→KP／KP／管理番号／住所、昇順・降順の切替。並びは端末に記憶し、前後の管理番号への移動・CSV・印刷も同じ順。一覧の行に上下線を表示。v111：台帳と重複する現調項目は台帳の値を先に入れておく：電気系統の「電力柱番号または電気番号」←電力引込柱名称、「電源供給元」←引込方式が架空なら電力柱、既設ポール・基礎の「基礎形式」←基礎形式（建替で既設基礎流用の新設側も）。空欄のときだけ入れ「台帳から」と表示。現調でこれらを直すと台帳にも反映し変更履歴に残す。v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
+<!-- v158：保存データ（現場JSON）が壊れていて読めないとき、真っ白で止まらず現場一覧に戻り、壊れたデータを書き出せるようにする（修復用）。v157：起動前に「起動中…」を表示し、本体が読めないときはエラー文を画面に出す（原因特定用）。v156：起動時に写真DBの更新が他のタブ（Safariとホーム画面のアプリなど）に阻まれると真っ白のまま止まっていたのを修正：3秒待っても開けなければ先に起動し、古い接続側は自動で閉じる。起動エラーは画面に表示。v155：データ消失対策。保存のたびに現場データの控えを IndexedDB にも残し（最新＋1時間ごとの履歴48件）、起動時に控えの方が新しければ自動で復旧。localStorage に保存できないときは大きく警告。メニューに「復旧」（控えから戻す／端末に残っている孤立写真を日付ごとに一覧して管理番号へ入れ直す）。v154：電力申請用に「電力柱番号（電柱の番号札）」を台帳（電力引込柱名称の隣）と現調の電気系統に追加。台帳の値を現調に先入れ、現調で直すと台帳にも反映。既存の「電力柱番号または電気番号」は「電力引込柱名称（電気番号）」に改名。v153：印刷で1枚目の高さを固定していたため、内容が多いと下の枠線や行が切れていたのを修正（高さを固定せず、入り切らない分は次のページへ）。表の行は途中で切らない。v152：印刷の写真の下の日付を表示しない（区分・項目名のみ）。v151：印刷の用紙余白を上下8mm・左右5mmに（横の枠線が切れていたため）。v150：印刷1枚目の全景写真の下（左の枠内）に、台帳に添付した他の写真（銘板など）を2列で並べる。台帳ページの添付写真グリッドは重複するためやめ、ファイル名の一覧のみ。v149：印刷の台帳ページの下に、台帳の添付写真（全景・銘板など）を中サイズで掲載。v148：作業の末尾の「写真（全部）」ページを削除。写真は1枚目の全景と、現調の各区分の下（項目に添付したもの）だけ。v147：現調タブの最後に「報告事項」を追加（textarea）。現場全体・選んで印刷のとき先頭に「現場調査結果報告 一覧表」（No.・工種・管理番号・上下線・距離標・地名・進捗状況・報告事項、工種ごとの区切りと基数集計）を付ける。報告事項が空なら要協議の項目名を灰色で仮表示。v146：現調の各区分の下の写真を中くらい（幅48mm・高さ36mm、1行に3〜4枚）に。v145：印刷に写真を掲載：現調の各区分の下にその区分の項目に添付した写真（小）、作業の末尾に「写真」として全写真（区分ごと、項目名・日時つき）。1枚目の全景写真の読み込みを図より先に行い、失敗しても他に影響しないように。v144：印刷1枚目の写真・図の下の「赤＝取替・新設・建替・撤去：」の文言を削除（取替内容の行だけ残す）。v143：印刷に「選んで印刷」を追加：管理番号にチェックを付けてまとめて印刷（全て選択／全て外す／要協議がある番号／作業中の番号の一括選択）。v142：ジョイントユニットは「無」を選んだときも取替する／しないを選べるように（無・取替する＝新設として資材・図に計上）。v141：規制可能時間帯の「A：いつでもOK」を「A：常時可」に（既存データも自動で置換）。印刷1枚目：写真の登録はあるが画像がこの端末に無い場合は、その旨を表示（写真は端末ごとに保存されるため、撮った端末で印刷するか写真込で共有）。v140：現調 電気系統の「無」を選んでも色が付かず選べないように見えていたのを修正（選択時は濃色で表示）。v139：取り込み失敗「null is not an object (evaluating SITE.settings)」を修正：現場を開いていない状態（iPad）で別現場を取り込むと、一覧用の状態判定が現場の規定値を参照して落ちていた。v138：写真の縮小（サムネイル）で canvas が使えないときに落ちないように。画面に出ないエラーも連携ログに記録（行番号つき）。v137：取り込み時に null の項目（古い端末や他アプリ経由のファイル）が既定値を上書きして失敗していたのを修正（null は除いて既定値を使う）。v136：現場データ（JSON）の取り込みを堅牢に：ファイル読み込みの代替手段、写真1枚の失敗や管理番号1本の変換失敗で全体を止めない、失敗時は原因を画面に表示し連携ログに残す。v135：①現調 電気系統の「〜の有無」は 有／無 の2択（該当なしは無に統一）。②自動点滅器の下に「ジョイントユニットの有無」「ジョイントユニットの取替」を追加（取替するなら施工 端末処理・結線に工程、資材に1個、図・印刷にも）。③台帳の既設の更新年月日・補修年月に「ー データなし」ボタン（「-」が入り未入力にならない）。④アーム長の選択肢を 0／0.8／1.8／2.1／2.3m に、ポール型式 10-8B 等の「-8」は0.8mと推定、アームが「ストレート」なら アーム長は 0m に自動設定。v134：メモ・備考・自由記入の欄（台帳のその他・備考とメモ、作業のメモ、既設ポール・基礎の各「その他（自由記入）」、新設ポールのその他・建柱位置の補足、設計照査の補足）は空のままだと未入力に数えられるため、最初から「-」を入れておく（開いたときに空なら自動で「-」。書くときは消して記入）。v133：写真の削除をしやすく：各サムネイル（現調・施工・点検の写真欄、写真タブ、台帳の添付）の右上に「×」を表示し、押すと確認のうえ削除。写真を開いた画面の「削除」も常に表示。削除した写真が1枚目の全景に選ばれていたら自動に戻す。v132：印刷1枚目を見本の体裁に合わせる：要点欄を写真・チェック表の上に横いっぱいで配置、チェック表・見出し・要点の文字を大きく（9〜11pt）、印を大きく。v131：印刷1枚目：下部の「備考・協議事項・引き継ぎ」欄を削除。要点欄は見出し行（要協議n件・協議済・未協議）と、要協議1件1行（▲ 項目名　区分、協議済は緑✔）の2列リストに整形。全景写真は台帳の添付が無ければ作業の写真（現調の一般写真を優先）を自動で使う。v130：印刷1枚目：内容が「該当なし／該当しない」の行は「記録」ではなく「該当なし」の列に印。v129：印刷1枚目：要協議は項目ごとに1行（例：既設ポール・基礎の行の下に「▲ 腐食あり」「▲ 内部水没あり」「▲ 要試掘」）にし、▲の数と見出しの「要協議 n件＝表の▲」を一致させる。要試掘も要協議の1件として数え、協議タブで協議済にできる。v128：印刷1枚目の①〜③見出しの「良／不良／要協議／該当なし」の判定表示を削除（v125で追加したもの）。v127：印刷1枚目の「照明の図」を全景写真に。台帳に添付した最初の写真を自動で使い、台帳タブの「印刷1枚目の写真（全景）」で台帳添付・作業の写真から選び直せる（写真を使わない＝照明の図も可）。赤の変更内容（取替・建替等）の説明は写真の下にそのまま。v126：印刷1枚目のチェック表を「良／要協議／該当なし／記録」の4列に戻し、全ての行に印を付ける（情報だけの項目は「記録」✔、要協議で協議済は「✔済」で緑の行、該当なしは灰の行）。v125：印刷1枚目：要点欄の未入力数を削除。①現場調査・②施工・③品質管理の見出しに総合判定「良／不良／要協議／該当なし」の4マークを表示（現調：未協議の要協議があれば要協議、異常・要試掘があれば不良、全て入力で良、項目なしは該当なし。施工：全て完了で良、全て該当なしなら該当なし。品質管理：不良の測定があれば不良、測定が良なら良）。v124：印刷：台帳ページの変更履歴を出さない。全項目一覧は区分（作業条件・電気系統…）の見出しだけ太字にし、項目名は通常の太さに。v123：協議タブに現調の要協議項目を全て一覧（作業条件・電気・既設・新設・配管）し、項目ごとに「協議済」を付けられるように（日時を記録）。1枚目のチェック表は要協議の項目だけを抜粋し、列を「要協議／協議済」に（協議済は緑✔）。要点欄にも協議済の件数。要協議が全て協議済なら協議の「未決」扱いにしない。v122：印刷・PDFの見やすさ改善。1枚目：「この柱の要点」（要協議・異常・要試掘・未入力の件数と項目名）を追加、チェック表は良／要協議の判定がある項目だけ（情報だけの行・該当なしは出さない）、既設ポール・基礎の異常は項目名を列挙、要協議の行は薄赤。台帳ページ：地図リンクは「あり」、変更履歴は初回登録を省略し件数のみ、URLは「リンク」。全項目一覧：区分を現場の動線順（作業条件→電気系統→既設ポール・基礎→新設ポール・基礎→配管・配線）、要協議・異常「有」・要試掘は赤太字＋薄赤の行、良は緑、該当なしは灰。v121：写真を「どの項目で添付したか」に紐づけて表示（これまでは同じ区分〈現調／点検／工程〉の写真が全ての項目に出ていた）。異常・要協議・試掘・品番・補修の写真はその項目だけに表示。項目に紐づかない写真は各タブ末尾の「写真を追加」欄と写真タブに表示。以前の写真は項目に紐づかない扱い。v120：コピーを現調以外にも拡張。作業画面の上部に「コピー」を置き、コピーするものを選べる：現調／協議／施工（チェック・日付・備考、日時はコピー時刻に）／測定値／点検（応急点検）／台帳の既設設備（変更履歴に「○○からコピー」）。他の管理番号から取り込む・他へ配るの両方で同じ選択。v119：現調タブに「コピー」を追加。①他の管理番号から取り込む（入力のある現調を一覧から選んでこの管理番号へコピー）②この現調を他へ配る（複数の管理番号を選んでコピー、同じ工種の未完了作業が無ければ新規作成）。写真・協議・メモはコピーせず、電気番号・基礎形式はコピー先の台帳の値、建柱位置の路線・上下線・KPは空に。コピー元を現調タブに表示。v118：現調「既設ポール・基礎」の基礎に「試掘確認」（不要（基礎を確認できる）／要試掘／試掘済（形式・寸法を確認））を追加。要試掘は要協議として数え、写真添付欄を表示。要試掘・試掘済のときは施工「着手前」に「試掘：既設基礎の形式・寸法を確認」の工程を表示し、施工タブ先頭にも案内。v117：規制可能時間帯の「Bのときはメモに」の案内を削除。v116：現調の作業条件「規制可能時間帯」を選択式（A：いつでもOK／B：渋滞箇所（時間帯に制限）／C：夜間作業、詳細はメモ）、「周辺施設」を選択式（学校／病院／商業施設／該当なし）に変更。以前の自由記入の値は選択肢に残して表示。周辺施設も未入力数に数える。v115：PCで写真をドラッグ＆ドロップで添付できるように：「写真を添付」ボタンやその写真欄に落とすとその項目の写真、写真タブの「写真を追加」付近に落とすと選択中のタグ、台帳の「添付」ボタンに落とすと台帳添付（画像・PDF）。作業画面のそれ以外の場所に落とすと写真タブのタグ（既定はその他）で追加。落とす先を緑の枠と案内で表示。v114：PCのChrome／Edgeで受信フォルダを監視しているときは、「現場データを書き出し」「事務所へ送る」のファイルをその受信フォルダに直接保存する（ダウンロードではなく）。自分で置いたファイルは再取り込みしない。受信フォルダの指定は読み書き許可で行う（初回の書き出し時に許可を求めることがある）。監視していない端末・iPadはこれまでどおりダウンロード／共有シート。v113：①建替（照明柱更新）で既設灯具がLEDのときは灯具を流用する前提に（既定は自動：既設ランプ種別がLEDで新設灯具が未選択なら流用。作業情報「既設灯具の扱い」で流用／取替を指定可）。流用時は灯具の資材・LED形式の選択・完了時の灯具の台帳反映を省き、図・印刷では灯具を取替扱いにしない。施工タブに流用の案内。②現調「規制方式」に「一車線規制」を追加。v112：管理番号一覧に「並び」チップを追加：路線→上下線→KP（既定）／上下線→KP／KP／管理番号／住所、昇順・降順の切替。並びは端末に記憶し、前後の管理番号への移動・CSV・印刷も同じ順。一覧の行に上下線を表示。v111：台帳と重複する現調項目は台帳の値を先に入れておく：電気系統の「電力柱番号または電気番号」←電力引込柱名称、「電源供給元」←引込方式が架空なら電力柱、既設ポール・基礎の「基礎形式」←基礎形式（建替で既設基礎流用の新設側も）。空欄のときだけ入れ「台帳から」と表示。現調でこれらを直すと台帳にも反映し変更履歴に残す。v110：台帳の項目の並びをMICHI（附属物台帳）Excelの列順に合わせる（管理番号→路線→出張所→住所→距離標→更新年月日→設置区分（台帳）→上下線→…→基礎形式→ポール型式→灯具→引込→電力契約種別→契約番号→引込柱→営業所→ポール製造者→補修→備考→工事名）。台帳CSV・印刷も同じ順。v109：電力契約種別を1項目に戻す（MICHIの2列は「5 公衆街路灯Ａ」のように1つにまとめて取り込む）。「台帳の補足」の見出しを削除し、既設設備の続きとして表示。v108：台帳の補足に 出張所・電力契約種別1・電力契約種別2・電力支払営業所名 を追加、「ポール製造者」を「照明ポール型式製造者」に改名。MICHIの「電力契約種別」2列は1列目→種別1、2列目→種別2。v107：メニュー末尾にバージョン表示。Excel取込で前回の列対応を復元するとき「メモに追記」だった列は台帳の補足項目へ切り替える。取り込み直後と起動時にメモの【列名】値を項目へ移して保存。v106：台帳に「台帳の補足（附属物台帳・MICHI）」の項目を追加：設置区分（台帳）・電力引込柱名称・ポール製造者・補修年月・補修内容・前回工事名。Excel取込のMICHI列はこれらに入れ（メモ追記をやめる）、v105でメモに【列名】値で入っていた内容は起動時に自動で項目へ移す。台帳CSV（雛形・取込）・印刷にも追加。v105：台帳の一括登録にExcel（.xlsx）の直接取り込みを追加（SheetJS）。シート・見出し行を自動判定し、列ごとの取り込み先を確認してから反映（MICHIデータの列名は自動で当てはめ、百米標＋距離→距離標、全角→半角、年月の数値・和暦→日付、R330→国道330号、KCE〜は「形式」へ振り分け、製造者名は株式会社表記の違いを吸収）。既存の管理番号は「空欄だけ埋める／上書き（変更履歴に残す）」を選択。列の対応は端末に記憶。CSV取り込みも同じ値変換を使用。v103：案内カードはスクロールしても上に固定（閉じた状態のとき）。現調・応急点検の「台帳（変更があった項目）」右に「変更なし」ボタン（確認日時を記録、ログに出力）。v102：案内カードと使い方ガイドを一体化（カードをタップすると5段階の使い方が開き、いまの段階に次の一歩を表示。初回は開いた状態）。v101：管理番号を開くと最初に「台帳」タブ（台帳の必須項目が未入力か作業がないとき）。案内を「現場 → 管理番号 → 台帳 → 作業 → 完了」の5段階にし、台帳の未記入項目と次の一歩を表示。v100：初めての人向けの案内（画面上部の「いま・次にやること」カード＋4段階の進み方、初回の使い方ガイド、メニュー「使い方」、メニューの見出し分け、タブに①②③、ヘッダーにパンくず、作業なしの管理番号に「応急点検／現場調査を始める」ボタン）。v99：チェックリストの【ログ】から台帳の変更履歴を外す。v98：①現調・応急点検の「台帳（変更があった項目）」に台帳の全項目 ②大きい項目の見出し右に「該当なし」ボタン ③新設LED灯具の設計（照明区分・車線数・設置位置・型式・メーカー・角度）を現調の「新設LED灯具（設計）・選定」へ移動（台帳タブは確認表示）。v97：チェックリスト1枚目を見やすく（状態の帯、①〜③に作業日・進捗バー、✔▲✕の色付きマーク、施工の残り項目表示）。v96：「現場を選ぶ」の各行に削除ボタン（2段階確認）。v95：現調 配管・配線に「配管サイズの選定」（④のケーブル外径から占積率で配管の最小サイズを計算・反映、②の配管の判定）。v94：完了時に台帳へ反映（灯具型式・ランプ・更新年月日・ポール型式・基礎形式）。管理番号一覧・作業一覧に削除ボタン。v93：応急点検・現調の最後に「LED灯具の選定」（LED灯具取替に派生するとき。候補・仕様書ライブラリの型式から選び、台帳の新設灯具に保存）。v92：応急点検から派生した作業は「現調」タブ・見出しを「応急点検」に。v91：各工種の最後に「完了」ボタン（派生した作業がない場合のみ。完了後は派生不可・状態は完了）。v90：施工の工程から測定値の行を外し「測定・試験（品質管理）」に一本化。v89：図ライブラリの図は1枚。図の上で部位の位置を囲んで登録し、取替等をした部位だけ赤で示す。備考の全文ページを廃止 -->
 <style>
 :root{
   --ink:#0F2438;--ink2:#41566A;--line:#DAE2E8;--bg:#fff;--surface:#F3F7F9;
@@ -430,7 +430,12 @@ label.lb.unk-l{display:flex;align-items:center;gap:8px}
   <button class="hd-b" id="hdMenu">メニュー</button>
 </header>
 <div id="storeWarn" class="warnbar" hidden>この画面では自動保存できません。ファイルを端末に保存してから開いてください。</div>
-<main id="main"></main>
+<main id="main"><div style="padding:24px 16px;color:#5B6B7B;font-size:15px">起動中…　この表示のまま変わらないときは、Safariのタブを全部閉じてから開き直してください</div></main>
+<script>
+/* 起動エラーの表示（本体スクリプトが読めないときも出す） */
+window.__dlErr=function(m){ try{ var el=document.getElementById('main'); if(!el) return; el.innerHTML='<div style="padding:20px 16px;color:#B42318;font-size:15px;line-height:1.6"><b>起動でエラーが出ました</b><br>'+String(m).replace(/</g,'&lt;')+'<br><br>この表示を伝えてください。<br><a href="?r='+Date.now()+'" style="color:#2F6FE4">最新版を読み込み直す</a></div>'; }catch(e){} };
+window.addEventListener('error',function(e){ var m=(e&&e.message)||''; if(!m) return; var el=document.getElementById('main'); if(el && /起動中/.test(el.textContent||'')) window.__dlErr(m+(e.lineno?'（行 '+e.lineno+'）':'')); });
+</script>
 <div class="bar" id="bar"></div>
 
 <input type="file" id="picInput" accept="image/*" multiple hidden>
@@ -689,7 +694,8 @@ function kisoFieldsHtml(attr, G, poleType){ const prefix=attr;
   return h;
 }
 const ELEC_ITEMS=[
-  ['denchu','電力柱番号または電気番号','txt','例）○○幹○○号 ／ 電気番号'],
+  ['denchu','電力引込柱名称（電気番号）','txt','例）宜野湾８４'],
+  ['denchuNo','電力柱番号（電柱の番号札。電力申請に使う）','txt','例）○○幹○○号'],
   ['source','電源供給元','sel',['分電盤','照明柱','電力柱']],
   ['kairo','回路番号（電源供給元が分電盤のとき）','txt','例）回路3'],
   ['cap','分岐ブレーカ容量（A）','num'],
@@ -716,7 +722,7 @@ function elecHtml(j){
   let h='';
   ELEC_ITEMS.forEach(([id,label,t,opts])=>{
     if(!elecShown(E,id)) return;
-    const LL=pole().ledger; const tag = id==='denchu' ? fromLedgerTag(E,'denchu',LL.inPole) : id==='source' ? fromLedgerTag(E,'source','電力柱') : '';
+    const LL=pole().ledger; const tag = id==='denchu' ? fromLedgerTag(E,'denchu',LL.inPole) : id==='denchuNo' ? fromLedgerTag(E,'denchuNo',LL.denchuNo) : id==='source' ? fromLedgerTag(E,'source','電力柱') : '';
     h+='<div class="item"><div class="q"><div class="txt">'+label+tag+'</div></div>';
     if(t==='tri') h+='<div class="seg">'+['ok','warn','na'].map(v=>'<button data-elt="'+id+'" data-v="'+v+'" aria-pressed="'+(E[id]===v)+'">'+TRI[v]+'</button>').join('')+'</div>';
     else if(t==='yn'){ h+='<div class="seg">'+['有','無'].map(v=>'<button data-elt="'+id+'" data-v="'+v+'" aria-pressed="'+(E[id]===v)+'">'+v+'</button>').join('')+'</div>'; }
@@ -1184,18 +1190,36 @@ const Store = {
   del(k){ try{ localStorage.removeItem(k); }catch(e){ delete mem[k]; } }
 };
 let PIC = {}; let picDB=null, picOK=true;
-function openPicDB(){ return new Promise(res=>{ try{
-  const rq=indexedDB.open('dlPhotos',1);
-  rq.onupgradeneeded=()=>rq.result.createObjectStore('pics');
-  rq.onsuccess=()=>{picDB=rq.result;res(true)};
-  rq.onerror=()=>{picOK=false;res(false)};
-}catch(e){picOK=false;res(false)} }); }
+/* 写真・控えのDB。別のタブ／ホーム画面のアプリが古い版で開いたままだと更新が待たされる（blocked）ため、
+   待たずに起動し、DBが開けたら後から使う。古い接続側は versionchange で自動的に閉じる */
+function openPicDB(){ return new Promise(res0=>{ let done=false; const res=v=>{ if(done) return; done=true; res0(v); };
+  setTimeout(()=>{ if(!done){ res(false); } },3000);
+  try{
+    const rq=indexedDB.open('dlPhotos',2);
+    rq.onupgradeneeded=()=>{ const db=rq.result; if(!db.objectStoreNames.contains('pics')) db.createObjectStore('pics'); if(!db.objectStoreNames.contains('kv')) db.createObjectStore('kv'); };
+    rq.onsuccess=()=>{ picDB=rq.result; picOK=true; picDB.onversionchange=()=>{ try{ picDB.close(); }catch(e){} picDB=null; }; res(true); };
+    rq.onblocked=()=>{ /* 他のタブが閉じるのを待つ。3秒で先に起動する */ };
+    rq.onerror=()=>{picOK=false;res(false)};
+  }catch(e){picOK=false;res(false)} }); }
 function picTx(m){ return picDB.transaction('pics',m).objectStore('pics'); }
 const picPut=(id,d)=>new Promise(res=>{ if(!picDB){picOK=false;return res(false)} const rq=picTx('readwrite').put(d,id); rq.onsuccess=()=>res(true); rq.onerror=()=>{picOK=false;res(false)}; });
 const picGet=id=>new Promise(res=>{ if(!picDB)return res(null); const rq=picTx('readonly').get(id); rq.onsuccess=()=>res(rq.result||null); rq.onerror=()=>res(null); });
 const picDel=id=>new Promise(res=>{ delete TH[id]; delete PIC[id]; if(!picDB)return res(false); const st=picTx('readwrite'); st.delete('th:'+id); const rq=st.delete(id); rq.onsuccess=()=>res(true); rq.onerror=()=>res(false); });
+/* 現場データの控え（IndexedDB）：localStorage が一杯・消えたときの復旧用。1時間ごとの履歴も残す */
+function kvTx(m){ return picDB.transaction('kv',m).objectStore('kv'); }
+const kvPut=(k,v)=>new Promise(res=>{ if(!picDB||!picDB.objectStoreNames.contains('kv')) return res(false); try{ const rq=kvTx('readwrite').put(v,k); rq.onsuccess=()=>res(true); rq.onerror=()=>res(false); }catch(e){ res(false); } });
+const kvGet=k=>new Promise(res=>{ if(!picDB||!picDB.objectStoreNames.contains('kv')) return res(null); try{ const rq=kvTx('readonly').get(k); rq.onsuccess=()=>res(rq.result||null); rq.onerror=()=>res(null); }catch(e){ res(null); } });
+const kvDel=k=>new Promise(res=>{ if(!picDB||!picDB.objectStoreNames.contains('kv')) return res(false); try{ const rq=kvTx('readwrite').delete(k); rq.onsuccess=()=>res(true); rq.onerror=()=>res(false); }catch(e){ res(false); } });
+const kvKeys=prefix=>new Promise(res=>{ if(!picDB||!picDB.objectStoreNames.contains('kv')) return res([]); try{ const rq=kvTx('readonly').getAllKeys(); rq.onsuccess=()=>res((rq.result||[]).filter(k=>String(k).startsWith(prefix))); rq.onerror=()=>res([]); }catch(e){ res([]); } });
+const picKeys=()=>new Promise(res=>{ if(!picDB) return res([]); try{ const rq=picTx('readonly').getAllKeys(); rq.onsuccess=()=>res(rq.result||[]); rq.onerror=()=>res([]); }catch(e){ res([]); } });
+let BAK_LAST=0;
+async function backupSite(s){
+  try{ const json=JSON.stringify(s); await kvPut('site:'+s.id, json);
+    const hour=Math.floor(Date.now()/3600000); if(hour!==BAK_LAST){ BAK_LAST=hour; await kvPut('snap:'+s.id+':'+hour, json); const ks=(await kvKeys('snap:'+s.id+':')).sort(); for(const k of ks.slice(0,Math.max(0,ks.length-48))) await kvDel(k); }
+  }catch(e){}
+}
 const TH={};  // サムネイル（小）だけをメモリに持つ
-function makeThumb(dataURL){ return new Promise(res=>{ try{ const img=new Image(); img.onload=()=>{ try{ const MAX=240; let w=img.width,h=img.height; const r=Math.min(1,MAX/Math.max(w,h)); w=Math.max(1,Math.round(w*r)); h=Math.max(1,Math.round(h*r)); const cv=document.createElement('canvas'); cv.width=w; cv.height=h; const ctx=cv.getContext('2d'); if(!ctx){ res(null); return; } ctx.drawImage(img,0,0,w,h); const out=cv.toDataURL('image/jpeg',0.6); cv.width=0; cv.height=0; res(out); }catch(e){ res(null); } }; img.onerror=()=>res(null); img.src=dataURL; }catch(e){ res(null); } }); }
+function makeThumb(dataURL){ return new Promise(res0=>{ let done=false; const res=v=>{ if(done) return; done=true; res0(v); }; setTimeout(()=>res(null),4000); try{ const img=new Image(); img.onload=()=>{ try{ const MAX=240; let w=img.width,h=img.height; const r=Math.min(1,MAX/Math.max(w,h)); w=Math.max(1,Math.round(w*r)); h=Math.max(1,Math.round(h*r)); const cv=document.createElement('canvas'); cv.width=w; cv.height=h; const ctx=cv.getContext('2d'); if(!ctx){ res(null); return; } ctx.drawImage(img,0,0,w,h); const out=cv.toDataURL('image/jpeg',0.6); cv.width=0; cv.height=0; res(out); }catch(e){ res(null); } }; img.onerror=()=>res(null); img.src=dataURL; }catch(e){ res(null); } }); }
 async function storeImage(id, dataURL){ await picPut(id, dataURL); const t=await makeThumb(dataURL); if(t){ await picPut('th:'+id, t); TH[id]=t; } }
 async function getThumb(id){ if(TH[id]) return TH[id]; let t=await picGet('th:'+id); if(!t){ const full=await picGet(id); if(full && /^data:image/.test(full)){ t=await makeThumb(full); if(t) await picPut('th:'+id,t); } } if(t) TH[id]=t; return t; }
 async function getFull(id){ if(PIC[id]) return PIC[id]; const d=await picGet(id); return d; }
@@ -1328,7 +1352,7 @@ function blankJob(kind,work){ return {id:uid('j'),kind:kind||'',work:work||'',wo
   closed:0,secNa:{},ledgerOk:0,survey:{},kyogi:{rows:[],docNo:'',tachiai:''},seko:{},meas:{ins:'',earth:'',torque:'',lux:'',volt:'',volt0:'',amp:'',plumb:''},pics:[],memo:'',
   insp:{start:0,end:0,names:'',items:{},breaker:{trip:'',ins:'',v1:'',v1val:'',cableBreak:'',upTrip:'',upIns:'',v2:'',damage:''},ps:{kind:'',v1:'',v1val:'',v2:'',v2val:'',model:'',stock:'',damage:''},ap:{hood:'',v1:'',v1val:'',v2:'',v2val:'',damage:''},bunden:{timer:'',timerMemo:'',fuse:'',fuseMemo:'',mag:'',magMemo:''},cause:'',causeOther:'',result:'',resultOther:'',report:'',reportHow:'',reportHowOther:'',reportWhen:'',reportDone:''}}; }
 function blankPole(){ return {id:uid('p'),no:'',route:'',routeOther:'',line:'',kp:'',addr:'',jobs:[],history:[],
-  ledger:{setchi:'',gaibu:'',shomeiKubun:'',lanes:'',sumikiri:'',kisoType:'',hikikomi:'',hikikomiOther:'',kansei:'',poleType:'',height:'',heightOther:'',arm:'',armLen:'',armLenOther:'',togu:'KSH-2',toguOther:'',lamp:'',lampModel:'',lampModelOther:'',watt:'',newTogu:'',maker:'',makerOther:'',angle:'',mapUrl:'',sonota:'',kubunMichi:'',inPole:'',poleMaker:'',hoshuYm:'',hoshuNaiyo:'',koujiMei:'',shucchosho:'',keiyaku:'',eigyosho:''},
+  ledger:{setchi:'',gaibu:'',shomeiKubun:'',lanes:'',sumikiri:'',kisoType:'',hikikomi:'',hikikomiOther:'',kansei:'',poleType:'',height:'',heightOther:'',arm:'',armLen:'',armLenOther:'',togu:'KSH-2',toguOther:'',lamp:'',lampModel:'',lampModelOther:'',watt:'',newTogu:'',maker:'',makerOther:'',angle:'',mapUrl:'',sonota:'',kubunMichi:'',inPole:'',poleMaker:'',hoshuYm:'',hoshuNaiyo:'',koujiMei:'',shucchosho:'',keiyaku:'',eigyosho:'',denchuNo:''},
   attach:[],
   memo:''}; }
 let SITE = null;
@@ -1425,7 +1449,7 @@ function copyJob(src, dst, dstPole, srcPole, parts){
     dst.survey=clone(src.survey); dst.secNa=clone(src.secNa);
     if(!dst.work){ dst.work=src.work; dst.workOther=src.workOther; }
     if(src.toguReuse!==undefined) dst.toguReuse=src.toguReuse; if(src.apReplace!==undefined) dst.apReplace=src.apReplace;
-    const E=dst.survey.elec; if(E){ E.denchu=L.inPole||''; E.denchuSrc=L.inPole?'台帳':''; }
+    const E=dst.survey.elec; if(E){ E.denchu=L.inPole||''; E.denchuSrc=L.inPole?'台帳':''; E.denchuNo=L.denchuNo||''; E.denchuNoSrc=L.denchuNo?'台帳':''; }
     const X=dst.survey.expole; if(X && L.kisoType && X.kiso){ X.kiso.kisoType=L.kisoType; X.kiso.kisoTypeSrc='台帳'; }
     const N=dst.survey.newpole; if(N && N.kenchu){ ['route','line','kp'].forEach(k=>{ if(k in N.kenchu) N.kenchu[k]=''; }); }
   }
@@ -1459,6 +1483,35 @@ function openSurveyCopy(mode){
       h+='<label class="lb" style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);margin:0"><input type="checkbox" data-scto="'+p.id+'" style="width:22px;height:22px;flex:0 0 auto"><span style="flex:1"><b>'+esc(p.no)+'</b>　<span class="sm">'+esc(staText(p)||'')+(p.line?'　'+esc(p.line):'')+'</span><br><span class="sm" style="color:var(--ink2)">'+(has?esc(has.work||has.kind)+(jobHasInput(has)?'　入力あり':'　未入力'):'作業なし（新しく作る）')+'</span></span></label>'; });
     h+='<button class="btn pri" id="scApply" style="width:100%;margin-top:14px">選んだ管理番号へコピー</button>';
   }
+  openSheet(h);
+}
+/* ---- 復旧（控えから戻す／孤立した写真の回収） ---- */
+function orphTime(id){ const m=String(id).match(/^[a-z](\w+?)[0-9a-z]{4}$/); if(!m) return 0; const n=parseInt(m[1],36); return (n>1.5e12&&n<2e12)?n:0; }
+async function openRestore(){
+  let h='<h2>復旧</h2>';
+  if(SITE){ const ks=(await kvKeys('snap:'+SITE.id+':')).sort().reverse(); const cur=await kvGet('site:'+SITE.id);
+    h+='<div class="note" style="padding:0 0 6px"><b>'+esc(SITE.name||'')+'</b> の控え（保存のたびに最新を、1時間ごとに履歴を自動で残しています）</div>';
+    if(cur){ try{ const s=JSON.parse(cur); h+='<button class="btn" data-restore-snap="site:'+SITE.id+'" style="width:100%;text-align:left;margin-bottom:6px">最新の控え　'+fmtDT(s.updated||0)+'　'+(s.poles||[]).length+'本</button>'; }catch(e){} }
+    for(const k of ks){ const json=await kvGet(k); try{ const s=JSON.parse(json); h+='<button class="btn" data-restore-snap="'+esc(k)+'" style="width:100%;text-align:left;margin-bottom:6px">'+fmtDT(s.updated||0)+' 時点　'+(s.poles||[]).length+'本'+(/x$/.test(k)?'　（復旧前の状態）':'')+'</button>'; }catch(e){} }
+    if(!cur&&!ks.length) h+='<div class="note">控えはまだありません（このバージョン以降の保存から残ります）</div>';
+  } else h+='<div class="note">現場を開いてから使ってください</div>';
+  h+='<div class="mh" style="margin-top:14px">この端末に残っている写真</div><div class="note" style="padding:0 0 8px">データが飛んでも写真は端末に残っていることがあります。どの管理番号にも紐づいていない写真を探して、管理番号に入れ直せます</div><button class="btn" id="orphanScan" style="width:100%">写真を探す</button>';
+  openSheet(h);
+}
+async function openOrphanPhotos(){
+  toast('探しています…'); const keys=(await picKeys()).map(String).filter(k=>!k.startsWith('th:'));
+  const used=new Set(); let sites=[]; try{ sites=JSON.parse(Store.get('dl:index')||'[]'); }catch(e){}
+  for(const ix of sites){ try{ const s=JSON.parse(Store.get('dl:site:'+ix.id)||'null'); if(!s) continue; (s.poles||[]).forEach(p=>{ (p.attach||[]).forEach(a=>used.add(a.id)); (p.jobs||[]).forEach(j=>(j.pics||[]).forEach(x=>used.add(x.id))); }); }catch(e){} }
+  if(SITE) SITE.poles.forEach(p=>{ (p.attach||[]).forEach(a=>used.add(a.id)); (p.jobs||[]).forEach(j=>(j.pics||[]).forEach(x=>used.add(x.id))); });
+  const orph=keys.filter(k=>!used.has(k) && /^[ia]/.test(k) && orphTime(k)).sort((a,b)=>orphTime(b)-orphTime(a)).slice(0,300);
+  for(const id of orph){ if(!TH[id]){ try{ const th=await picGet('th:'+id); if(th) TH[id]=th; else { const full=await picGet(id); if(full){ TH[id]=(await makeThumb(full))||full; } } }catch(e){} } }
+  let h='<h2>この端末に残っている写真</h2>';
+  if(!orph.length){ h+='<div class="note">管理番号に紐づいていない写真はありませんでした</div>'; openSheet(h); return; }
+  h+='<div class="note" style="padding:0 0 8px">'+orph.length+'枚。チェックして入れる先の管理番号を選ぶと、その管理番号の現調写真（項目なし）として入ります</div>';
+  h+='<label class="lb">入れる先の管理番号</label><select id="orphTarget"><option value="">—</option>'+sortedPoles().map(p=>'<option value="'+p.id+'">'+esc(p.no||'管理番号未設定')+'　'+esc(staText(p)||'')+'</option>').join('')+'</select>';
+  let lastDay=''; orph.forEach(id=>{ const d=new Date(orphTime(id)); const day=d.toLocaleDateString('ja-JP'); if(day!==lastDay){ lastDay=day; h+='<div class="mh" style="margin-top:10px">'+day+'</div>'; }
+    h+='<label class="lb" style="display:flex;align-items:center;gap:10px;padding:6px 0;margin:0;font-weight:500"><input type="checkbox" data-orph="'+id+'" style="width:22px;height:22px;flex:0 0 auto"><img src="'+(TH[id]||'')+'" alt="" style="width:88px;height:66px;object-fit:cover;border-radius:6px;border:1px solid var(--line)" data-orphview="'+id+'"><span class="sm">'+d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'})+'</span></label>'; });
+  h+='<button class="btn pri" id="orphanAttach" style="width:100%;margin-top:14px">選んだ写真を入れる</button>';
   openSheet(h);
 }
 function survName(j,long){ return fromInsp(j) ? '応急点検' : (long?'現場調査':'現調'); }
@@ -1605,6 +1658,7 @@ function setHeader(back, title, sub){
 
 /* ---- 現場一覧 ---- */
 function renderSites(main,bar){
+  if(BROKEN_SITE){ const b=BROKEN_SITE; setTimeout(()=>{ const m=$('#main'); if(!m||m.querySelector('#brokenBox')) return; const box=document.createElement('div'); box.id='brokenBox'; box.className='pad'; box.innerHTML='<div class="inherit" style="border-color:var(--warn)"><b style="color:var(--warn)">保存データの1つが読めません</b><div class="note">端末の中の現場データが壊れている可能性があります（Safariが落ちたとき等）。データ自体は消していません。下のボタンで壊れたままのデータを書き出して渡してもらえれば、こちらで中身を取り出せます。</div><div class="note sm">'+esc(b.msg)+'</div><button class="btn" id="brokenDl" style="margin-top:8px">壊れたデータを書き出す</button></div>'; m.prepend(box); },0); }
   setHeader('', '道路照明 現場アプリ', '現場を選ぶ');
   let idx=[]; try{ idx=JSON.parse(Store.get('dl:index')||'[]'); }catch(e){}
   const today=new Date().toISOString().slice(0,10);
@@ -2117,7 +2171,8 @@ function ledgerFieldsHtml(p){
     + selOther('引込方式','hikikomi',L.hikikomi,L.hikikomiOther,HIKIKOMI,'引込方式を入力')
     + fld('電力契約種別','keiyaku',L.keiyaku,{ph:'例）公衆街路灯Ａ'})
     + fld('電力申請番号（契約番号）','watt',L.watt,{ph:'電力会社の申請・契約番号'})
-    + '<div class="row2"><div>'+fld('電力引込柱名称','inPole',L.inPole,{ph:'例）宜野湾８４'})+'</div><div>'+fld('電力支払営業所名','eigyosho',L.eigyosho,{ph:'例）浦添支店'})+'</div></div>'
+    + '<div class="row2"><div>'+fld('電力引込柱名称','inPole',L.inPole,{ph:'例）宜野湾８４'})+'</div><div>'+fld('電力柱番号（電柱の番号札）','denchuNo',L.denchuNo,{ph:'例）宜野湾線 12-3'})+'</div></div>'
+    + fld('電力支払営業所名','eigyosho',L.eigyosho,{ph:'例）浦添支店'})
     + fld('照明ポール型式製造者','poleMaker',L.poleMaker,{ph:'例）丸一鋼管株式会社'})
     + '<div class="row2"><div>'+dateOrDash('補修年月','hoshuYm',L.hoshuYm,'month')+'</div><div>'+fld('補修内容','hoshuNaiyo',L.hoshuNaiyo,{ph:'例）灯具の取替え'})+'</div></div>'
     + fld('その他・備考（自由記入）','sonota',L.sonota,{ph:'現地で判明した変更点・気づき'})
@@ -2184,6 +2239,7 @@ function prefillSurveyFromLedger(pp,j){
   if(!pp||!j) return false; const L=pp.ledger; let ch=false;
   const E=elecOf(j);
   if(!E.denchu && L.inPole){ E.denchu=L.inPole; E.denchuSrc='台帳'; ch=true; }
+  if(!E.denchuNo && L.denchuNo){ E.denchuNo=L.denchuNo; E.denchuNoSrc='台帳'; ch=true; }
   if(!E.source && /架空/.test(lv(L,'hikikomi')||'')){ E.source='電力柱'; E.sourceSrc='台帳'; ch=true; }
   const X=expoleOf(j); X.kiso=X.kiso||{};
   if(!X.kiso.kisoType && L.kisoType){ X.kiso.kisoType=L.kisoType; X.kiso.kisoTypeSrc='台帳'; ch=true; }
@@ -2526,8 +2582,11 @@ async function deleteSite(id){
   if(Store.get('dl:last')===id) Store.del('dl:last');
   if(SITE&&SITE.id===id){ SITE=null; V.screen='sites'; }
 }
+let SAVE_FAIL_ALERTED=false; let BROKEN_SITE=null;
 function persistSite(s){
-  Store.set('dl:site:'+s.id, JSON.stringify(s));
+  const okLS=Store.set('dl:site:'+s.id, JSON.stringify(s));
+  backupSite(s);
+  if(!okLS && !SAVE_FAIL_ALERTED){ SAVE_FAIL_ALERTED=true; setTimeout(()=>alert('端末の保存領域（localStorage）に保存できませんでした。\n控え（IndexedDB）には保存を続けますが、念のため「現場データを書き出し」でファイルも残してください。\n古い現場を削除すると空きができます。'),50); }
   let idx=[]; try{ idx=JSON.parse(Store.get('dl:index')||'[]'); }catch(e){}
   idx=idx.filter(x=>x.id!==s.id);
   const reports=[]; s.poles.forEach(p=>p.jobs.forEach(j=>{ if(j.kind==='応急点検工' && j.insp.reportWhen && j.insp.reportDone!=='有') reports.push({poleId:p.id,jobId:j.id,no:p.no,when:j.insp.reportWhen,how:j.insp.reportHow==='その他'?(j.insp.reportHowOther||'その他'):j.insp.reportHow,cause:causeText(j),result:resultText(j)}); }));
@@ -2540,12 +2599,22 @@ function save(){
   if(!SITE) return;
   persistSite(SITE);
   Store.set('dl:last',SITE.id);
-  $('#storeWarn').hidden=persistent;
+  $('#storeWarn').hidden=persistent; if(!persistent) $('#storeWarn').textContent='端末の保存領域が一杯か使えないため自動保存できません。控えには保存しています。「現場データを書き出し」でファイルも残してください';
   if(V.screen!=='sites'){ $('#hdSub').textContent = (persistent?'保存済 ':'保存できません ')+new Date().toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}); }
 }
 async function loadSite(id){
-  const raw=Store.get('dl:site:'+id); if(!raw) return false;
-  SITE=JSON.parse(raw);
+  let raw=Store.get('dl:site:'+id);
+  // 控え（IndexedDB）の方が新しければそちらを使う（localStorage に保存できなかった分の復旧）
+  try{ const bak=await kvGet('site:'+id); if(bak){ let ls=null; try{ ls=raw?JSON.parse(raw):null; }catch(e){} const bk=JSON.parse(bak); if(!ls || (bk.updated||0)>(ls.updated||0)+1000){ raw=bak; Store.set('dl:site:'+id, bak); syncLogAdd('控え（IndexedDB）から現場データを復旧：'+(bk.name||id)+'　'+fmtDT(bk.updated||0)); } } }catch(e){}
+  if(!raw) return false;
+  try{ SITE=JSON.parse(raw); }
+  catch(e){
+    // 保存データが壊れている（途中で切れている等）：壊れたまま控えて、現場一覧に戻る。書き出して修復できるようにする
+    try{ Store.set('dl:broken:'+id, raw); await kvPut('broken:'+id, raw); }catch(x){}
+    BROKEN_SITE={id, raw, msg:(e&&e.message)||String(e)};
+    syncLogAdd('現場データを読めません（壊れている可能性）：'+id+'　'+BROKEN_SITE.msg);
+    SITE=null; return false;
+  }
   SITE.poles=SITE.poles.map(migratePole);
   if(SITE.poles.some(p=>p._memoMoved)){ SITE.poles.forEach(p=>{ delete p._memoMoved; }); setTimeout(()=>{ try{ save(); }catch(e){} },0); }
   SITE.settings=Object.assign({ins:0.2,earth:100,torque:'',lux:''},SITE.settings||{});
@@ -2596,6 +2665,16 @@ document.addEventListener('click', async e=>{
   if(d && d.bk){ const B=job().insp.breaker; B[d.bk]=(B[d.bk]===d.v)?'':d.v; touch(true); return; }
   if(d && d.iv){ const I=job().insp; const c=I.items[d.iv]=I.items[d.iv]||{v:'',memo:''}; c.v=(c.v===d.v)?'':d.v; touch(true); return; }
   if(b && (b.id==='jobInfo'||b.id==='jobInfo2')){ openJobInfo(); return; }
+  if(b && b.id==='mRestore'){ openRestore(); return; }
+  if(b && b.id==='brokenDl'){ if(BROKEN_SITE) dl('壊れた現場データ_'+BROKEN_SITE.id+'_'+stamp()+'.txt', BROKEN_SITE.raw, 'text/plain'); return; }
+  if(d && d.restoreSnap){ const k=d.restoreSnap; const json=await kvGet(k); if(!json){ toast('控えが見つかりません'); return; } let s; try{ s=JSON.parse(json); }catch(e){ toast('控えを読めません'); return; }
+    if(!confirm((s.name||'')+' を '+fmtDT(s.updated||0)+' 時点の控えに戻します。いまの内容は上書きされます（直前の状態も控えに残します）。よろしいですか？')) return;
+    if(SITE && SITE.id===s.id){ await kvPut('snap:'+s.id+':'+Math.floor(Date.now()/3600000)+'x', JSON.stringify(SITE)); }
+    s.poles=(s.poles||[]).map(safeMigrate); SITE=s; save(); V={screen:'poles',poleId:null,tab:'ledger',filter:'all'}; $('#sheet').classList.remove('open'); render(); toast('控えから戻しました'); return; }
+  if(b && b.id==='orphanScan'){ await openOrphanPhotos(); return; }
+  if(b && b.id==='orphanAttach'){ const sel=Array.from(document.querySelectorAll('[data-orph]:checked')).map(c=>c.dataset.orph); const target=($('#orphTarget')||{}).value||''; if(!sel.length){ toast('写真を選んでください'); return; } if(!target){ toast('入れる先の管理番号を選んでください'); return; }
+    const pp=SITE.poles.find(x=>x.id===target); if(!pp) return; let j=pp.jobs.slice().reverse().find(x=>x.kind!=='応急点検工'&&!x.closed); if(!j){ j=blankJob('道路照明維持修繕工','建替（照明柱更新）'); pp.jobs.push(j); }
+    sel.forEach(id=>{ j.pics.push({id,tag:'現調',item:'',at:orphTime(id)||Date.now()}); }); pp.upd=Date.now(); touch(true); $('#sheet').classList.remove('open'); toast(sel.length+'枚を '+pp.no+' の現調写真に入れました'); return; }
   if(b && b.id==='surveyCopy'){ openSurveyCopy('from'); return; }
   if(b && b.id==='scFromMode'){ openSurveyCopy('from'); return; }
   if(b && b.id==='scToMode'){ openSurveyCopy('to'); return; }
@@ -2773,7 +2852,7 @@ function onEdit(e){
   if(d.mmaker){ if(t.value==='__new'){ const nm=prompt('業者名'); if(nm){ SITE.makersExtra=SITE.makersExtra||[]; if(!SITE.makersExtra.includes(nm)) SITE.makersExtra.push(nm); SITE.matMaker=SITE.matMaker||{}; SITE.matMaker[d.mmaker]=nm; } touch(true); return; } SITE.matMaker=SITE.matMaker||{}; SITE.matMaker[d.mmaker]=t.value; touch(); return; }
   if(d.extra){ const x=j.survey.extraItems[+d.xi]; x[d.extra]=t.value; touch(); if(e.type==='change'){ const st=document.querySelector('[data-sec="materials"] .st'); if(st) st.textContent=jobMaterials(pole(),j).length+'品目'; } return; }
   if(d.shosamemo){ (j.survey.shosa||(j.survey.shosa={})).memo=t.value; touch(); return; }
-  if(d.el){ elecOf(j)[d.el]=t.value; if(d.el==='apChange') j.apReplace = t.value==='取替する' ? 1 : ''; if(d.el==='juChange') j.juReplace = t.value==='取替する' ? 1 : ''; if(d.el==='denchu' && e.type==='change' && t.value.trim()) ledgerSet(p,'inPole',t.value.trim(),survName(j,true)); touch(); if(e.type==='change' && (t.tagName==='SELECT'||d.el==='cap'||d.el==='load'||d.el==='volt')) render(); return; }
+  if(d.el){ elecOf(j)[d.el]=t.value; if(d.el==='apChange') j.apReplace = t.value==='取替する' ? 1 : ''; if(d.el==='juChange') j.juReplace = t.value==='取替する' ? 1 : ''; if(d.el==='denchu' && e.type==='change' && t.value.trim()) ledgerSet(p,'inPole',t.value.trim(),survName(j,true)); if(d.el==='denchuNo' && e.type==='change' && t.value.trim()) ledgerSet(p,'denchuNo',t.value.trim(),survName(j,true)); touch(); if(e.type==='change' && (t.tagName==='SELECT'||d.el==='cap'||d.el==='load'||d.el==='volt')) render(); return; }
   if(d.exf){ const [g,k]=d.exf.split('.'); const E=expoleOf(j); E[g]=E[g]||{}; E[g][k]=t.value; if(g==='kiso' && k==='kisoType' && e.type==='change' && t.value) ledgerSet(p,'kisoType',t.value,survName(j,true)); touch(); if(e.type==='change' && (k==='kisoType'||k==='kisoDia'||k==='kisoDepth')) render(); return; }
   if(d.xpipe){ const r=expoleOf(j).pole.pipes[+d.xi]; r[d.xpipe]=t.value; if(d.xpipe==='type'){ r.size=''; r.sizeOther=''; } touch(); if(e.type==='change' && (d.xpipe==='type'||d.xpipe==='size')) render(); return; }
   if(d.xcable){ const r=expoleOf(j).pole.cables[+d.xi]; r[d.xcable]=t.value; if(d.xcable==='type'){ r.size=''; r.sizeOther=''; r.core=''; } touch(); if(e.type==='change' && (d.xcable==='type'||d.xcable==='size')) render(); return; }
@@ -2879,6 +2958,7 @@ function openMenu(){
     + '<button id="mPlan">施工計画書ライブラリ<small>施工計画書・安全計画・規制図など</small></button>'
     + '<div class="mh">端末間</div><button id="mImport">現場データを取り込み<small>他の端末や全体管理アプリからのファイル（マージ）</small></button>'
     + '<button id="mSync">端末間の連携<small>受信フォルダの自動取り込み（PC）・端末名・履歴</small></button>'
+    + '<button id="mRestore">復旧<small>1時間ごとの控えから現場を戻す／この端末に残っている写真を回収</small></button>'
     + '<button id="mSites">現場一覧へ</button></div><div class="note" style="text-align:center;padding:10px 0 0;color:var(--ink2)">道路照明 現場アプリ '+APP_VER+'</div>';
   openSheet(h);
 }
@@ -3024,7 +3104,7 @@ $('#libInput').addEventListener('change', e=>{ const files=Array.from(e.target.f
 $('#libJsonInput').addEventListener('change', e=>{ const f=e.target.files[0]; if(f) importLib(f); });
 $('#ledgerCsvInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(f) await importLedgerCsv(f); });
 $('#ledgerXlsInput').addEventListener('change', async e=>{ const f=e.target.files[0]; if(f) await importLedgerXls(f); });
-const LEDGER_COLS=[['no','管理番号'],['route','路線'],['shucchosho','出張所'],['addr','住所・場所'],['kp','距離標'],['kansei','既設の更新年月日'],['kubunMichi','設置区分（台帳）'],['line','上下線'],['setchi','設置区分'],['gaibu','外部条件'],['kisoType','基礎形式'],['poleType','ポール型式'],['height','ポール高さ'],['armLen','アーム長'],['arm','アーム'],['togu','灯具型式'],['lamp','ランプ種別'],['lampModel','形式'],['hikikomi','引込方式'],['keiyaku','電力契約種別'],['watt','電力申請番号'],['inPole','電力引込柱名称'],['eigyosho','電力支払営業所名'],['poleMaker','照明ポール型式製造者'],['hoshuYm','補修年月'],['hoshuNaiyo','補修内容'],['sonota','その他'],['koujiMei','前回工事名'],['shomeiKubun','照明区分'],['lanes','車線数'],['newTogu','新設灯具'],['maker','メーカー'],['angle','設計取付角度'],['mapUrl','地図リンク'],['memo','メモ']];
+const LEDGER_COLS=[['no','管理番号'],['route','路線'],['shucchosho','出張所'],['addr','住所・場所'],['kp','距離標'],['kansei','既設の更新年月日'],['kubunMichi','設置区分（台帳）'],['line','上下線'],['setchi','設置区分'],['gaibu','外部条件'],['kisoType','基礎形式'],['poleType','ポール型式'],['height','ポール高さ'],['armLen','アーム長'],['arm','アーム'],['togu','灯具型式'],['lamp','ランプ種別'],['lampModel','形式'],['hikikomi','引込方式'],['keiyaku','電力契約種別'],['watt','電力申請番号'],['inPole','電力引込柱名称'],['denchuNo','電力柱番号'],['eigyosho','電力支払営業所名'],['poleMaker','照明ポール型式製造者'],['hoshuYm','補修年月'],['hoshuNaiyo','補修内容'],['sonota','その他'],['koujiMei','前回工事名'],['shomeiKubun','照明区分'],['lanes','車線数'],['newTogu','新設灯具'],['maker','メーカー'],['angle','設計取付角度'],['mapUrl','地図リンク'],['memo','メモ']];
 const LEDGER_LABEL=Object.fromEntries(LEDGER_COLS.concat([['sonota','その他'],['routeOther','路線'],['heightOther','ポール高さ'],['armLenOther','アーム長'],['hikikomiOther','引込方式'],['makerOther','メーカー'],['toguOther','灯具型式'],['lampModelOther','形式'],['sumikiri','設置位置']]));
 function ledgerDisplay(p,key){
   const base=key.replace(/Other$/,''); const L=p.ledger;
@@ -3082,7 +3162,7 @@ function setLedgerVal(p,key,val){
   else L[key]=val;
 }
 /* ---- 台帳をExcelから取り込み（SheetJS をオンラインで読み込む） ---- */
-const APP_VER='v153';
+const APP_VER='v158';
 window.addEventListener('error', e=>{ try{ const m=(e.message||'')+(e.filename?'':'')+(e.lineno?'（行'+e.lineno+'）':''); syncLogAdd('エラー：'+m); if(/null is not an object|undefined is not an object|Cannot read/.test(e.message||'')) toast('エラー：'+m); }catch(x){} });
 window.addEventListener('unhandledrejection', e=>{ try{ const r=e.reason; const m=(r&&r.message)||String(r); syncLogAdd('エラー：'+m+(r&&r.stack?'　'+String(r.stack).split('\n').slice(0,2).join(' / '):'')); }catch(x){} });
 let xlsxP=null;
@@ -3106,7 +3186,7 @@ function xlsDate(v){
   return '';
 }
 const XLS_TARGETS=LEDGER_COLS.concat([['kpKm','距離標 km部（百米標）'],['kpM','距離標 m部（kmに足す）'],['memo+','メモに追記（列名：値）'],['','（取り込まない）']]);
-const XLS_ALIAS={no:['管理番号','管理no','灯柱番号','照明柱番号','柱番号','照明番号'],route:['路線','路線名','国道','路線番号'],line:['上下線','上下','設置箇所','上り下り','車線区分'],kp:['距離標','kp','距離標kp','キロ程','測点','sta'],kpKm:['百米標km','百米標','キロ程km'],kpM:['距離m','距離'],addr:['住所・場所','住所場所','住所','場所','名称','地名','所在地','設置場所','位置'],setchi:['設置区分','設置位置区分'],gaibu:['外部条件'],shomeiKubun:['照明区分','連続局部別','照明種別'],lanes:['車線数'],kansei:['既設の更新年月日','更新年月日','完成年月','完成年月日','設置年月','設置年月日','竣工年月'],poleType:['ポール型式','照明ポール型式','ポール形式','柱型式','支柱型式'],height:['ポール高さ','ポール高','高さ','柱高'],armLen:['アーム長'],arm:['アーム','アーム形式'],kisoType:['基礎形式','基礎'],hikikomi:['引込方式','引込'],togu:['灯具型式','灯具形式','器具型式','器具形式'],lamp:['ランプ種別','光源種別','光源種別1','光源種別１','ランプ'],lampModel:['形式','ランプ形式','光源型式','光源型式1','光源型式１','ランプ型式'],watt:['電力申請番号','電力契約番号','契約番号','申請番号'],newTogu:['新設灯具','新設器具','led灯具'],maker:['メーカー','灯具製造者','製造者','製造者灯具','灯具メーカー'],angle:['設計取付角度','取付角度','角度'],mapUrl:['地図リンク','地図','googleマップ','map'],sonota:['その他','備考'],memo:['メモ'],kubunMichi:['設置区分台帳','設置区分michi'],inPole:['電力引込柱名称','引込柱名称','引込柱'],poleMaker:['ポール製造者','照明ポール型式製造者','照明ポール製造者','ポールメーカー'],hoshuYm:['補修年月','補修年月日','修繕年月'],hoshuNaiyo:['補修内容','修繕内容'],koujiMei:['前回工事名','工事名','工事名称'],shucchosho:['出張所'],keiyaku:['電力契約種別','契約種別','電力契約種別1','電力契約種別2'],eigyosho:['電力支払営業所名','支払営業所名','営業所名','電力営業所']};
+const XLS_ALIAS={no:['管理番号','管理no','灯柱番号','照明柱番号','柱番号','照明番号'],route:['路線','路線名','国道','路線番号'],line:['上下線','上下','設置箇所','上り下り','車線区分'],kp:['距離標','kp','距離標kp','キロ程','測点','sta'],kpKm:['百米標km','百米標','キロ程km'],kpM:['距離m','距離'],addr:['住所・場所','住所場所','住所','場所','名称','地名','所在地','設置場所','位置'],setchi:['設置区分','設置位置区分'],gaibu:['外部条件'],shomeiKubun:['照明区分','連続局部別','照明種別'],lanes:['車線数'],kansei:['既設の更新年月日','更新年月日','完成年月','完成年月日','設置年月','設置年月日','竣工年月'],poleType:['ポール型式','照明ポール型式','ポール形式','柱型式','支柱型式'],height:['ポール高さ','ポール高','高さ','柱高'],armLen:['アーム長'],arm:['アーム','アーム形式'],kisoType:['基礎形式','基礎'],hikikomi:['引込方式','引込'],togu:['灯具型式','灯具形式','器具型式','器具形式'],lamp:['ランプ種別','光源種別','光源種別1','光源種別１','ランプ'],lampModel:['形式','ランプ形式','光源型式','光源型式1','光源型式１','ランプ型式'],watt:['電力申請番号','電力契約番号','契約番号','申請番号'],newTogu:['新設灯具','新設器具','led灯具'],maker:['メーカー','灯具製造者','製造者','製造者灯具','灯具メーカー'],angle:['設計取付角度','取付角度','角度'],mapUrl:['地図リンク','地図','googleマップ','map'],sonota:['その他','備考'],memo:['メモ'],kubunMichi:['設置区分台帳','設置区分michi'],inPole:['電力引込柱名称','引込柱名称','引込柱'],denchuNo:['電力柱番号','電柱番号','電柱no','電力柱no'],poleMaker:['ポール製造者','照明ポール型式製造者','照明ポール製造者','ポールメーカー'],hoshuYm:['補修年月','補修年月日','修繕年月'],hoshuNaiyo:['補修内容','修繕内容'],koujiMei:['前回工事名','工事名','工事名称'],shucchosho:['出張所'],keiyaku:['電力契約種別','契約種別','電力契約種別1','電力契約種別2'],eigyosho:['電力支払営業所名','支払営業所名','営業所名','電力営業所']};
 const XLS_MICHI={'管理番号':'no','出張所':'shucchosho','電力契約種別':'keiyaku','電力支払営業所名':'eigyosho','路線名':'route','名称':'addr','百米標km':'kpKm','距離m':'kpM','完成年月':'kansei','連続局部別':'shomeiKubun','設置区分':'kubunMichi','設置箇所':'line','基礎形式':'kisoType','照明ポール型式':'poleType','灯具型式':'togu','光源種別1':'lamp','光源型式1':'lampModel','引込方式':'hikikomi','電力契約番号':'watt','電力引込柱名称':'inPole','灯具製造者':'maker','照明ポール型式製造者':'poleMaker','補修年月':'hoshuYm','補修内容':'hoshuNaiyo','工事名':'koujiMei','備考':'sonota'};
 let XLS=null;
 function xlsGuessMap(head){
@@ -3540,6 +3620,7 @@ function toast(m){ const el=$('#toast'); el.textContent=m; el.classList.add('sho
 
 /* ============ 起動 ============ */
 (async function init(){
+  try{
   await openPicDB();
   Store.set('dl:probe','1');
   $('#storeWarn').hidden=persistent;
@@ -3548,6 +3629,7 @@ function toast(m){ const el=$('#toast'); el.textContent=m; el.classList.add('sho
   await syncResume();
   render();
   window.addEventListener('beforeunload',()=>{ if(saveTimer){clearTimeout(saveTimer);save();} });
+  }catch(e){ try{ $('#main').innerHTML='<div class="pad"><div class="note" style="color:var(--warn);font-weight:700">起動でエラーが出ました：'+esc((e&&e.message)||String(e))+'</div><div class="note">画面を再読み込みしてください。直らない場合はこの表示を伝えてください</div></div>'; }catch(x){} } 
 })();
 
 guideFirstRun();
@@ -3822,6 +3904,7 @@ function prLedgerRows(p){
   h+=prRow('電力契約種別',L.keiyaku,U,k('keiyaku'));
   h+=prRow('電力申請番号',L.watt,U,k('watt'));
   h+=prRow('電力引込柱名称',L.inPole,U,k('inPole'));
+  h+=prRow('電力柱番号',L.denchuNo,U,k('denchuNo'));
   h+=prRow('電力支払営業所名',L.eigyosho,U,k('eigyosho'));
   h+=prRow('照明ポール型式製造者',L.poleMaker,U,k('poleMaker'));
   h+=prRow('補修年月・内容',[L.hoshuYm,L.hoshuNaiyo].filter(Boolean).join('　'),U,[k('hoshuYm'),k('hoshuNaiyo')]);
